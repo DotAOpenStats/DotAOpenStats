@@ -1,0 +1,135 @@
+<?PHP
+
+   if ($_GET)
+            {
+     require_once ('../config.php');
+	 require_once('../includes/class.database.php');
+	 require_once('../includes/common.php');
+	 require_once('../includes/db_connect.php');
+	 require_once("../lang/$default_language.php");
+	 
+	 if (isset($_GET['games'])) {$games = safeEscape($_GET['games']);} else {$games = 2;}
+	 
+	 $sqlYear = EscapeStr($_GET["sqlyear"]);
+	 $sqlMonth = EscapeStr($_GET["sqlmonth"]);
+	 //$day_stats = EscapeStr($_GET["daystats"]); 
+	 $day_stats = "";
+     $year = EscapeStr($_GET["year"]);
+	 $month = EscapeStr($_GET["month"]);
+	 $day = EscapeStr($_GET["day"]);
+
+
+$sql = "SELECT *, case when (kills = 0) then 0 when (deaths = 0) then 1000 else ((kills*1.0)/(deaths*1.0)) end as killdeathratio, ($scoreFormula) as totalscore 
+	 FROM ( 
+	 SELECT 
+	 gp.name as name, 
+	 bans.name as banname, 
+	 avg(dp.courierkills) as courierkills, 
+	 avg(dp.raxkills) as raxkills,
+	 avg(dp.towerkills) as towerkills, 
+	 avg(dp.assists) as assists, 
+	 SUM(dp.assists) as SumAssists, 
+	 avg(dp.creepdenies) as creepdenies, 
+	 SUM(dp.creepdenies) as SumCreepdenies,
+	 avg(dp.creepkills) as creepkills,
+	 SUM(dp.creepkills) as SumCreepkills,
+	 avg(dp.neutralkills) as neutralkills, 
+	 SUM(dp.neutralkills) as SumNeutralkills,
+	 avg(dp.deaths) as deaths, 
+	 SUM(dp.deaths) as SumDeaths,
+	 avg(dp.kills) as kills, 
+	 SUM(dp.kills) as SumKills,
+	 count(*) as totgames, 
+	 case when (kills = 0) then 0 when (deaths = 0) then 1000 else ((kills*1.0)/(deaths*1.0)) end as killdeathratio, 
+	 SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.newcolour > 6)) 
+     AND gp.`left`/ga.duration >= $minPlayedRatio) then 1 else 0 end) as wins, 
+     SUM(case when(((dg.winner = 2 and dp.newcolour < 6) or (dg.winner = 1 and dp.newcolour > 6)) 
+     AND gp.`left`/ga.duration >= $minPlayedRatio) then 1 else 0 end) as losses
+     FROM gameplayers as gp 
+     LEFT JOIN dotagames as dg ON gp.gameid = dg.gameid 
+     LEFT JOIN dotaplayers as dp ON dg.gameid = dp.gameid 
+	 AND gp.colour = dp.colour 
+	 AND dp.newcolour <> 12 
+	 AND dp.newcolour <> 6
+	 LEFT JOIN games as ga ON dp.gameid = ga.id 
+	 LEFT JOIN bans on bans.name = gp.name
+	 WHERE dg.winner <> 0  
+	 AND $sqlYear = '$year' AND $sqlMonth = '$month' $day_stats
+	 GROUP BY gp.name having totgames >= $games) as i 
+	 ORDER BY totalscore DESC, name DESC LIMIT 5";
+       
+	 $result = $db->query($sql);
+	 
+	 $monthName = getMonthName($month,$lang["jan"],$lang["feb"],$lang["mar"],$lang["apr"],$lang["may"],$lang["jun"],$lang["jul"],$lang["aug"],$lang["sep"],$lang["oct"],$lang["nov"],$lang["dec"]);
+	 
+	 $monthName = substr($monthName,0,3);
+	 
+	 echo "<div align='center'><table class='tableA'><tr>
+  <th class='padLeft'><div align='left'>$lang[toprank] $monthName $year</div></th>
+  <th><div align='center'>$lang[score]</div></th>
+  <th><div align='center'>$lang[games]</div></th>
+  <th><div align='center'>$lang[wins]</div></th>
+  <th><div align='center'>$lang[win_perc]</div></th>
+  <th><div align='center'>$lang[losses]</div></th>
+  <th><div align='center'>$lang[kills]</div></th>
+  <th><div align='center'>$lang[deaths]</div></th>
+  <th><div align='center'>$lang[assists]</div></th>
+  <th><div align='center'>$lang[kd]</th>
+  <th><div align='center'>$lang[creeps]</div></th>
+  <th><div align='center'>$lang[denies]</div></th>
+  <th><div align='center'>$lang[neutrals]</div></th>
+	 </tr>";
+	 while ($list = $db->fetch_array($result,'assoc')) {
+	 
+	    $totgames=$list["totgames"];
+		$kills=ROUND($list["kills"],1);
+		$death=ROUND($list["deaths"],1);
+		$assists=ROUND($list["assists"],1);
+		$creepkills=ROUND($list["creepkills"],1);
+		$creepdenies=ROUND($list["creepdenies"],1);
+		$neutralkills=ROUND($list["neutralkills"],1);
+		$courierkills=ROUND($list["courierkills"],1);
+		$wins=$list["wins"];
+		$losses=$list["losses"];
+		
+		if ($wins <=0)
+		{$winlosses = 0;}
+		else
+		if($wins == 0 and $wins+$losses == 0){ $winlosses = 0;}
+		else
+		if($wins+$losses == 0){$winlosses = 1000;}
+		else
+		if ($wins >0)
+		{$winlosses = ROUND($wins/($wins+$losses), 3)*100;} 
+		
+		$totalscore=ROUND($list["totalscore"],2);
+		$killdeathratio=ROUND($list["killdeathratio"],1); 
+	 
+	 $list["totalscore"] = ROUND($list["totalscore"],2);
+	 $plName = strtolower($list["name"]);
+	 echo "<tr class='row'>
+		<td width='180px' style='padding-left:4px;'><a href='user.php?u=$plName'>$list[name]</a></td>
+		<td width='110px'><div align='center'>$list[totalscore]</div></td>
+		<td width='64px'><div align='center'>$totgames</div></td>
+		<td width='64px'><div align='center'>$wins</div></td>
+		<td width='64px'><div align='center'>$winlosses%</div></td>
+		<td width='70px'><div align='center'>$losses</div></td>
+		<td width='70px'><div align='center'><a title='$lang[average] $kills | $lang[total] $list[SumKills]'' rel=''>$kills</a></div></td>
+		<td width='70px'><div align='center'><a title='$lang[average] $death | $lang[total] $list[SumDeaths]'>$death</a></div></td>
+		<td width='70px'><div align='center'><a title='$lang[average] $assists | $lang[total] $list[SumAssists]'>$assists</a></div></td>
+		<td width='90px'><div align='center'>$killdeathratio:1</div></td>
+		<td width='70px'><div align='center'><a title='$lang[average] $creepkills | $lang[total] $list[SumCreepkills]'>$creepkills</a></div></td>
+		<td width='70px'><div align='center'><a title='$lang[average] $creepdenies | $lang[total] $list[SumCreepdenies]' >$creepdenies</a></div></td>
+		<td width='70px'><div align='center'><a title='$lang[average] $neutralkills | $lang[total] $list[SumNeutralkills]' >$neutralkills</a></div></td>
+		
+		</tr>";
+	 }
+	 
+
+ 
+		echo "</table></div>";
+		
+		} else {echo "Direct access not allowed!";}
+		
+		
+		?>

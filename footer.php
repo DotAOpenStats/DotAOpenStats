@@ -1,0 +1,90 @@
+<?php
+/*********************************************
+<!-- 
+*   	DOTA OPENSTATS
+*   
+*	Developers: Ivan.
+*	Contact: ivan.anta@gmail.com - Ivan
+*
+*	
+*	Please see http://openstats.iz.rs
+*	and post your webpage there, so I know who's using it.
+*
+*	Files downloaded from http://openstats.iz.rs
+*
+*	Copyright (C) 2010  Ivan
+*
+*
+*	This file is part of DOTA OPENSTATS.
+*
+* 
+*	 DOTA OPENSTATS is free software: you can redistribute it and/or modify
+*    it under the terms of the GNU General Public License as published by
+*    the Free Software Foundation, either version 3 of the License, or
+*    (at your option) any later version.
+*
+*    DOTA OPEN STATS is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*    GNU General Public License for more details.
+*
+*    You should have received a copy of the GNU General Public License
+*    along with DOTA OPEN STATS.  If not, see <http://www.gnu.org/licenses/>
+*
+-->
+**********************************************/
+    //FOOTER
+	   
+   if (isset($_SESSION['style'])){
+   if ($_SESSION['style'] == "default") {$select1 = "selected"; $select2 = ""; $mystyle = "default";}
+   if ($_SESSION['style'] == "dota") {$select1 = ""; $select2 = "selected"; $mystyle = "dota";}
+   }
+   else {$select2 = "selected"; $select1 = ""; $mystyle = "dota";}
+   
+	/*echo "<br/>s1: $select1 s2: $select2 - $_SESSION[style]";
+	$change_style = '<form method="post" action="">
+	 <select ONCHANGE="location = this.options[this.selectedIndex].value;" name = "style">
+	 <option  '.$select1.' value = "index.php?style=default">default</option>
+	 <option '.$select2.' value = "index.php?style=dota">dota</option>
+	 </select>
+	 </form>';
+	
+   $data = array($default_style,'',date('Y'),$change_style);
+   
+   $tags = array('{STYLE}','{COPY}','{Y}','{SELECT_STYLE}');
+   
+   echo str_replace($tags, $data, file_get_contents("./style/$default_style/footer.html"));
+   */
+   
+   /////////////////////////
+   
+   if ($handle = opendir("./style")) {
+       echo "<form name='myForm' method='post' action=''>";
+       $chooses = '<select ONCHANGE="location = this.options[this.selectedIndex].value;" name = "style"';
+	   
+     while (false !== ($file = readdir($handle))) 
+	{
+	       $selected = "";
+	       //(this can be better) Be sure to read only directories 
+		   
+	       if ($file !="." AND  $file !="index.html" AND $file !=".." AND strstr($file,".png")==false AND strstr($file,".css")==false AND strstr($file,".js")==false AND strstr($file,".")==false)
+        {       
+		$lang = $lang.$file;
+        $style = str_replace(".php","",$file);		
+        if (trim($style) == trim($mystyle)) {$selected="selected";}
+        $chooses.='<option  '.$selected.' value="index.php?style=' . $style . '">' . $style . '</option>';
+		}
+    }
+	        
+   $data = array('Select style:',date('Y'),$chooses);
+   $tags = array('{L_SEL_STYLE}','{Y}','{SELECT_STYLE}');
+   
+   echo str_replace($tags, $data, file_get_contents("./style/$default_style/footer.html"));
+			
+            while ($file = readdir($handle)) {echo "$file<br />";}
+			
+            closedir($handle); 
+         }
+  echo "</select></form>";
+  
+  ?> 
