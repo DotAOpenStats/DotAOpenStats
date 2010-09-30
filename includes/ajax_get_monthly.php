@@ -55,7 +55,8 @@
 	
    if ($monthRow1 == 1)
    {
-     echo "<div align='center'><table class='tableA'> <tr>
+     echo "<div align='center'>
+	 <table class='tableA'> <tr>
      <th>$lang[top_kills]</th>
 	 <th>$lang[top_assists]</th>
 	 <th>$lang[top_deaths]</th>
@@ -197,7 +198,7 @@
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		if ($monthRow2 == 1)
    {
-		echo "<div align='center'><table class='tableA'> <tr>
+		echo "<table class='tableA'> <tr>
      <th>$lang[top_gold]</th>
 	 <th>$lang[top_neutrals]</th>
 	 <th>$lang[top_towers]</th>
@@ -337,7 +338,7 @@
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 	if ($monthRow3 == 1)
    {	
-		echo "<div align='center'><table class='tableA'> <tr>
+		echo "<table class='tableA'> <tr>
      <th>$lang[top_kd]</th>
 	 <th>$lang[top_ad]</th>
 	 <th>$lang[top_games]</th>
@@ -502,7 +503,7 @@
 		
 	 if ($monthRow4 == 1)
    {	
-	 echo "<div align='center'><table class='tableA'> <tr>
+	 echo "<table class='tableA'> <tr>
      <th>$lang[most_kills]</th>
 	 <th>$lang[most_assists]</th>
 	 <th>$lang[most_deaths]</th>
@@ -653,7 +654,7 @@
 		
 		if ($monthRow5 == 1)
    {
-		echo "<div align='center'><table class='tableA'> <tr>
+		echo "<table class='tableA'> <tr>
      <th>$lang[avg_kills]</th>
 	 <th>$lang[avg_assists]</th>
 	 <th>$lang[avg_deaths]</th>
@@ -817,6 +818,6 @@
 		
 		
 		/////////////////////////
-   echo "</td></tr></table>";
+   echo "</td></tr></table></div>";
 			}
   ?>

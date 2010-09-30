@@ -51,14 +51,16 @@ $search_limit = '50';
 
 $top_stats = '5';
 
-$displayUsersDisconnects = '0';
+$displayUsersDisconnects = '1';
 
 //Replay Location:
 $replayLocation = 'replays';
 
 //Max. page links before and after current page
-$max_pagination_link = 5;
+$max_pagination_link = '6';
 
+
+//Default: '((((kills-deaths+assists*0.5+towerkills*0.5+raxkills*0.2+(courierkills+creepdenies)*0.1+neutralkills*0.03+creepkills*0.03) * .2)+(wins-losses)))*10'
 $scoreFormula = '((((kills-deaths+assists*0.5+towerkills*0.5+raxkills*0.2+(courierkills+creepdenies)*0.1+neutralkills*0.03+creepkills*0.03) * .2)+(wins-losses)))*10'; 
 
 //Minimal ratio (lefttime/duration) that a player/hero has to complete a game to be counted as win/loss. otherwise game is ignored.
@@ -85,23 +87,37 @@ $monthRow5 = '1';
 $DaysOnMonthlyStats = '1';
 $TopRanksOnMonthly = '1';
 
+//Show Points gained for each game for all users on game page
+$UserPointsOnGamePage = '1';
+
+//If this option above is enabled, points  will be calculated accurately (from database)
+//It will calculate total score before and after selected game. (SCORE BEFORE)-(SCORE AFTER) = POINTS per game
+//This will also take up much more resources (queries)
+$AccuratePointsCalculation = '0';
+
 $head_admin = 'Neubivljiv';
 $bot_name = 'Ghost bot';
 
 $LEAVER = 'LEAVER';
 
 // Achievents plugin
-$UserAchievements = '1'; //Enable/disable User Achievents
+ //Enable/disable User Achievents
+$UserAchievements = '1';
 // Configuration
-$AssistMedal = 200; //Assist in 200 kills. How many kills need to achieve this medal (default 200).
+
 $KillsMedal = 500; //Kill 500 enemy heroes!
+$AssistMedal = 200; //Assist in 200 kills. How many kills to achieve this medal (default 200).
+$WinPercentMedal = 85; //Achieve 90 % victory
+$KillsPercentMedal = 60; //Achieve 60 % of kills.
 $GamesMedal = 50; //Play 50 games!
-$WinsMedal = 50; //Win 20 games!
+$WinsMedal = 50; //Win 50 games!
 $CreepsMedal = 5000; //Kill 5000 creeps!
 $DeniesMedal = 500; //Deny 500 creeps!
-$TowersMedal = 30; //Destroy 10 towers!
-$CouriersMedal = 20; //Kill 10 enemy couriers!
+$TowersMedal = 50; //Destroy 50 towers!
+$CouriersMedal = 30; //Kill 30 enemy couriers!
 $NeutralsMedal = 500; //Kill 500 neutrals!
-$PlayDurationMedal = 20; //Play at least 20 hours!
+$PlayDurationMedal = 30; //Play at least 30 hours!
+
+$pageGen = '1'; //Enable/disable info about page generation and total queries on every page
 
 ?>

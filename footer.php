@@ -41,31 +41,13 @@
    }
    else {$select2 = "selected"; $select1 = ""; $mystyle = "dota";}
    
-	/*echo "<br/>s1: $select1 s2: $select2 - $_SESSION[style]";
-	$change_style = '<form method="post" action="">
-	 <select ONCHANGE="location = this.options[this.selectedIndex].value;" name = "style">
-	 <option  '.$select1.' value = "index.php?style=default">default</option>
-	 <option '.$select2.' value = "index.php?style=dota">dota</option>
-	 </select>
-	 </form>';
-	
-   $data = array($default_style,'',date('Y'),$change_style);
-   
-   $tags = array('{STYLE}','{COPY}','{Y}','{SELECT_STYLE}');
-   
-   echo str_replace($tags, $data, file_get_contents("./style/$default_style/footer.html"));
-   */
-   
-   /////////////////////////
-   
    if ($handle = opendir("./style")) {
        echo "<form name='myForm' method='post' action=''>";
-       $chooses = '<select ONCHANGE="location = this.options[this.selectedIndex].value;" name = "style"';
+       $chooses = '<select ONCHANGE="location = this.options[this.selectedIndex].value;" name = "style">';
 	   
      while (false !== ($file = readdir($handle))) 
 	{
 	       $selected = "";
-	       //(this can be better) Be sure to read only directories 
 		   
 	       if ($file !="." AND  $file !="index.html" AND $file !=".." AND strstr($file,".png")==false AND strstr($file,".css")==false AND strstr($file,".js")==false AND strstr($file,".")==false)
         {       
@@ -75,13 +57,27 @@
         $chooses.='<option  '.$selected.' value="index.php?style=' . $style . '">' . $style . '</option>';
 		}
     }
-	        
+	
+	
+  $time = microtime();
+  $time = explode(' ', $time);
+  $time = $time[1] + $time[0];
+  $finish = $time;
+  $total_time = round(($finish - $start), 4);
+	
+	if (isset($pageGen))
+	{
+   echo "<table><tr>
+   <td align='center'>Page generated in: $total_time sec with ".$db->get_query_cout()." queries.</td>
+   </tr></table><br>";   
+   }
+		   
    $data = array('Select style:',date('Y'),$chooses);
    $tags = array('{L_SEL_STYLE}','{Y}','{SELECT_STYLE}');
    
    echo str_replace($tags, $data, file_get_contents("./style/$default_style/footer.html"));
 			
-            while ($file = readdir($handle)) {echo "$file<br />";}
+            while ($file = readdir($handle)) {echo "$file<br>";}
 			
             closedir($handle); 
          }

@@ -52,7 +52,7 @@
 
   include('pagination.php');
   
-  $order = 'date';
+  $order = 'id';
   
   if (isset($_GET['order']))
   {

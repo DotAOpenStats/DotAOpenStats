@@ -289,7 +289,7 @@ SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.new
 
     function convEnt($text){
 return str_replace(
-array('<br />', '&#039;', '&quot;', '&amp;', '&#36;', '&lt;', '&gt;'), 
+array('<br>', '&#039;', '&quot;', '&amp;', '&#36;', '&lt;', '&gt;'), 
 array("\r\n", "'", '"', '&amp;', '$', '<', '>'), $text);
 }
     function convEnt2($text){

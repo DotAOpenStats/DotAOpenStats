@@ -2,7 +2,12 @@
 	include('config.php');
 	//include("../lang/english.php");
 	include("../includes/common.php");
-	include('func.php');
+
+		
+	define("MAX_SIZE", 20); //20 KB max
+	define("VERSION", "1.1.5");
+	
+	
 	echo '
 	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -18,7 +23,6 @@
 	';
 	if ($admin == "admin" AND $password == "admin") {echo "Please change your admin username/password in DEV/config.php"; die;}
 	
-	define("MAX_SIZE", 20); //20 KB max
 		  function getExtension($str)
           {
               $i = strrpos($str, ".");
@@ -103,8 +107,9 @@
 	//LOGIN SUCCESSFULLY
 	if (isset($_SESSION['user_name'])  AND isset($_SESSION['user_password']) AND $_SESSION['user_password'] == sha1($password) AND $_SESSION['user_name'] == $admin)	
 	{
-
-	echo "Welcome, $_SESSION[user_name] <a href='index.php?logout'>(Logout)</a><hr/>";
+    //BUILD ACP
+	echo "<div style='padding-top:4px;padding-bottom:4px;'>Welcome, <b>$_SESSION[user_name]</b> <a href='index.php?logout'>(Logout)</a>
+	<p class='alignright'>DotA OpenStats ACP</p></div><hr>";
 	
 	include("../config.php");
 	include("../includes/class.database.php");
@@ -115,6 +120,8 @@
 	$edit_i = "Manage Items";
 	$add_news = "News";
 	$os_configuration = "Configuration";
+	$dashboard = "Dashboard";
+	$back_up = "Backup";
 	
 	if (isset($_GET['bans'])) {$manage_bans = "<b>Manage Bans</b>";}
 	if (isset($_GET['addban'])) {$manage_bans = "<b>Manage Bans</b>";}
@@ -124,6 +131,7 @@
 	if (isset($_GET['additem'])) {$edit_i = "<b>Manage Items</b>";}
 	if (isset($_GET['addnews'])) {$add_news = "<b>News</b>";}
 	if (isset($_GET['conf'])) {$os_configuration = "<b>Configuration</b>";}
+	if (isset($_GET['backup'])) {$back_up = "<b>Backup</b>";}
 	
 	$sel1 = ""; $sel2 = "";
 	
@@ -131,11 +139,13 @@
 	if ($admin_style == "style.css") {$sel1 = "selected";}
 	
 	echo "<table style='margin:4px;'><tr><td align='left'>
-	<a href='index.php?bans'>$manage_bans</a>
+	<a href='index.php'>$dashboard</a>
+	| <a href='index.php?bans'>$manage_bans</a>
 	| <a href='index.php?heroes'>$edit_h</a>
 	| <a href='index.php?items'>$edit_i</a>
 	| <a href='index.php?addnews'>$add_news</a>
 	| <a href='index.php?conf'>$os_configuration</a>
+	| <a href='index.php?backup'>$back_up</a>
 	| <a href='../index.php'>(Go to DotA OS)</a>
 	</td>
 	<td width='160px'>Admin style: <select onchange='location = this.options[this.selectedIndex].value;' name='admin_style'>
@@ -271,17 +281,15 @@
 			 <td valign='top'><div align='center'><a title='Edit: $description' href='index.php?heroes&edit=$hid'><b>Edit</b></a></div></td>
 			 </tr>";
 			 
-			 } echo "</table></div><br />";
+			 } echo "</table></div><br>";
 			 
 			 	include('pagination.php');
-				 echo "<br />";
-	
+				 echo "<br>";
 	}
 	
 	////////////////////////////////
 	//EDIT HERO
 	////////////////////////////////
-	
 	
 	if (isset($_GET['heroes']) AND isset($_GET['edit']) AND $_SERVER['REQUEST_METHOD'] != 'POST')
 	{
@@ -411,7 +419,7 @@ function confirmDelete(delUrl) {
 			 
 			 if ($result)
 			 {
-			 echo "<br />Hero <b>$description</b> successfully updated!<br/><br/>";
+			 echo "<br>Hero <b>$description</b> successfully updated!<br/><br/>";
 			 echo "<br/><br/><a href='index.php?heroes&edit=$heroid'><b>Edit hero $description</b></a>
 			 <br/><br/>
 			 <a href='index.php?heroes'><b>Back to edit heroes</b></a><br/><br/>
@@ -444,8 +452,7 @@ function confirmDelete(delUrl) {
 	<input type="submit" class="inputButton" value="Search banned users" />
 	</form>
 	';
-	
-	$sql = "SELECT id,name,ip,date,gamename,admin,reason FROM bans ORDER BY id DESC LIMIT $offset, $rowsperpage";
+	$sql = "SELECT id,name,ip,date,gamename,admin,reason FROM bans ORDER BY date DESC LIMIT $offset, $rowsperpage";
 	$result = $db->query($sql);
 	
 	echo "<div style='padding-right:3%;text-align:right'>
@@ -458,10 +465,8 @@ function confirmDelete(delUrl) {
 	<th>Action</th>
 	<th><div align='center'>Ip</div></th>
 	<th><div align='center'>Date</div></th>
-
 	<th>Banned by</th>
 	<th>Reason</th>
-
 	</tr>";
 	while ($row = $db->fetch_array($result,'assoc')) {
 	
@@ -480,13 +485,10 @@ function confirmDelete(delUrl) {
 	<td width='90px'><a href='../user.php?u=$bannedby'>$row[admin]</a></td>
 	<td>$row[reason]</td>
 	</tr>";
-	
 	}
 	echo "</table></div>";
-	echo "<br />";
-	 include('pagination.php');
-	
-	
+	echo "<br>";
+	include('pagination.php');
 	}
 	
 	if (isset($_GET['bans']) AND !isset($_GET['delete']) AND $_SERVER['REQUEST_METHOD'] == 'POST'){
@@ -505,7 +507,9 @@ function confirmDelete(delUrl) {
     $banrecords = $db->num_rows($result);
   if ($banrecords>=1)
   {
-  	 echo "<div align='center'><br/>Search found: $banrecords maches <a href='index.php?bans'><b>(Back)</b></a><table valign='top' style='width:98%'><tr>
+  	 echo "<div align='center'><br/>Search found: $banrecords maches <a href='index.php?bans'><b>(Back)</b></a>
+	 <br><br>
+	 <table valign='top' style='width:98%'><tr>
 	 <th>ID</th>
 	 <th>Username</th>
 	 <th>Action</th>
@@ -536,11 +540,9 @@ function confirmDelete(delUrl) {
 	  }
   }
   else {$res =  "<br/><b>The search term provided yielded no results.</b>";}
-	echo "</table></div>$res<br/><br/><a href='index.php?bans'>Back to previous page</a>";
-	
-
+  echo "</table></div>$res<br/><br/><a href='index.php?bans'>Back to previous page</a>";
    }
-	
+
 	if (isset($_GET['bans']) AND isset($_GET['delete']) AND $_SERVER['REQUEST_METHOD'] != 'POST'){
 	$banid = $_GET["delete"];
 	
@@ -548,44 +550,40 @@ function confirmDelete(delUrl) {
 	$result = $db->query($sql);
 	
 	if ($result)
-	
 	{echo "Ban(ID): $banid successfully deleted! <br/><br/><a href='index.php?bans'>Back to previous page</a> ";}
-	
-	
+
 	}
 	
 	///////////////////////////////////////
 	//ADD BAN
 	////////////////////////////////////////
 	if (isset($_GET['addban']) AND $_SERVER['REQUEST_METHOD'] != 'POST'){
-	echo '<br />
+	echo '<br>
 	<div align="center">
 	<form method="post"  action=""> 
 	<table style="width:50%"><tr><th></th><th>Add ban</th>
 	<tr>
-	<td width="96px">Name*</td><td><input size="40" maxlength="40" value="" name="banname"></td></tr>
+	<td align="right" width="96px" style="padding-right:4px;">Name*</td><td><input size="40" maxlength="40" value="" name="banname"></td></tr>
 	
 	<tr>
-	<td width="96px">Game name</td><td><input size="40" maxlength="150" value="" name="bangame"></td></tr>
+	<td align="right" width="96px" style="padding-right:4px;">Game name</td><td><input size="40" maxlength="150" value="" name="bangame"></td></tr>
 	
 	<tr>
-	<td width="96px">Server</td><td><input size="20" maxlength="60" value="" name="banserver">
+	<td align="right" width="96px" style="padding-right:4px;">Server</td><td><input size="20" maxlength="60" value="" name="banserver">
 
 </td></tr>
 	
 	<tr>
-	<td width="96px">Banned by</td><td><input size="40" maxlength="40" value="" name="banby"></td></tr>
+	<td align="right" width="96px" style="padding-right:4px;">Banned by</td><td><input size="40" maxlength="40" value="" name="banby"></td></tr>
 	
 	<tr>
-	<td width="96px">Reason</td><td><input size="40" maxlength="150" value="" name="banreason"></td></tr>
+	<td align="right" width="96px" style="padding-right:4px;">Reason</td><td><input size="40" maxlength="150" value="" name="banreason"></td></tr>
 	
 	<td></td>
-	
-	<td>
-		<input type="submit" name="Submit" class="inputButton" value="Add ban" /></td>
-			</tr></table>
-        </div></form><br/><br/>';
-	
+	<td><input type="submit" name="Submit" class="inputButton" value="Add ban" /></td>
+	</tr></table>
+    </div></form>
+	<br/><br/>';
 	}
 	
 	if (isset($_GET['addban']) AND $_SERVER['REQUEST_METHOD'] == 'POST'){
@@ -618,7 +616,7 @@ function confirmDelete(delUrl) {
               echo "<b>Warning: Image directory is not writable!</b>";
           }
 
-	echo '<br /><div align="center">
+	echo '<br><div align="center">
 	<form method="post" enctype="multipart/form-data"  action=""> 
 	<table style="width:70%"><tr>
 	<td width="96px">HeroID</td><td><input size="6" maxlength="6" value="" name="heroid"> Add image <input type="file" name="image">  (max 20KB, .gif only)</td></tr>
@@ -702,15 +700,12 @@ function confirmDelete(delUrl) {
 		
     if (!file_exists("../img/heroes/$heroid.gif"))
 	{echo "<br/>Hero image missing. Please upload $heroid.gif into ./img directory.<br/>";}		  
-			  
-   	
+
 	$sql = "INSERT INTO heroes(heroid,original,description,summary,stats,skills)
 	 VALUES('$heroid','$original','$description','$summ','$stats','$skills')";
 	 
 	 $result = $db->query($sql);
-	 
-	 
-	 
+
 	 if ($result)
 	 {echo "Hero $description successfully added!
 	 <table><tr>
@@ -720,24 +715,18 @@ function confirmDelete(delUrl) {
 	   <td>$summ</td> 
 	    <td>$stats</td> 
 		 <td>$skills</td> 
-	 
 	 </tr></table>";}
 	 
 	 else {echo "An error occured!";}
-	
+
 	}
-	
 	if (isset($_GET['removeHero'])) {
-	
 	$rHero = EscapeStr($_GET['removeHero']);
-	
 	$sql = "DELETE FROM heroes WHERE heroid = '$rHero' LIMIT 1";
-	
 	$result = $db->query($sql);
 	
 	if ($result)
 	{echo "Hero ($rHero) successfully deleted!<br/><br/><a href='index.php?heroes'>Back to previous page</a>";}
-	
 	
 	}
 	
@@ -778,8 +767,6 @@ function confirmDelete(delUrl) {
 	
 	$sql = "SELECT * FROM items $letter ORDER BY LOWER(name) ASC LIMIT $offset, $rowsperpage";
 	$result = $db->query($sql);
-	
-
 	
 	 echo "<br/><div style='text-align:right;padding-right:3%;'><a href='index.php?additem'><b><img  alt='' style='vertical-align: middle;' width='22px' height='22px' src='../img/items/BTNAbility_Rogue_Sprint.gif' border=0/>[+] Add item</b></a></div>
 	 <div align='center'>
@@ -877,7 +864,7 @@ function confirmDelete(delUrl) {
 	
 	<div align="center">
 	<img alt="" width="64px" height="64px" style="vertical-align: middle;" src="../img/items/'.$icon2.'"/>
-	<br />'.$name.'<br />
+	<br>'.$name.'<br>
 	'.$form_image.'
 	<table style="width:55%"><tr><th>Edit items</th><th></th></tr>
 	<tr>
@@ -917,7 +904,8 @@ function confirmDelete(delUrl) {
 	if (strlen($item)>=4 AND strlen($name)>=3 AND strlen($shortname)>=3)
 	{
 	if (!isset($_GET['additem']))
-	{$sql = "UPDATE items 
+	{
+	$sql = "UPDATE items 
 	SET itemid = '$item', name = '$name', shortname = '$shortname', icon = '$icon' 
 	WHERE itemid = '$item' LIMIT 1";}
 	
@@ -999,11 +987,8 @@ function confirmDelete(delUrl) {
 	$news_date = date($date_format,strtotime($row2["news_date"]));
 	//echo "NEWS: $news_content";
 	
-	
 	} else {$news_content = ""; $news_title = "";}
-	
-	
-	
+
 	$sql = "SELECT COUNT(news_id) FROM news LIMIT 1";
 	$result = $db->query($sql);
 	$r = $db->fetch_row($result);
@@ -1053,7 +1038,7 @@ function confirmDelete(delUrl) {
 	</div>
 	
 	 <textarea class="reply" id="reply" name="reply" style="padding-top:4px;height:260px;width:680px;">'.$news_content.'</textarea>
-    <br />
+    <br>
 	<input type="submit" class="inputButton" value="'.$button.'" />
 	</div>';
 	
@@ -1075,21 +1060,22 @@ function confirmDelete(delUrl) {
 	include('pagination.php');
 	$sql = "SELECT * FROM news ORDER BY news_date DESC LIMIT $offset, $rowsperpage";
 	$result = $db->query($sql);
-	 echo "<br /><div align='center'><b>NEWS</b><table border=1 style='width:95%;'><tr>
+	 echo "<br><div align='center'><b>NEWS</b><table border=1 style='width:95%;'><tr>
 	 <th>ID</th>
 	 <th>Content</th>
 	 <th><div align='center'>Date</div></th>
 	 <th><div align='center'>Action</div></th>
 	 </tr>";
 	 while ($row = $db->fetch_array($result,'assoc')) {
+	 $dateis = date($date_format,strtotime($row["news_date"]));
 	 $title = "$row[news_title]";
 	 $text = "$row[news_content]";
 	 $text = BBDecode($text);
 	 $text = substr($text,0,200)." ...";
 	echo "<tr>
 	<td valign='top' width='40px'><div align='left'>$row[news_id]</div></td>
-	<td valign='top' width='250px'><b><a href='index.php?addnews&edit_news=$row[news_id]'>$title</a></b><br /><hr/>$text<br /><br /><br /></td>
-	<td valign='top' width='80px'><div align='center'>$row[news_date]</div></td>
+	<td valign='top' width='250px'><b><a href='index.php?addnews&edit_news=$row[news_id]'>$title</a></b><br><hr style='width:50%;'>$text<br><br><br></td>
+	<td valign='top' width='80px'><div align='center'>$dateis</div></td>
 	<td valign='top' width='80px'><div align='center'><a href='index.php?addnews&edit_news=$row[news_id]'>Edit</a>
 	| <a href='Javascript:confirmDelete(\"index.php?delete_news=$row[news_id]\")'>Delete</a></div>
 	</td>
@@ -1132,7 +1118,7 @@ function confirmDelete(delUrl) {
 	
 	$news_id = $db->get_insert_id();
 	
-	if ($result) {echo "<br />News successfully added!<br /><br /><a href='index.php?addnews&edit_news=$news_id'>Back to previous page</a><br/><br/>";}
+	if ($result) {echo "<br>News successfully added!<br><br><a href='index.php?addnews&edit_news=$news_id'>Back to previous page</a><br/><br/>";}
 	  }
 	  	//EDIT NEWS
 		if (isset($_GET['edit_news']))
@@ -1156,7 +1142,7 @@ function confirmDelete(delUrl) {
 		$sql = "UPDATE news SET news_content = '$mytext', news_title='$mytitle' $update WHERE news_id = $news_id  LIMIT 1";
 		
 		$result = $db->query($sql);
-		if ($result) {echo "<br />News successfully updated!<br /><br /><a href='index.php?addnews&edit_news=$news_id'>Back to previous page</a><br/><br/>";}
+		if ($result) {echo "<br>News successfully updated!<br><br><a href='index.php?addnews&edit_news=$news_id'>Back to previous page</a><br/><br/>";}
 		}
 		
 	}
@@ -1171,7 +1157,12 @@ function confirmDelete(delUrl) {
 	if ($result) {echo "<br/>News successfully deleted!<br/><br/>
 	<a href='index.php?addnews'>Back to previous page</a>";}
 	}
-
+	
+	
+	/////////////////////////////////////////////////////////
+   //                  CONFIGURATION                      //
+  /////////////////////////////////////////////////////////
+  
     if (isset($_GET['conf']))
 	   {
 	   if (!file_exists("../config.php")) {echo "Missing config.php"; die;}
@@ -1270,8 +1261,6 @@ function confirmDelete(delUrl) {
 	  $monthRow5 = get_value_of('$monthRow5');
       $monthRow5 = trim($monthRow5);
 	  
-	  
-	  
 	  	  if ($monthRow1 == "1") {$r1y = "checked";$r1n = "";} else {
           $r1y = "";
           $r1n = "checked";}
@@ -1294,7 +1283,6 @@ function confirmDelete(delUrl) {
 	  
 	  $DaysOnMonthlyStats = get_value_of('$DaysOnMonthlyStats');
       $DaysOnMonthlyStats = trim($DaysOnMonthlyStats);
-	  
 	  	  
 	  if ($DaysOnMonthlyStats == "1") {$daymy = "checked";$daymn = "";} else {
           $daymy = "";
@@ -1307,6 +1295,21 @@ function confirmDelete(delUrl) {
 	  if ($TopRanksOnMonthly == "1") {$try = "checked";$trn = "";} else {
           $try = "";
           $trn = "checked";}
+		  
+		  
+	  $UserPointsOnGamePage = get_value_of('$UserPointsOnGamePage');
+      $UserPointsOnGamePage = trim($UserPointsOnGamePage);
+	  	  
+	  if ($UserPointsOnGamePage == "1") {$upy = "checked";$upn = "";} else {
+          $upy = "";
+          $upn = "checked";}
+		  
+	  $AccuratePointsCalculation = get_value_of('$AccuratePointsCalculation');
+      $AccuratePointsCalculation = trim($AccuratePointsCalculation);
+	  	  
+	  if ($AccuratePointsCalculation == "1") {$apcy = "checked";$apcn = "";} else {
+          $apcy = "";
+          $apcn = "checked";}
 	  
 	  $head_admin = get_value_of('$head_admin');
       $head_admin = trim($head_admin);
@@ -1366,7 +1369,7 @@ function confirmDelete(delUrl) {
 	  
 	  <tr>
 	  <td width="150px">Pagination links</td>
-	  <td><input 160px="'.$max_pagination_link.'" type="text" name="pagination" size=5 /> Page links after and before current page</td></tr>
+	  <td><input value="'.$max_pagination_link.'" type="text" name="pagination" size=5 /> Page links after and before current page</td></tr>
 	  
 	  <!--<tr>
 	  <td width="160px">Score formula</td>
@@ -1374,7 +1377,7 @@ function confirmDelete(delUrl) {
 	  
 	  <tr>
 	  <td valign="top" width="160px">Min Played Ratio</td>
-	  <td><input value="'.$minPlayedRatio.'" type="text" name="minratio" size=5 /> <br />Minimal ratio (lefttime/duration) that a player/hero has to complete a game to be counted as win/loss</td></tr>
+	  <td><input value="'.$minPlayedRatio.'" type="text" name="minratio" size=5 /> <br>Minimal ratio (lefttime/duration) that a player/hero has to complete a game to be counted as win/loss</td></tr>
 	  
 	  <tr>
 	  <td width="160px">Min Games Played</td>
@@ -1382,7 +1385,7 @@ function confirmDelete(delUrl) {
 	  
 	  <tr>
 	  <td width="160px">Date Format</td>
-	  <td><input value="'.$date_format.'" type="text" name="date" size=30 /> PHP <a  target="_blank" href="http://php.net/manual/en/function.date.php"><b>date()</b></a> function</td></tr>
+	  <td><input value="'.$date_format.'" type="text" name="date" size=30 /> (<b>'.date($date_format).'</b>) - PHP <a  target="_blank" href="http://php.net/manual/en/function.date.php"><b>date()</b></a> function</td></tr>
 	  
 	  <tr>
 	  <td width="160px">Display user disconnects</td>
@@ -1396,11 +1399,11 @@ function confirmDelete(delUrl) {
 	  <td>
 	  <input type="radio" name="ach" '.$acy.' value="1" /> Yes
 	  <input type="radio" name="ach" '.$acn.' value="0" /> No 
-	  | (Display user achievements in user page)</td></tr>
+	  | (Display user achievements on user page)</td></tr>
 	  
 	  <tr>
 	  <td width="160px">Replay Location</td>
-	  <td><input value="'.$replayLocation.'" type="text" name="replay" size=30 /></td></tr>
+	  <td><input value="'.$replayLocation.'" type="text" name="replay" size=30 /> (http://myDotaOsSite.com/<b>'.$replayLocation.'</b>)</td></tr>
 	  
 	  	  <tr><th>Monthly</th><th></th></tr>
 	  
@@ -1457,12 +1460,23 @@ function confirmDelete(delUrl) {
 	  <input type="radio" name="dtr" '.$trn.' value="0" /> No 
 	  | (Display top ranks by score on monthly stats)</td></tr>
 	  
+	  <tr><th>Points</th><th></th></tr>
+	  
 	  <tr>
-	  <td width="160px">Display top ranks</td>
+	  <td width="160px">User points per game</td>
 	  <td>
-	  <input type="radio" name="dtr" '.$try.' value="1" /> Yes
-	  <input type="radio" name="dtr" '.$trn.' value="0" /> No 
-	  | (Display top ranks by score on monthly stats)</td></tr>
+	  <input type="radio" name="upg" '.$upy.' value="1" /> Yes
+	  <input type="radio" name="upg" '.$upn.' value="0" /> No 
+	  | (Show Points gained for each game for all users on game page)</td></tr>
+	  
+	  <tr>
+	  <td width="160px">Accurate points calculation</td>
+	  <td>
+	  <input type="radio" name="apc" '.$apcy.' value="1" /> Yes
+	  <input type="radio" name="apc" '.$apcn.' value="0" /> No 
+	  | <a title="If this option above is enabled, points  will be calculated accurately (from database)
+	  It will calculate total score before and after selected game.
+	  This will also take up much more resources">(<b>*</b>Points from database. <b>This take up much more resources</b>)</a></td></tr>
 	  
 	  <tr><th>Database</th><th></th></tr>
 	  <tr>
@@ -1497,16 +1511,18 @@ function confirmDelete(delUrl) {
 	  write_value_of('$date_format', "$date_format", $_POST['date']);
 	  write_value_of('$monthly_stats', "$monthly_stats", $_POST['monthly']);
 	  write_value_of('$monthRow1', "$monthRow1", $_POST['mr1']);
-	  write_value_of('$monthRow2', "$monthRow1", $_POST['mr2']);
-	  write_value_of('$monthRow3', "$monthRow1", $_POST['mr3']);
-	  write_value_of('$monthRow4', "$monthRow1", $_POST['mr4']);
-	  write_value_of('$monthRow5', "$monthRow1", $_POST['mr5']);
+	  write_value_of('$monthRow2', "$monthRow2", $_POST['mr2']);
+	  write_value_of('$monthRow3', "$monthRow3", $_POST['mr3']);
+	  write_value_of('$monthRow4', "$monthRow4", $_POST['mr4']);
+	  write_value_of('$monthRow5', "$monthRow5", $_POST['mr5']);
 	  write_value_of('$DaysOnMonthlyStats', "$DaysOnMonthlyStats", $_POST['ddm']);
 	  write_value_of('$TopRanksOnMonthly', "$TopRanksOnMonthly", $_POST['dtr']);
 	  write_value_of('$head_admin', "$head_admin", $_POST['head']);
 	  write_value_of('$bot_name', "$bot_name", $_POST['bot']);
 	  write_value_of('$replayLocation', "$replayLocation", $_POST['replay']);
 	  write_value_of('$UserAchievements', "$UserAchievements", $_POST['ach']);
+	  write_value_of('$UserPointsOnGamePage', "$UserPointsOnGamePage", $_POST['upg']);
+	  write_value_of('$AccuratePointsCalculation', "$AccuratePointsCalculation", $_POST['apc']);
 	  
 	  write_value_of('$server', "$server", $_POST['server']);
 	  write_value_of('$username', "$username", $_POST['username']);
@@ -1517,17 +1533,170 @@ function confirmDelete(delUrl) {
 
 	  //write_value_of('$scoreFormula', "$scoreFormula", $_POST['formula']);
 	  
-	  echo "<br />Configuration updated successfully<br /><br />
-	  <a href='index.php?conf'>Back to previous page</a><br /><br />";
+	  echo "<br>Configuration updated successfully<br><br>
+	  <a href='index.php?conf'>Back to previous page</a><br><br>";
 	  }
 	   
 	   }
+
+	   ///////////////////////////////////////////////////////////////////////////////
+	   //// BACKUP ///
+	   ///////////////////////////////////////////////////////////////////////////////
+	   if (isset($_GET['backup']) AND !isset($_GET['doit'])){
+	   $database_size = $db->database_size($database);
+       echo "<div align='center'><table style='width:400px;margin-top:20px;'><tr><th>Backup database ($database_size)<p class='alignright'><a href='index.php?show_tables'>Show tables</a></p></th></tr>
+	   <tr>
+	   <td align='center' style='padding:16px;'><a class='inputButton' href='index.php?backup&doit'>Click here to begin backup</a><br><br><i>Please be patient as this process can take a while</i></td></tr>
+	   <td style='padding:4px;'><a class='inputButton' href='index.php?optimize'>Optimize tables</a></td>
+	   </tr></table></div>";
+	   
+	   echo "<br>";
+	   if (file_exists("./backup"))
+	   {
+      $myDirectory = opendir("./backup");
+
+      while($entryName = readdir($myDirectory)) {
+	  $dirArray[] = $entryName;
+      }
+      closedir($myDirectory);
+
+      $indexCount	= count($dirArray);
+      $totfiles = $indexCount-2;
+      if ($totfiles <=0) {$totfiles=0;}
+
+       // sort 'em
+      sort($dirArray);
+
+      // print 'em
+      echo("<div align='center'><TABLE style='width:90%;' >\n");
+      echo("<TR><TH ><b>Backup files:</b> $totfiles file(s)</TH></TR>\n");
+      // loop through the array of files and print them all
+      for($index=0; $index < $indexCount; $index++) {
+        if (substr("$dirArray[$index]", 0, 1) != "."){ // don't list hidden files
+		echo("<TR><TD height='32'><a href=\"backup/$dirArray[$index]\">$dirArray[$index]</a> | <a href=\"?delete_backup=$dirArray[$index]\"><b>Delete</b></a></td>");
+
+		echo("</TR>\n");
+	      }
+      }
+      echo("</TABLE></div>");
+	    } else {echo "Directory <b>backup</b> not exists. Please create backup directory in your ACP folder";}
+	   }
+
+	   if (isset($_GET['backup']) AND isset($_GET['doit'])){
+       include("backup_func.php");
+	       if (file_exists("./backup"))
+	       {backup_tables($server,$username,$password,$database,'*');}
+	       else {"Directory <b>backup</b> not exists. Please create backup directory in your ACP folder";}
+	       }
+		   
+	   if (isset($_GET['delete_backup']) AND !isset($_GET['backup']) AND !isset($_GET['doit'])){
+	   
+       if (file_exists("./backup/".$_GET['delete_backup'])){
+       $res = unlink("./backup/".$_GET['delete_backup']);}
+	          if ($res) {echo "<br><br>File '".$_GET['delete_backup']."' successfully deleted.<br><br>
+			  <a href='index.php?backup'>Back to previous page</a>";} else {echo "File not exists";}
+       }
+	   
+	   if (isset($_GET['show_tables']) AND !isset($_GET['backup']) AND !isset($_GET['doit'])){
+	   $table_admins = $db->table_size("admins",$database);
+	   $table_bans = $db->table_size("bans",$database);
+	   $table_dotagames = $db->table_size("dotagames",$database);
+	   $table_dotaplayers = $db->table_size("dotaplayers",$database);
+	   $table_downloads = $db->table_size("downloads",$database);
+	   $table_gameplayers = $db->table_size("gameplayers",$database);
+	   $table_games = $db->table_size("games",$database);
+	   $table_heroes = $db->table_size("heroes",$database);
+	   $table_items = $db->table_size("items",$database);
+	   $table_news = $db->table_size("news",$database);
+	   $table_scores = $db->table_size("scores",$database);
+	   //$database_size = $db->database_size($database);
+	   echo "<br><br><div align='center'><table border=1 style='width:430px;'>
+	   <tr><th>Table: $database</th><th style='padding:6px;'>Size:<p class='alignright'></p></th></tr>
+	   <tr><td style='padding-right:4px;' width='180px;' align='right'><b>admins</b></td><td style='padding:6px;'>$table_admins</td>
+	   <tr><td style='padding-right:4px;' width='180px;' align='right'><b>bans</b></td><td style='padding:6px'>$table_bans</td>
+	   <tr><td style='padding-right:4px;' width='180px;' align='right'><b>dotagames</b></td><td style='padding:6px'>$table_dotagames</td>
+	   <tr><td style='padding-right:4px;' width='180px;' align='right'><b>dotaplayers</b></td><td style='padding:6px'>$table_dotaplayers</td>
+	   <tr><td style='padding-right:4px;' width='180px;' align='right'><b>downloads</b></td><td style='padding:6px'>$table_downloads</td>
+	   <tr><td style='padding-right:4px;' width='180px;' align='right'><b>gameplayers</b></td><td style='padding:6px'>$table_gameplayers</td>
+	   <tr><td style='padding-right:4px;' width='180px;' align='right'><b>games</b></td><td style='padding:6px'>$table_games</td>
+	   <tr><td style='padding-right:4px;' width='180px;' align='right'><b>heroes</b></td><td style='padding:6px'>$table_heroes</td>
+	   <tr><td style='padding-right:4px;' width='180px;' align='right'><b>items</b></td><td style='padding:6px'>$table_items</td>
+	   <tr><td style='padding-right:4px;' width='180px;' align='right'><b>news</b></td><td style='padding:6px'>$table_news</td>
+	   <tr><td style='padding-right:4px;' width='180px;' align='right'><b>scores</b></td><td style='padding:6px'>$table_scores</td>
+	   </tr></table><br><br><a href='index.php?backup'>Back to previous page</a>";
+	   }
+	   
+	   if (isset($_GET['optimize']) AND !isset($_GET['backup']) AND !isset($_GET['doit']))
+	   {
+	$sql = " 
+	 OPTIMIZE TABLE 
+	`admins` , 
+	`bans` , 
+	`dotagames` , 
+	`dotaplayers` , 
+	`downloads` , 
+	`gameplayers` , 
+	`games` , 
+	`heroes` , 
+	`items` , 
+	`news` , 
+	`scores` ";
+	
+	$result = $db->query($sql);
+	if ($result)
+	{echo "<br /><div align='center'>All tables optimized.<br /><br /><a href = 'index.php?backup'>Back to previous page</a></div><br>";}
+	   
+	   }
+	   
+	   ///////////////////////////////////////////////////////////////////////////////
+	   //Auto check version on login
+	  // make sure curl is installed
+	  ///////////////////////////////////////////////////////////////////////////////
+ if (!$_GET){
+   if (function_exists('curl_init')) {
+   // initialize a new curl resource
+   $ch = curl_init();
+   // set the url to fetch
+   curl_setopt($ch, CURLOPT_URL, 'http://openstats.iz.rs/version.php');
+   // don't give me the headers just the content
+   curl_setopt($ch, CURLOPT_HEADER, 0);
+   // return the value instead of printing the response to browser
+   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+   // use a user agent to mimic a browser
+   curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.7.5) Gecko/20041107 Firefox/1.0');
+   $vers = curl_exec($ch);
+   // Close the session and free all resources
+   curl_close($ch);
+} else {
+   echo "Auto-check version failed. Curl is NOT installed. Please check your PHP configuration.";
+}
+	   
+	   
+	   echo "<div align='center'><table class='tableA'><tr>
+	   <th>DotA OpenStats Dashboard<p class='alignright'>Version ".VERSION."</p></th>
+	   </tr>";
+      if ($vers != VERSION) {echo "<tr>
+	  <td align='center'>
+	  <span style='background-color:#FFFFE0;color:#000;padding:4px;border:2px solid #E6DB55;'><b>Important:</b> before updating, please backup your database and files.</span></td></tr>
+	  <tr><td align='center'><br><b>An updated version of Dota OpenStats is available.</b><br><br></td></tr>
+	  <tr><td align='center'>You can update to OpenStats ".$vers."<br><br>Download the package and install it:
+	  <tr><td align='center'><br><a target='_blank' class='inputButton' href='https://sourceforge.net/projects/dotaopenstats/'>Download ".$vers."</a><br><br></td></tr>
+	  ";} 
+	  else
+	  {
+	  echo "<tr><td align='center'><b>You have the latest version of DotA OpenStats</b></td></tr>
+	  <tr><td align='center'><br>You do not need to update. However, if you want to re-install version ".$vers.", you can download the package:</td></tr>
+	  <tr><td align='center'><br><a target='_blank' class='inputButton' href='https://sourceforge.net/projects/dotaopenstats/'>Download ".$vers."</a><br><br></td></tr>";
+	  }
+	  
+	  echo "</table></div><br><br>";
 	   
 	echo '</body><div>
 	 <table><tr>
 	 <td style="padding-right:12px;text-align:right;" align="right">
 	 &copy; '.date("Y").' <a href=\'http://dota.iz.rs\'><b>DotA Strategy</b></a></td>
 	 </tr></table></div>';
+	 }
 
 	} //IS LOOGED
 	?>

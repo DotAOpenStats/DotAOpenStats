@@ -125,14 +125,24 @@
 	
 	//////////////////////////////
 	//Get hero you have played most with
-	$sql = "SELECT SUM(`left`) as timeplayed, original, description, COUNT(*) as played FROM gameplayers LEFT JOIN games ON games.id=gameplayers.gameid LEFT JOIN dotaplayers ON dotaplayers.gameid=games.id AND dotaplayers.colour=gameplayers.colour LEFT JOIN dotagames ON games.id=dotagames.gameid LEFT JOIN heroes on hero = heroid WHERE name='$username' GROUP BY original ORDER BY played desc LIMIT 1";
-	$result = $db->query($sql);
-	$list = $db->fetch_array($result,'assoc'); 
+	$sql = "SELECT SUM(`left`) AS timeplayed, original, description, COUNT(*) AS played 
+	FROM gameplayers 
+	LEFT JOIN games ON games.id=gameplayers.gameid 
+	LEFT JOIN dotaplayers ON dotaplayers.gameid=games.id 
+	AND dotaplayers.colour=gameplayers.colour  
+	LEFT JOIN dotagames ON games.id=dotagames.gameid 
+    JOIN heroes on hero = heroid 
+	WHERE LOWER(name)=LOWER('$username')
+	GROUP BY original 
+	ORDER BY played DESC LIMIT 1";
+	
+	    $result = $db->query($sql);
+	    $list = $db->fetch_array($result,'assoc'); 
 		$mostplayedhero=$list["original"];
 		$mostplayedheroname=$list["description"];
 		$mostplayedcount=$list["played"];
 		$mostplayedtime=secondsToTime($list["timeplayed"]);
-	
+
 	//////////////////////////////
 	//Using score table
 	$sql = "SELECT ($scoreFormula) as score from(select *, (kills/deaths) as killdeathratio from (select avg(dp.courierkills) as courierkills, avg(dp.raxkills) as raxkills,
@@ -166,7 +176,8 @@
 	{
 	$sql = " SELECT COUNT(*) 
     FROM `gameplayers`
-    WHERE (`leftreason` LIKE('%ECONNRESET%') OR `leftreason` LIKE('%was dropped%') ) AND name= '$username' LIMIT 1";
+    WHERE (`leftreason` LIKE('%ECONNRESET%') OR `leftreason` LIKE('%was dropped%') ) 
+	AND name= '$username' LIMIT 1";
 	$result = $db->query($sql);
 	$r = $db->fetch_row($result);
     $disc = $r[0]; }
@@ -193,20 +204,75 @@
 	else
 	{$winloose = round($wins/($wins+$losses), 4)*100;}
 	
-	
      		
-	if ($mostkillshero == "") $mostkillshero = "blank";
-	if ($mostdeathshero == "") $mostdeathshero = "blank";
-	if ($mostassistshero == "") $mostassistshero = "blank";
-	if ($mostwinshero == "") $mostwinshero = "blank";
-	if ($mostlosseshero == "") $mostlosseshero = "blank";
-	if ($mostplayedhero == "") $mostplayedhero = "blank";
+	if ($mostkillshero == "") {$mostkillshero = "blank";}
+	if ($mostdeathshero == "") {$mostdeathshero = "blank";}
+	if ($mostassistshero == "") {$mostassistshero = "blank";}
+	if ($mostwinshero == "") {$mostwinshero = "blank";}
+	if ($mostlosseshero == "") {$mostlosseshero = "blank";}
+	if ($mostplayedhero == "") {$mostplayedhero = "blank";}
     
 	$mkhimg = "<a href='hero.php?hero=$mostkillshero'><img width='64px' title='$mostkillsheroname' alt='' src='img/heroes/$mostkillshero.gif'/ border=0></a>";
-	$mdhimg = "<a href='hero.php?hero=$mostassistshero'><img width='64px' title='$mostdeathsheroname' alt='' src='img/heroes/$mostdeathshero.gif' border=0 /></a>";
+	$mdhimg = "<a href='hero.php?hero=$mostdeathshero'><img width='64px' title='$mostdeathsheroname' alt='' src='img/heroes/$mostdeathshero.gif' border=0 /></a>";
 	$mahimg = "<a href='hero.php?hero=$mostassistshero'><img width='64px' title='$mostassistsheroname' alt='' src='img/heroes/$mostassistshero.gif' border=0/></a>";
 	$mwhimg = "<a href='hero.php?hero=$mostwinshero'><img width='64px' title='$mostwinsheroname' alt='' src='img/heroes/$mostwinshero.gif' border=0/></a>";
 	$mlhimg = "<a href='hero.php?hero=$mostlosseshero'><img width='64px' title='$mostlossesheroname' alt='' src='img/heroes/$mostlosseshero.gif' border=0/></a>";
 	$mphimg = "<a href='hero.php?hero=$mostplayedhero'><img width='64px' title='$mostplayedheroname' alt='' src='img/heroes/$mostplayedhero.gif' border=0/></a>";
 	
+	   
+   $sql = "SELECT MIN(datetime), MIN(loadingtime), MAX(loadingtime), AVG(loadingtime), MIN(`left`), MAX(`left`), AVG(`left`), SUM(`left`) 
+   FROM gameplayers 
+   LEFT JOIN games ON games.id=gameplayers.gameid 
+   LEFT JOIN dotaplayers ON dotaplayers.gameid=games.id 
+   AND dotaplayers.colour=gameplayers.colour 
+   LEFT JOIN dotagames ON games.id=dotagames.gameid 
+   WHERE LOWER(name)=LOWER('$username') LIMIT 1";
+	
+	$result = $db->query($sql);
+	
+	$row = $db->fetch_array($result,'assoc');
+	$firstgame=$row["MIN(datetime)"];
+		$minLoading=millisecondsToTime($row["MIN(loadingtime)"]);
+		$maxLoading=millisecondsToTime($row["MAX(loadingtime)"]);
+		$avgLoading=millisecondsToTime($row["AVG(loadingtime)"]);
+		$minDuration=secondsToTime($row["MIN(`left`)"]);
+		$maxDuration=secondsToTime($row["MAX(`left`)"]);
+		$avgDuration=secondsToTime($row["AVG(`left`)"]);
+		$totalDuration=secondsToTime($row["SUM(`left`)"]);
+		
+		$totalHours=ROUND($row["SUM(`left`)"]/ 3600,1);
+		$totalMinutes=ROUND($row["SUM(`left`)"]/ 3600*60,1);
+
+        $firstgame=$row["MIN(datetime)"];
+  
+		if ($totalMinutes>0)
+		{$killsPerMin = ROUND($kills/$totalMinutes,2);
+		$killsPerHour = ROUND($kills/$totalHours,2);
+		$killsPerGame = ROUND($kills/$totgames,2);
+		$deathsPerMin = ROUND($death/$totalMinutes,2);
+		$creepsPerMin = ROUND($creepkills/$totalMinutes,2);
+		}  
+		    else 
+		    {
+		    $killsPerMin = 0; 
+		    $deathsPerMin = 0; 
+		    $killsPerHour = 0; 
+		    $killsPerGame = 0; 
+		    $KillsPercent =0; 
+		    $creepsPerMin =0;
+			}
+		
+		if ($totgames>0)
+		{
+		$killsPerGame = ROUND($kills/$totgames,2);	
+		$DiscPercent = ROUND($disc/($disc+$totgames), 4)*100;
+		} 
+		else {$killsPerGame = 0; $DiscPercent = 0;}
+		
+		if ($kills >0)
+	    {$KillsPercent = ROUND($kills/($kills+$death), 4)*100; } else {$KillsPercent = 0;}
+
 	?>
+	
+	
+	

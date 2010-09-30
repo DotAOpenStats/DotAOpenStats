@@ -574,28 +574,29 @@ class database {
     ** 
     */ 
     
-    function &result($handle, $row, $col) {                
-        return @mysql_result($handle, $row, $col);
+    function &result($handle, $row, $col) { 
+    $return = @mysql_result($handle, $row, $col);
+        return $return;
     }
 	
    function getUserWins($username) {
-	$sql = "SELECT COUNT(*) FROM gameplayers LEFT JOIN games ON games.id=gameplayers.gameid LEFT JOIN dotaplayers ON dotaplayers.gameid=games.id AND dotaplayers.colour=gameplayers.colour LEFT JOIN dotagames ON games.id=dotagames.gameid WHERE LOWER(name) = LOWER('$username') AND ((winner=1 AND dotaplayers.newcolour>=1 AND dotaplayers.newcolour<=5) OR (winner=2 AND dotaplayers.newcolour>=7 AND dotaplayers.newcolour<=11)) AND gameplayers.`left`/games.duration >= 0.8";
+	$sql = "SELECT COUNT(*) FROM gameplayers LEFT JOIN games ON games.id=gameplayers.gameid LEFT JOIN dotaplayers ON dotaplayers.gameid=games.id AND dotaplayers.colour=gameplayers.colour LEFT JOIN dotagames ON games.id=dotagames.gameid WHERE LOWER(name) = LOWER('$username') AND ((winner=1 AND dotaplayers.newcolour>=1 AND dotaplayers.newcolour<=5) OR (winner=2 AND dotaplayers.newcolour>=7 AND dotaplayers.newcolour<=11)) AND gameplayers.`left`/games.duration >= 0.8 LIMIT 1";
 
 		$result = mysql_query($sql);
 		$row = mysql_fetch_array($result, MYSQL_ASSOC);
 		$inwins=$row["COUNT(*)"];
-		mysql_free_result($result);
+		//mysql_free_result($result);
 	return $inwins;
 }
 
      function getUserLosses($username) {
-	$sql = "SELECT COUNT(*) FROM gameplayers LEFT JOIN games ON games.id=gameplayers.gameid LEFT JOIN dotaplayers ON dotaplayers.gameid=games.id AND dotaplayers.colour=gameplayers.colour LEFT JOIN dotagames ON games.id=dotagames.gameid WHERE name='$username' AND ((winner=2 AND dotaplayers.newcolour>=1 AND dotaplayers.newcolour<=5) OR (winner=1 AND dotaplayers.newcolour>=7 AND dotaplayers.newcolour<=11)) AND gameplayers.`left`/games.duration >= 0.8";
+	$sql = "SELECT COUNT(*) FROM gameplayers LEFT JOIN games ON games.id=gameplayers.gameid LEFT JOIN dotaplayers ON dotaplayers.gameid=games.id AND dotaplayers.colour=gameplayers.colour LEFT JOIN dotagames ON games.id=dotagames.gameid WHERE name='$username' AND ((winner=2 AND dotaplayers.newcolour>=1 AND dotaplayers.newcolour<=5) OR (winner=1 AND dotaplayers.newcolour>=7 AND dotaplayers.newcolour<=11)) AND gameplayers.`left`/games.duration >= 0.8  LIMIT 1";
 
 	
 		$result = mysql_query($sql);
 		$row = mysql_fetch_array($result, MYSQL_ASSOC);
 		$inlosses=$row["COUNT(*)"];
-		mysql_free_result($result);
+		//mysql_free_result($result);
 	return $inlosses;
 }
 	

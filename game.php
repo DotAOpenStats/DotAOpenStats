@@ -89,11 +89,10 @@
 					<th  width=60px><div align='left'>$lang[left_at]</div></th>
 					<th  width=100px>Reason</th>	
 					                            </tr>";
-
+	   
        $sql = "
 	   SELECT winner, a.gameid, b.colour, newcolour, 
-original as hero, description, kills, deaths, assists, creepkills, creepdenies, neutralkills, towerkills, gold, 
-item1, item2, item3, item4, item5, item6, 
+original as hero, description, kills, deaths, assists, creepkills, creepdenies, neutralkills, towerkills, gold,  raxkills, courierkills, item1, item2, item3, item4, item5, item6, 
 it1.icon as itemicon1, it2.icon as itemicon2, it3.icon as itemicon3, it4.icon as itemicon4, it5.icon as itemicon5, it6.icon as itemicon6, 
 it1.name as itemname1, it2.name as itemname2, it3.name as itemname3, it4.name as itemname4, it5.name as itemname5, it6.name as itemname6, 
 leftreason, b.left, b.name as name, e.name as banname 
@@ -123,6 +122,9 @@ leftreason, b.left, b.name as name, e.name as banname
 		$creepdenies=$list["creepdenies"];
 		$neutralkills=$list["neutralkills"];
 		$towerkills=$list["towerkills"];
+		$raxkills=$list["raxkills"];
+		$courierkills=$list["courierkills"];
+
 		$gold=$list["gold"];
 		$item1=$list["item1"];
 		$item2=$list["item2"];
@@ -163,11 +165,12 @@ leftreason, b.left, b.name as name, e.name as banname
 		$hero=$list["hero"];
 		$heroname=$list["description"];
 		
-		if ($hero!="") {$hero = "<a href='hero.php?hero=$hero'><img title='$heroname' alt='' width='28px' src='./img/heroes/$hero.gif' border=0 /></a>";}
+		if ($hero!="") {$hero = "<a href='hero.php?hero=$hero'><img title='$heroname' alt='' width='28px' src='./img/heroes/$hero.gif' border=0></a>";}
 		else {$hero = "<img title='No hero' alt='' width='28px' src='./img/heroes/blank.gif'>";}
 		
 		$name=trim($list["name"]);
 		$name2=strtolower(trim($list["name"]));
+		$name3=trim($list["name"]);
 		$newcolour=$list["newcolour"];
 		$gameid=$list["gameid"]; 
 		$banname=$list["banname"];
@@ -185,6 +188,82 @@ leftreason, b.left, b.name as name, e.name as banname
 		if ($win==0) {$_sentinel = $lang["looser"]; $_scourge = $lang["looser"];}
 		if ($win==1) {$_sentinel = "$lang[winner]"; $_scourge = "$lang[looser]";}
 		if ($win==2) {$_sentinel = "$lang[looser]"; $_scourge = "$lang[winner]";}
+		
+		//User points mod	
+		$Points = "";
+		
+		if ($UserPointsOnGamePage == 1)
+		{
+		    if ($AccuratePointsCalculation) //Calculate points from database
+		    {
+		    $getSql = "SELECT *, case when (kills = 0) then 0 when (deaths = 0) then 1000 else ((kills*1.0)/(deaths*1.0)) end as killdeathratio, ($scoreFormula) as totalscore 
+	 FROM ( 
+	 SELECT gp.name as name, bans.name as banname, avg(dp.courierkills) as courierkills, avg(dp.raxkills) as raxkills,
+avg(dp.towerkills) as towerkills, avg(dp.assists) as assists, avg(dp.creepdenies) as creepdenies, avg(dp.creepkills) as creepkills,
+avg(dp.neutralkills) as neutralkills, avg(dp.deaths) as deaths, avg(dp.kills) as kills, count(*) as totgames, 
+case when (kills = 0) then 0 when (deaths = 0) then 1000 else ((kills*1.0)/(deaths*1.0)) end as killdeathratio,
+SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.newcolour > 6)) 
+     AND gp.`left`/ga.duration >= $minPlayedRatio) then 1 else 0 end) as wins, 
+     SUM(case when(((dg.winner = 2 and dp.newcolour < 6) or (dg.winner = 1 and dp.newcolour > 6)) 
+     AND gp.`left`/ga.duration >= $minPlayedRatio) then 1 else 0 end) as losses
+     FROM gameplayers as gp 
+     LEFT JOIN dotagames as dg ON gp.gameid = dg.gameid AND gp.gameid != $gid
+     LEFT JOIN dotaplayers as dp ON dg.gameid = dp.gameid AND dg.gameid != $gid
+	 AND gp.colour = dp.colour 
+	 AND dp.newcolour <> 12 
+	 AND dp.newcolour <> 6
+	 LEFT JOIN games as ga ON dp.gameid = ga.id
+	 LEFT JOIN bans on bans.name = gp.name
+	 WHERE dg.winner <> 0  AND gp.name = '$name3' 
+	 GROUP BY gp.name having totgames >= $minGamesPlayed) as i
+	 ORDER BY totalscore ASC LIMIT 1";
+	 
+	 $result2 = $db->query($getSql);
+	 $scoreBefore = $db->fetch_array($result2,'assoc');
+	 
+	 
+	 $getSql = "SELECT *, case when (kills = 0) then 0 when (deaths = 0) then 1000 else ((kills*1.0)/(deaths*1.0)) end as killdeathratio, ($scoreFormula) as totalscore 
+	 FROM ( 
+	 SELECT gp.name as name, bans.name as banname, avg(dp.courierkills) as courierkills, avg(dp.raxkills) as raxkills,
+avg(dp.towerkills) as towerkills, avg(dp.assists) as assists, avg(dp.creepdenies) as creepdenies, avg(dp.creepkills) as creepkills,
+avg(dp.neutralkills) as neutralkills, avg(dp.deaths) as deaths, avg(dp.kills) as kills, count(*) as totgames, 
+case when (kills = 0) then 0 when (deaths = 0) then 1000 else ((kills*1.0)/(deaths*1.0)) end as killdeathratio,
+SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.newcolour > 6)) 
+     AND gp.`left`/ga.duration >= $minPlayedRatio) then 1 else 0 end) as wins, 
+     SUM(case when(((dg.winner = 2 and dp.newcolour < 6) or (dg.winner = 1 and dp.newcolour > 6)) 
+     AND gp.`left`/ga.duration >= $minPlayedRatio) then 1 else 0 end) as losses
+     FROM gameplayers as gp 
+     LEFT JOIN dotagames as dg ON gp.gameid = dg.gameid 
+     LEFT JOIN dotaplayers as dp ON dg.gameid = dp.gameid 
+	 AND gp.colour = dp.colour 
+	 AND dp.newcolour <> 12 
+	 AND dp.newcolour <> 6
+	 LEFT JOIN games as ga ON dp.gameid = ga.id
+	 LEFT JOIN bans on bans.name = gp.name
+	 WHERE dg.winner <> 0  AND gp.name = '$name3' 
+	 GROUP BY gp.name) as i 
+	 ORDER BY totalscore ASC LIMIT 1";
+	 
+	 $result2 = $db->query($getSql);
+	 $scoreAfter = $db->fetch_array($result2,'assoc');
+	 $CalPoints = $scoreAfter["totalscore"] - $scoreBefore["totalscore"];}
+		//Or use "query-less" method
+		else{
+		$CalPoints = (($kills-$deaths+$assists*0.5+$towerkills*0.5+$raxkills*0.2+($courierkills+$creepdenies)*0.1+$neutralkills*0.03+$creepkills*0.03) * .2)*3; 
+		
+		if ($win==2 AND $newcolour<=5 AND $CalPoints>=0) 
+		{$CalPoints = $CalPoints - (($deaths*.7) + ($kills*.5))+($assists*.2)+($courierkills+$creepdenies)*0.1+$towerkills*0.3+$raxkills*0.1;}	
+		
+		if ($win==1 AND $newcolour>5 AND $CalPoints>=0) 
+		{$CalPoints = $CalPoints - (($deaths*.7) + ($kills*.5))+($assists*.2)+($courierkills+$creepdenies)*0.1+$towerkills*0.3+$raxkills*0.1;}	
+		}
+
+		$CalPoints = ROUND($CalPoints,1);
+		if ($CalPoints<0) {
+		$Points = "<p class='alignright'><a title='$name3 has lost $CalPoints points for this game'><span class='NegativePoints'>$CalPoints</span></a></p>";} 
+		else {$Points = "<p class='alignright'><a title='$name3 gain $CalPoints points for this game'><span class='PositivePoints'>+$CalPoints</span></a></p>";}
+		}
+		//User points mod	
 		
 		if($sentinel == 1 AND $newcolour<=5){
 			$sentinel=0;
@@ -226,7 +305,7 @@ leftreason, b.left, b.name as name, e.name as banname
 			}
 		
 		echo "<tr class='row'>
-		      <td><a href='user.php?u=$name2'>$name</a></td>
+		      <td><a href='user.php?u=$name2'>$name</a> $Points</td>
 			  <td>$hero</td>
 			  <td><div align='center'>$kills</div></td>
 			  <td><div align='center'>$deaths</div></td>
@@ -238,12 +317,12 @@ leftreason, b.left, b.name as name, e.name as banname
 			  <td><div align='center'>$gold</div></td>
 			  
 			  <td><div align='left'>
-			  <img title='$list[itemname1]' alt='' width='28px' src='./img/items/$itemicon1'>
-			  <img title='$list[itemname2]' alt='' width='28px' src='./img/items/$itemicon2'>
-			  <img title='$list[itemname3]' alt='' width='28px' src='./img/items/$itemicon3'>
-			  <img title='$list[itemname4]' alt='' width='28px' src='./img/items/$itemicon4'>
-			  <img title='$list[itemname5]' alt='' width='28px' src='./img/items/$itemicon5'>
-			  <img title='$list[itemname6]' alt='' width='28px' src='./img/items/$itemicon6'>
+			  <img title=\"$list[itemname1]\" alt='' width='28px' src='./img/items/$itemicon1'>
+			  <img title=\"$list[itemname2]\" alt='' width='28px' src='./img/items/$itemicon2'>
+			  <img title=\"$list[itemname3]\" alt='' width='28px' src='./img/items/$itemicon3'>
+			  <img title=\"$list[itemname4]\" alt='' width='28px' src='./img/items/$itemicon4'>
+			  <img title=\"$list[itemname5]\" alt='' width='28px' src='./img/items/$itemicon5'>
+			  <img title=\"$list[itemname6]\" alt='' width='28px' src='./img/items/$itemicon6'>
 			  </div>
 			  </td>
 			  
@@ -253,7 +332,7 @@ leftreason, b.left, b.name as name, e.name as banname
 			  </tr>";
 	   
 	   }
-  echo "</table><br />";
+  echo "</table><br>";
   
      if(file_exists($replayloc)) {
      //include('./includes/AJAX2.php');

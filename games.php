@@ -59,8 +59,8 @@
   }
   
   $sort = 'DESC';
-  if (isset($_GET['sort']) AND $_GET['sort'] == 'desc')
-  {$sort = 'asc'; $sortdb = 'DESC';} else {$sort = 'desc'; $sortdb = 'ASC';}
+  if (isset($_GET['sort']) AND $_GET['sort'] == 'asc')
+  {$sort = 'desc'; $sortdb = 'ASC';} else {$sort = 'asc'; $sortdb = 'DESC';}
 
   include('pagination.php');
 

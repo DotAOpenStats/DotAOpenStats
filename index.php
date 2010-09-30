@@ -51,7 +51,7 @@
 	$result_per_page = $news_per_page;
 	
 	include('pagination.php');
-	echo "<br />";
+	echo "<br>";
 	$sql = "SELECT * FROM news ORDER BY news_date DESC LIMIT $offset, $rowsperpage";
 	$result = $db->query($sql);
 	
@@ -69,7 +69,7 @@
 	 </tr><td class='NewsText'>$text</td>
 	 </tr>
 	 </table>
-	 </div><br />";
+	 </div><br>";
 	 
 	 }
 

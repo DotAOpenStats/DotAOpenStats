@@ -41,7 +41,7 @@
   $pageContents = ob_get_contents();
   ob_end_clean();
   echo str_replace('<!--TITLE-->', $pageTitle, $pageContents);
-  
+		
 	//User row
 	   $tags = array(
    '{ALL_TIME_STATS}', 
@@ -91,9 +91,8 @@
    '{MACOUNT}',
    '{MWCOUNT}',  
    '{MLCOUNT}',   
-   '{MPCOUNT}',     
-   
-   );
+   '{MPCOUNT}',
+   '{L_CPM}','{CREEPS_PER_MIN}','{L_KPG}','{KILLS_PER_HOUR}','{TITLE_CPM}','{TITLE_KPG}','{TITLE_KD}','{TITLE_WL}','{TITLE_WP}','{TITLE_DISC}');
    
    if ($displayUsersDisconnects == 1)	{$l_disc = $lang["disc"];} else {$l_disc = ""; $disc = "";}
 	
@@ -132,50 +131,34 @@
    $creepdenies,
    $raxkills,
    $courierkills,
-   $disc,
+   $disc." ($DiscPercent%)",
    $mkhimg, $mdhimg, $mahimg, $mwhimg, $mlhimg, $mphimg,
    $mostkillscount,
    $mostdeathscount,
    $mostassistscount, 
    $mostwinscount, 
    $mostlossescount, 
-   $mostplayedcount
+   $mostplayedcount, 
+   $lang["CPM"] ,$creepsPerMin , $lang["KPG"], $killsPerGame,$lang["creeps_per_min"],$lang["kills_per_game"],$lang["kd_ratio"],$lang["wins_losses"],$lang["win_percent"],$lang["disc_title"]
    );
    echo str_replace($tags, $data, file_get_contents("./style/$default_style/user_row.html"));
-   
-   $sql = "SELECT MIN(datetime), MIN(loadingtime), MAX(loadingtime), AVG(loadingtime), MIN(`left`), MAX(`left`), AVG(`left`), SUM(`left`) 
-   FROM gameplayers 
-   LEFT JOIN games ON games.id=gameplayers.gameid 
-   LEFT JOIN dotaplayers ON dotaplayers.gameid=games.id 
-   AND dotaplayers.colour=gameplayers.colour 
-   LEFT JOIN dotagames ON games.id=dotagames.gameid 
-   WHERE LOWER(name)=LOWER('$username') LIMIT 1";
 	
-	$result = $db->query($sql);
-	
-	$row = $db->fetch_array($result,'assoc');
-	$firstgame=$row["MIN(datetime)"];
-		$minLoading=millisecondsToTime($row["MIN(loadingtime)"]);
-		$maxLoading=millisecondsToTime($row["MAX(loadingtime)"]);
-		$avgLoading=millisecondsToTime($row["AVG(loadingtime)"]);
-		$minDuration=secondsToTime($row["MIN(`left`)"]);
-		$maxDuration=secondsToTime($row["MAX(`left`)"]);
-		$avgDuration=secondsToTime($row["AVG(`left`)"]);
-		$totalDuration=secondsToTime($row["SUM(`left`)"]);
-		
 		//ACHIEVEMENTS MOD
 		if ($UserAchievements == 1)
 		{echo '<div align="center"><table class="tableA"><tr><th class="padLeft">
 		<img style="vertical-align: middle;" alt="" width="16px" height="16px" src="./img/achievements/play.gif">
-		<a href="#info" name="info" class="poplink" onclick="toggle2(\'div1\');return false;" id="link">Show '.$realname .' Achievements</a></th></tr></table></div>
+		<a href="#info" name="info" class="poplink" onclick="toggle2(\'div1\');return false;" id="link">Show '.$realname .' Achievements</a>
+		</th></tr></table></div>
 		<div id="div1" style="display: none;">';
+
 		require_once('./includes/medals.php');
 		echo '</div>';
 		}
+
 		//ACHIEVEMENTS MOD
 		
 		echo "<div align='center'><table class='tableA'>
-		<th class='padLeft'>$lang[lastgame_duration]</th> 
+		<th class='padLeft'>$lang[max_duration]</th> 
 		<th>$lang[min_duration]</th>
 		<th>$lang[avg_duration]</th> 
 		<th>$lang[total_duration]</th> 
@@ -302,7 +285,11 @@
 	  <td style='width:30px;'>$type</td>
 	  <td style='width:150px;'><div align='center'>$gametime</div></td>
 	  
-	  <td style='width:180px;height:32px;'><div align='left'>$hero_img $hero</div></td>
+	  <td style='width:180px;height:32px;'>
+	  
+	  <div align='left'>$hero_img $hero</div>
+	  </td>
+	  
 	  <td style='width:40px;'>$kills</td>
 	  <td style='width:40px;'>$death</td>
 	  <td style='width:60px;'>$assists</td>

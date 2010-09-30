@@ -75,6 +75,13 @@ width:95%;
 padding-left:22px;
 }
 
+
+.tableHeroPageTop {width:95%;}
+.tableHeroPage {margin-top:4px;width:96%;border: 0px solid #000;}
+.tableHeroPageTopCell {text-align:left;padding:12px;}
+.tableHeroPage {margin-top:4px;width:96%;border: 0px solid #000;}
+
+
 .tableUserRow { margin-top:4px; margin-bottom:4px; margin-left:4px; }
 .tableUserRowHero { padding-left:8px; }
 .bansRow { padding-right:4px; width:48px; }
@@ -317,3 +324,45 @@ a.banned {color: #e56879;}
 .won     {color: #86E573;}
 .lost   {color: #e56879;}
 .draw   {color: #ebeb7d;}
+
+img.alpha {
+filter: alpha(opacity=10);
+-moz-opacity: 0.1;
+opacity: 0.1;
+}
+
+.Achieved{
+color:#FCFF00;
+}
+
+.NotAchieved{
+color:#6F6F6F;
+}
+
+.PositivePoints {
+color:#0DB900;
+}
+
+.NegativePoints {
+color:#DF0000;
+}
+
+#dhtmltooltip{
+position: absolute;
+left: -300px;
+width: 150px;
+border: 1px solid #999999;
+padding: 8px;
+color: #FFAA00;
+background-color: #331309;
+visibility: hidden;
+z-index: 100;
+filter: progid:DXImageTransform.Microsoft.Shadow(color=gray,direction=135);
+}
+
+#dhtmlpointer{
+position:absolute;
+left: -300px;
+z-index: 101;
+visibility: hidden;
+}

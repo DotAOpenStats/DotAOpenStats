@@ -65,6 +65,14 @@ $lang["max_duration"] = "Max Duration:";
 $lang["lastgame_duration"] = "Last Game Duration:";
 $lang["first_game"] = "First game";
 $lang["last_game"] = "Last game";
+$lang["CPM"] = "CPM";
+$lang["KPG"] = "KPG";
+$lang["creeps_per_min"] = "Creeps Per Minute";
+$lang["kills_per_game"] = "Kills Per Game";
+$lang["kd_ratio"] = "Kills/Deaths Ratio";
+$lang["wins_losses"] = "Wins/Losses";
+$lang["win_percent"] = "Win Percent";
+$lang["disc_title"] = "Disconnects";
 
 $lang["download_rep"] = "Download replay";
 
