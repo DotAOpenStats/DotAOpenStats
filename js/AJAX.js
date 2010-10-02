@@ -135,7 +135,7 @@ function toggle2(layer_ref) {
 }
 
 
-///////////////////// TOOL TOP //////////////////
+///////////////////// TOOLTiP //////////////////
 
 var offsetfromcursorX=12 //Customize x offset of tooltip
 var offsetfromcursorY=10 //Customize y offset of tooltip

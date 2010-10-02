@@ -1,4 +1,7 @@
 <?PHP
+   
+    if (!isset($_SESSION)) {session_start();}
+	
 /*********************************************
 <!-- 
 *   	DOTA OPENSTATS
@@ -49,7 +52,13 @@ $top_players_per_page = '30';
 $news_per_page = '5';
 $search_limit = '50';
 
+//Show All Time Stats on Top page
+$AllTimeStats = '1';
+//All time stats. How many results to show for All time stats on Top page.
 $top_stats = '5';
+
+//Hide banned users on Top and Monthly page.
+$HideBannedUsersOnTop = '1';
 
 $displayUsersDisconnects = '1';
 
@@ -57,11 +66,26 @@ $displayUsersDisconnects = '1';
 $replayLocation = 'replays';
 
 //Max. page links before and after current page
-$max_pagination_link = '6';
+$max_pagination_link = '5';
+
+//Score Method 1. This method use score formula (see $scoreFormula below) to calucate users score. 
+//Score Method 2. This method use league system to calculate user score. Eg. wins*5 - losses*3 - disconnects*10 
+//On game page winner will receive 5 points, loosers will loose 3 points by default.
+$ScoreMethod = '2';
+//Here you can setup how many points user receive when he win, loose or disconnect.
+$ScoreStart = '1000';
+$ScoreWins = '5';
+$ScoreLosses = '-3';
+$ScoreDisc = '-10';
 
 
-//Default: '((((kills-deaths+assists*0.5+towerkills*0.5+raxkills*0.2+(courierkills+creepdenies)*0.1+neutralkills*0.03+creepkills*0.03) * .2)+(wins-losses)))*10'
+//Score Method 1
+//(Only used if $DBScore = '0')
 $scoreFormula = '((((kills-deaths+assists*0.5+towerkills*0.5+raxkills*0.2+(courierkills+creepdenies)*0.1+neutralkills*0.03+creepkills*0.03) * .2)+(wins-losses)))*10'; 
+
+//Pre-Calculate score
+//If enabled:  Player scores will be taken from the score table in your MySQL database. You must populate this table through your own methods. (Not recommended)
+$DBScore = '0';
 
 //Minimal ratio (lefttime/duration) that a player/hero has to complete a game to be counted as win/loss. otherwise game is ignored.
 $minPlayedRatio = '0.8';
@@ -69,6 +93,7 @@ $minGamesPlayed = '2';
 
 $date_format = 'd.m.Y H:i';
 
+//How many records to show for each month row
 $monthly_stats = '5';
 
 //Enable month rows. 1 - ENABLED, 0 - DISABLED
@@ -105,18 +130,18 @@ $LEAVER = 'LEAVER';
 $UserAchievements = '1';
 // Configuration
 
-$KillsMedal = 500; //Kill 500 enemy heroes!
-$AssistMedal = 200; //Assist in 200 kills. How many kills to achieve this medal (default 200).
-$WinPercentMedal = 85; //Achieve 90 % victory
-$KillsPercentMedal = 60; //Achieve 60 % of kills.
-$GamesMedal = 50; //Play 50 games!
-$WinsMedal = 50; //Win 50 games!
-$CreepsMedal = 5000; //Kill 5000 creeps!
-$DeniesMedal = 500; //Deny 500 creeps!
-$TowersMedal = 50; //Destroy 50 towers!
-$CouriersMedal = 30; //Kill 30 enemy couriers!
-$NeutralsMedal = 500; //Kill 500 neutrals!
-$PlayDurationMedal = 30; //Play at least 30 hours!
+$KillsMedal = '500'; //Kill 500 enemy heroes!
+$AssistMedal = '200'; //Assist in 200 kills. How many kills to achieve this medal (default 200).
+$WinPercentMedal = '85'; //Achieve 90 % victory
+$KillsPercentMedal = '60'; //Achieve 60 % of kills.
+$GamesMedal = '50'; //Play 50 games!
+$WinsMedal = '50'; //Win 50 games!
+$CreepsMedal = '5000'; //Kill 5000 creeps!
+$DeniesMedal = '500'; //Deny 500 creeps!
+$TowersMedal = '50'; //Destroy 50 towers!
+$CouriersMedal = '30'; //Kill 30 enemy couriers!
+$NeutralsMedal = '500'; //Kill 500 neutrals!
+$PlayDurationMedal = '30'; //Play at least 30 hours!
 
 $pageGen = '1'; //Enable/disable info about page generation and total queries on every page
 

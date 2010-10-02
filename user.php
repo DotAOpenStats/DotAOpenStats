@@ -92,7 +92,7 @@
    '{MWCOUNT}',  
    '{MLCOUNT}',   
    '{MPCOUNT}',
-   '{L_CPM}','{CREEPS_PER_MIN}','{L_KPG}','{KILLS_PER_HOUR}','{TITLE_CPM}','{TITLE_KPG}','{TITLE_KD}','{TITLE_WL}','{TITLE_WP}','{TITLE_DISC}');
+   '{L_CPM}','{CREEPS_PER_MIN}','{L_KPG}','{KILLS_PER_GAME}','{TITLE_CPM}','{TITLE_KPG}','{TITLE_KD}','{TITLE_WL}','{TITLE_WP}','{TITLE_DISC}','{TITLE_DPG}','{DPG}');
    
    if ($displayUsersDisconnects == 1)	{$l_disc = $lang["disc"];} else {$l_disc = ""; $disc = "";}
 	
@@ -139,7 +139,7 @@
    $mostwinscount, 
    $mostlossescount, 
    $mostplayedcount, 
-   $lang["CPM"] ,$creepsPerMin , $lang["KPG"], $killsPerGame,$lang["creeps_per_min"],$lang["kills_per_game"],$lang["kd_ratio"],$lang["wins_losses"],$lang["win_percent"],$lang["disc_title"]
+   $lang["CPM"] ,$creepsPerMin , $lang["KPG"], $killsPerGame,$lang["creeps_per_min"],$lang["kills_per_game"],$lang["kd_ratio"],$lang["wins_losses"],$lang["win_percent"],$lang["disc_title"],'Deaths Per Game', $deathsPerGame
    );
    echo str_replace($tags, $data, file_get_contents("./style/$default_style/user_row.html"));
 	
@@ -175,6 +175,7 @@
  LEFT JOIN games AS d ON d.id = a.gameid LEFT JOIN heroes as e ON a.hero = heroid where name= '$username' and description <> 'NULL') as t LIMIT 1";
  
     $result = $db->query($sql);
+	//$db->close($result);
     $r = $db->fetch_row($result);
     $numrows = $r[0];
 	$result_per_page = $games_per_page;
@@ -203,10 +204,10 @@
         echo "<table><tr><td><b>Game History:</b></td></tr></table>";
 	include('pagination.php');
 	
-	$sql = getUserGameHistory($LEAVER,$username,$order,$sortdb,$offset, $rowsperpage);
+	$sql = getUserGameHistory($LEAVER,$username,$order,$sortdb,$offset, $rowsperpage,$minPlayedRatio);
  
     $result = $db->query($sql);
- 
+	
      echo "<table><tr>
 	 <th style='padding-left:12px;width:200px;'>
 	 <div align='left'><a href='{$_SERVER['PHP_SELF']}?u=$username&order=game&sort=$sort'>Game Name</a></div></th>

@@ -131,6 +131,7 @@ $lang["search_players"] = "Search players";
 $lang["err_search"] = "Search term must have more than 3 characters";
 $lang["no_maches"] = "No maches for:";
 $lang["search_found"] = "Search found:";
+$lang["search_term_used"] = "Search term used:";
 $lang["search_users"] = "users";
 $lang["err_user"] = "User does not exists.";
 

@@ -2,8 +2,8 @@
 
 session_start();
 
-$admin = "admin";
-$password = "admin";
+$admin = "ivan";
+$password = "123";
 
 $admin_style = 'style2.css';
 

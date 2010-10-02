@@ -1,8 +1,5 @@
 <?php
-   
-    if (!isset($_SESSION)) {
-    session_start();}
-	
+
 	if (isset($_GET['style']))
 	{
 	    if (file_exists("./style/$_GET[style]"))

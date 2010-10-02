@@ -331,21 +331,13 @@ filter: alpha(opacity=10);
 opacity: 0.1;
 }
 
-.Achieved{
-color:#FCFF00;
-}
+.Achieved{color:#FCFF00;}
+.NotAchieved{color:#6F6F6F;}
 
-.NotAchieved{
-color:#6F6F6F;
-}
-
-.PositivePoints {
-color:#0DB900;
-}
-
-.NegativePoints {
-color:#DF0000;
-}
+.PositivePoints {color:#0DB900;}
+.NegativePoints {color:#BB0000;}
+.DrawGame{color:#FFE327;}
+.DisconnectPoints{color:#FF0006;}
 
 #dhtmltooltip{
 position: absolute;

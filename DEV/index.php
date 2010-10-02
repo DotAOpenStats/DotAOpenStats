@@ -48,9 +48,13 @@
     if (!isset($_SESSION['user_name']) AND (!isset($_SESSION['user_password'])))
     {
 	if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+	
+	if (file_exists("../index.php")) {$dotaos = '<tr><td></td><td align="right">
+		<a href="../index.php"><span style="font-size:9px;">DotA OpenStats</span></a></td></tr>';}
+		
     echo '<div align="center">
 <form method="post" action="">
-<table style="width:50%" border=0><tr>
+<table style="width:320px;margin-top:100px;" border=0><tr>
 <th><b>&nbsp;Login</b></th>
 <th></th></tr>
 
@@ -68,7 +72,7 @@
 </tr><tr><td></td>
         <td height="36">
 		<input type="submit" class="inputButton" value="Login" />
- 	    </td></tr>
+ 	    </td></tr>'.$dotaos.'
 		</table>
 		
 		</form>
@@ -85,7 +89,16 @@
 	 	 $_SESSION['user_name'] = $_POST['user_name'];
 	 	 $_SESSION['user_password'] = sha1($_POST['user_pass']);
 		 
-		 echo "<div align='center'><br>You have been successfully logged in.<br><br><a href='index.php'>Proceed</a></div><br/>";
+		 echo "<div style='float:left;margin-left:2px;margin-top:2px;' align='center'><table style='width:400px;'><tr><th><div align='center'>You have been successfully logged in.</div></th></tr></table></div>";
+		 
+		 /*$ch = curl_init('http://openstats.iz.rs/version_check.php?check');
+		 curl_setopt($ch, CURLOPT_HEADER, 0);
+         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		 curl_setopt($ch, CURLOPT_REFERER, $_SERVER['HTTP_REFERER']);
+		 curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.7.5) Gecko/20041107 Firefox/1.0');
+         curl_exec ($ch);
+         curl_close ($ch);*/
+		 
 	 	 }
 		 else
 		    {
@@ -101,7 +114,7 @@
 	{
 	unset($_SESSION['user_name']);
 	unset($_SESSION['user_password']);
-	echo "<div align='center'><br>You have been successfully logged out.!<br><br><a href='index.php'>Back to previous page</a></div>";
+	echo "<div align='center'><table style='width:320px;margin-top:100px;'><tr><th><div align='center'>You have been successfully logged out.</div></th></tr><tr><td><a href='index.php'>Back to previous page</a></td></tr></table></div>";
 	}
 	
 	//LOGIN SUCCESSFULLY
@@ -550,7 +563,7 @@ function confirmDelete(delUrl) {
 	$result = $db->query($sql);
 	
 	if ($result)
-	{echo "Ban(ID): $banid successfully deleted! <br/><br/><a href='index.php?bans'>Back to previous page</a> ";}
+	{echo "<div align='center'><table style='width:400px;margin-top:40px;'></tr><th>Ban(ID): $banid successfully deleted! </th></tr><tr><td><a href='index.php?bans'>Back to previous page</a></td></tr></table></div>";}
 
 	}
 	
@@ -599,7 +612,7 @@ function confirmDelete(delUrl) {
 	VALUES('$banserver','$banname',NOW(),'$bangame','$banby','$banreason')";
 	
 	$result = $db->query($sql);
-	if ($result) {echo "<br/>$banname successfully banned<br/><br/><a href='index.php?addban'>Back to previous page</a>";}
+	if ($result) {echo "<div align='center'><table style='width:400px;margin-top:40px;'></tr><th>$banname successfully banned</th></tr><tr><td><a href='index.php?addban'>Back to previous page</a></td></tr></table></div>";}
 	
 	}
 	
@@ -1225,6 +1238,22 @@ function confirmDelete(delUrl) {
           $acn = "checked";}
 		  
 		  
+	  $AllTimeStats = get_value_of('$AllTimeStats');
+      $AllTimeStats = trim($AllTimeStats);
+		  
+		  if ($AllTimeStats == "1") {$atsy = "checked";$atsn = "";} else {
+          $atsy = "";
+          $atsn = "checked";}	  
+	
+      $ScoreStart = get_value_of('$ScoreStart');
+      $ScoreStart = trim($ScoreStart);	
+	  $ScoreWins = get_value_of('$ScoreWins');
+      $ScoreWins = trim($ScoreWins);	
+	  $ScoreLosses = get_value_of('$ScoreLosses');
+      $ScoreLosses = trim($ScoreLosses);
+      $ScoreDisc = get_value_of('$ScoreDisc');
+      $ScoreDisc = trim($ScoreDisc);	  
+		  
 	  $replayLocation = get_value_of('$replayLocation');
       $replayLocation = trim($replayLocation);
 	  
@@ -1310,6 +1339,22 @@ function confirmDelete(delUrl) {
 	  if ($AccuratePointsCalculation == "1") {$apcy = "checked";$apcn = "";} else {
           $apcy = "";
           $apcn = "checked";}
+		  
+		  
+	  $HideBannedUsersOnTop = get_value_of('$HideBannedUsersOnTop');
+      $HideBannedUsersOnTop = trim($HideBannedUsersOnTop);
+	  	  
+	  if ($HideBannedUsersOnTop == "1") {$hbuy = "checked";$hbun = "";} else {
+          $hbuy = "";
+          $hbun = "checked";}	  
+		  
+		  
+      $ScoreMethod = get_value_of('$ScoreMethod');
+      $ScoreMethod = trim($ScoreMethod); 
+      if ($ScoreMethod == "1") {$scy = "checked";$scn = "";} else {
+          $scy = "";
+          $scn = "checked";}	  
+		  
 	  
 	  $head_admin = get_value_of('$head_admin');
       $head_admin = trim($head_admin);
@@ -1351,9 +1396,31 @@ function confirmDelete(delUrl) {
 	  <td width="160px">Heroes per page</td>
 	  <td><input value="'.$heroes_per_page.'" type="text" name="heroes" size=5 /> The number of results returned in a page on the hero statistics page</td></tr>
 	  
+	  <tr><th>Top page</th><th></th></tr>
+
 	  <tr>
 	  <td width="160px">Top Players per page</td>
-	  <td><input value="'.$top_players_per_page.'" type="text" name="topplayers" size=5 /> The number of results returned in a page on the top players page</td></tr>
+	  <td><input value="'.$top_players_per_page.'" type="text" name="topplayers" size=5 /> The number of results returned in a page on the top players page</td></tr>	  
+	  	  
+	  <tr>
+	  <td width="160px">All Time Stats on Top page</td>
+	  <td>
+	  <input type="radio" name="ats" '.$atsy.' value="1" /> Yes
+	  <input type="radio" name="ats" '.$atsn.' value="0" /> No 
+	  | (Show All Time Stats on Top page)</td></tr>
+	    
+	  <tr>
+	  <td width="160px">Players on top stats</td>
+	  <td><input value="'.$top_stats.'" type="text" name="topstats" size=5 /> The number of entries in each highscore list on all time top stats</td></tr>
+	  
+	  <tr>
+	  <td width="160px">Hide Banned Users</td>
+	  <td>
+	  <input type="radio" name="hbu" '.$hbuy.' value="1" /> Yes
+	  <input type="radio" name="hbu" '.$hbun.' value="0" /> No 
+	  | (Hide banned users on Top and Monthly page)</td></tr>
+	  
+	  <tr><th>Misc</th><th></th></tr>
 	  
 	  <tr>
 	  <td width="160px">News per page</td>
@@ -1361,11 +1428,7 @@ function confirmDelete(delUrl) {
 	  
 	  <tr>
 	  <td width="160px">Search limit</td>
-	  <td><input value="'.$search_limit.'" type="text" name="search" size=5 /> The max. number of results returned in a search page</td></tr>
-	  
-	  <tr>
-	  <td width="160px">Players on top stats</td>
-	  <td><input value="'.$top_stats.'" type="text" name="topstats" size=5 /> The number of entries in each highscore list</td></tr>
+	  <td><input value="'.$search_limit.'" type="text" name="search" size=5 /> The max. number of results returned on a search page</td></tr>
 	  
 	  <tr>
 	  <td width="150px">Pagination links</td>
@@ -1460,7 +1523,39 @@ function confirmDelete(delUrl) {
 	  <input type="radio" name="dtr" '.$trn.' value="0" /> No 
 	  | (Display top ranks by score on monthly stats)</td></tr>
 	  
-	  <tr><th>Points</th><th></th></tr>
+	  <tr><th>Points and Score</th><th></th></tr>
+	  
+	  <tr>
+	  <td width="160px">Score Method</td>
+	  <td>
+	  <input type="radio" name="scm" '.$scy.' value="1" /> Type 1 | 
+	  <input type="radio" name="scm" '.$scn.' value="2" /> Type 2
+	  <br><b>Score Type 1</b> Using score formula. <br><b>Score Type 2</b> This method use league system to calculate user score. <br>Eg. wins*5 - losses*3 - disconnects*10</td></tr>
+	  
+	  <tr>
+	  <td width="160px"><b>Method 2</b></td>
+	  <td>Settings</td></tr>
+	  
+	  
+	  <tr>
+	  <td width="160px">Start Score</td>
+	  <td><input value="'.$ScoreStart.'" type="text" name="scstart" maxlength=10 size=10 /> (User start score)</td></tr>
+	  
+	  <tr>
+	  <td width="160px">Wins Points</td>
+	  <td><input value="'.$ScoreWins.'" type="text" name="scwins" maxlength=5 size=5 /> (+Points when user won)</td></tr>
+	  
+	  <tr>
+	  <td width="160px">Lose Points</td>
+	  <td><input value="'.$ScoreLosses.'" type="text" name="scloss" maxlength=5 size=5 /> (-Points when user  lose)</td></tr>
+	  
+	  <tr>
+	  <td width="160px">Disconnect Points</td>
+	  <td><input value="'.$ScoreDisc.'" type="text" name="scdisc" maxlength=5 size=5 /> (-Points when user disconnect before game end)</td></tr>
+	  
+	  <tr>
+	  <td width="160px"><b>Game page</b></td>
+	  <td></td></tr>
 	  
 	  <tr>
 	  <td width="160px">User points per game</td>
@@ -1476,7 +1571,7 @@ function confirmDelete(delUrl) {
 	  <input type="radio" name="apc" '.$apcn.' value="0" /> No 
 	  | <a title="If this option above is enabled, points  will be calculated accurately (from database)
 	  It will calculate total score before and after selected game.
-	  This will also take up much more resources">(<b>*</b>Points from database. <b>This take up much more resources</b>)</a></td></tr>
+	  This will also take up much more resources">(<b>*</b>Points from database. <b>This take up much more resources</b><br><span style="color:red">Only for Score Method 1</span)</a></td></tr>
 	  
 	  <tr><th>Database</th><th></th></tr>
 	  <tr>
@@ -1505,6 +1600,13 @@ function confirmDelete(delUrl) {
 	  write_value_of('$news_per_page', "$news_per_page", $_POST['news']);
 	  write_value_of('$search_limit', "$search_limit", $_POST['search']);
 	  write_value_of('$top_stats', "$top_stats", $_POST['topstats']);
+	  write_value_of('$HideBannedUsersOnTop', "$HideBannedUsersOnTop", $_POST['hbu']);
+	  write_value_of('$ScoreMethod', "$ScoreMethod", $_POST['scm']);
+	  write_value_of('$ScoreStart', "$ScoreStart", $_POST['scstart']);
+	  write_value_of('$ScoreWins', "$ScoreWins", $_POST['scwins']);
+	  write_value_of('$ScoreLosses', "$ScoreLosses", $_POST['scloss']);
+	  write_value_of('$ScoreDisc', "$ScoreDisc", $_POST['scdisc']);
+	  
 	  write_value_of('$max_pagination_link', "$max_pagination_link", $_POST['pagination']);
 	  write_value_of('$minPlayedRatio', "$minPlayedRatio", $_POST['minratio']);
 	  write_value_of('$minGamesPlayed', "$minGamesPlayed", $_POST['gamesplayed']);
@@ -1594,7 +1696,8 @@ function confirmDelete(delUrl) {
        if (file_exists("./backup/".$_GET['delete_backup'])){
        $res = unlink("./backup/".$_GET['delete_backup']);}
 	          if ($res) {echo "<br><br>File '".$_GET['delete_backup']."' successfully deleted.<br><br>
-			  <a href='index.php?backup'>Back to previous page</a>";} else {echo "File not exists";}
+			  <a href='index.php?backup'>Back to previous page</a>";} 
+			  else {echo "File not exists";}
        }
 	   
 	   if (isset($_GET['show_tables']) AND !isset($_GET['backup']) AND !isset($_GET['doit'])){
@@ -1668,10 +1771,10 @@ function confirmDelete(delUrl) {
    // Close the session and free all resources
    curl_close($ch);
 } else {
-   echo "Auto-check version failed. Curl is NOT installed. Please check your PHP configuration.";
-}
-	   
-	   
+   echo "Auto-check version failed. Curl is NOT installed. Please check your PHP configuration.<br>However, you can manually check latest version:<br><br><a target='_blank' class='inputButton' href='https://sourceforge.net/projects/dotaopenstats/'>Download OpenStats</a><br><br>";}
+   
+      
+
 	   echo "<div align='center'><table class='tableA'><tr>
 	   <th>DotA OpenStats Dashboard<p class='alignright'>Version ".VERSION."</p></th>
 	   </tr>";
@@ -1694,7 +1797,7 @@ function confirmDelete(delUrl) {
 	echo '</body><div>
 	 <table><tr>
 	 <td style="padding-right:12px;text-align:right;" align="right">
-	 &copy; '.date("Y").' <a href=\'http://dota.iz.rs\'><b>DotA Strategy</b></a></td>
+	 &copy; '.date("Y").' <a href=\'http://openstats.iz.rs\'><b>DotA OpenStats</b></a></td>
 	 </tr></table></div>';
 	 }
 

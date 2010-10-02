@@ -35,7 +35,7 @@
 **********************************************/
 
 
-     if ($_SERVER['REQUEST_METHOD'] != 'GET') {
+     if (!$_GET) {
       //someone is calling the file directly, which we don't want
       echo 'This file cannot be called directly.'; die;
 	  }
@@ -56,23 +56,37 @@
 	  $searchTerm = strip_tags($searchTerm); // remove any html/javascript.
 	  $searchTerm = mysql_real_escape_string($searchTerm); // prevent sql injection.
 	  
-	  $bans_only = "	  AND b.name = e.name";
+	  $bans_only = "	  AND b.name = e.name"; //Maybe for later usage
 	  
 	  $sql = "
-	  SELECT COUNT(a.id) as totgames, AVG(kills) as kills, AVG(deaths) as deaths, AVG(assists) as assists,
-AVG(creepkills) as creepkills, AVG(creepdenies) as creepdenies,  AVG(neutralkills) as neutralkills, AVG(towerkills) as towerkills, 
-MAX(datetime) as lastplayed, MIN(datetime) as firstplayed, b.name as name, e.name as banname 
-      FROM dotaplayers AS a LEFT JOIN gameplayers AS b ON b.gameid = a.gameid and a.colour = b.colour 
-      LEFT JOIN dotagames AS c ON c.gameid = a.gameid LEFT JOIN games as d ON d.id = c.gameid 
+	  SELECT 
+	  COUNT(a.id) as totgames
+	  , AVG(kills) as kills
+	  , AVG(deaths) as deaths
+	  , AVG(assists) as assists
+	  , AVG(creepkills) as creepkills
+	  , AVG(creepdenies) as creepdenies
+	  , AVG(neutralkills) as neutralkills
+	  , AVG(towerkills) as towerkills
+	  , MAX(datetime) as lastplayed
+	  , MIN(datetime) as firstplayed
+	  , b.name as name
+	  , e.name as banname 
+      FROM dotaplayers AS a 
+	  LEFT JOIN gameplayers AS b ON b.gameid = a.gameid and a.colour = b.colour 
+      LEFT JOIN dotagames AS c ON c.gameid = a.gameid 
+	  LEFT JOIN games as d ON d.id = c.gameid 
       LEFT JOIN bans AS e on b.name = e.name
-      WHERE b.name <> '' and winner <> 0 AND LOWER(b.name) LIKE LOWER('%{$searchTerm}%') 
+      WHERE b.name <> '' and winner <> 0 
+	  AND LOWER(b.name) LIKE LOWER('%{$searchTerm}%') 
 	  GROUP BY b.name
-	  ORDER BY LOWER(b.name) ASC LIMIT $search_limit";
+	  ORDER BY LOWER(b.name) ASC 
+	  LIMIT $search_limit";
 	  
 	  $qry_result = $db->query($sql) or die(mysql_error());
 
 	  //Build Result String
-	echo "<table><tr><td style='padding-left:8px;' height='20px'>Search term used: <b>$searchTerm</b></td></tr>";
+	echo "<table><tr><td style='padding-left:8px;' height='20px'>$lang[search_term_used] <b>$searchTerm</b></td></tr>";
     $total_matches = $db->num_rows($qry_result);
 	
 	 if ($total_matches < 1) 

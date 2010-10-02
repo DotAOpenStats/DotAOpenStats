@@ -51,11 +51,11 @@
   $order = 'id';
   if (isset($_GET['order']))
   {
-  if ($_GET['order'] == 'game') {$order = ' LOWER(gamename) '.$sort.'';}
-  if ($_GET['order'] == 'duration') {$order = ' duration '.$sort.'';}
-  if ($_GET['order'] == 'type') {$order = ' type '.$sort.'';}
-  if ($_GET['order'] == 'date') {$order = ' datetime '.$sort.'';}
-  if ($_GET['order'] == 'creator') {$order = ' LOWER(creatorname) '.$sort.'';}
+  if ($_GET['order'] == 'game') {$order = ' LOWER(gamename) ';}
+  if ($_GET['order'] == 'duration') {$order = ' duration ';}
+  if ($_GET['order'] == 'type') {$order = ' type ';}
+  if ($_GET['order'] == 'date') {$order = ' datetime ';}
+  if ($_GET['order'] == 'creator') {$order = ' LOWER(creatorname) ';}
   }
   
   $sort = 'DESC';

@@ -129,10 +129,12 @@
 	 
 
 	 echo "<br>";
-	 include('pagination.php');
+	
 	 
-	 echo "$lang[hero_player_history] $hero";
-	 
+	 echo "<div align='center'><table class='tableA'><tr><th>
+	 <div align='center'>$lang[hero_player_history] $hero</div>
+	 </th></tr></table></div>";
+	  include('pagination.php');
 	 $sql = getHeroHistory($minPlayedRatio,$heroid,$order,$sortdb,$offset, $rowsperpage,$LEAVER);
  
     $result = $db->query($sql);

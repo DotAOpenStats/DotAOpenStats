@@ -106,7 +106,8 @@ $sql = "SELECT *, case when (kills = 0) then 0 when (deaths = 0) then 1000 else 
 		$killdeathratio=ROUND($list["killdeathratio"],1); 
 	 
 	 $list["totalscore"] = ROUND($list["totalscore"],2);
-	 $plName = strtolower($list["name"]);
+	 $plName = strtolower($list["name"])."'a";
+	 $tooltipName = convEnt2($list["name"]);
 	 echo "<tr class='row'>
 		<td width='180px' style='padding-left:4px;'><a href='user.php?u=$plName'>$list[name]</a></td>
 		<td width='110px'><div align='center'>$list[totalscore]</div></td>
@@ -114,13 +115,31 @@ $sql = "SELECT *, case when (kills = 0) then 0 when (deaths = 0) then 1000 else 
 		<td width='64px'><div align='center'>$wins</div></td>
 		<td width='64px'><div align='center'>$winlosses%</div></td>
 		<td width='70px'><div align='center'>$losses</div></td>
-		<td width='70px'><div align='center'><a title='$lang[average] $kills | $lang[total] $list[SumKills]'' rel=''>$kills</a></div></td>
-		<td width='70px'><div align='center'><a title='$lang[average] $death | $lang[total] $list[SumDeaths]'>$death</a></div></td>
-		<td width='70px'><div align='center'><a title='$lang[average] $assists | $lang[total] $list[SumAssists]'>$assists</a></div></td>
+		
+		<td width='70px'><div align='center'>
+		<a onMouseout='hidetooltip()' onMouseover='tooltip(\"<div align=left><i>$tooltipName</i><br><b>$lang[kills]:</b><br>$lang[average] $kills<br>$lang[total] $list[SumKills]</div>\",130); return false'>$kills</a>
+		</div></td>
+		
+		<td width='70px'><div align='center'>
+		<a onMouseout='hidetooltip()' onMouseover='tooltip(\"<div align=left><i>$tooltipName</i><br><b>$lang[deaths]:</b><br>$lang[average] $death<br>$lang[total] $list[SumDeaths]</div>\",130); return false'>$death</a></div></td>
+		
+		<td width='70px'><div align='center'>
+		<a onMouseout='hidetooltip()' onMouseover='tooltip(\"<div align=left><i>$tooltipName</i><br><b>$lang[assists]:</b><br>$lang[average] $assists<br>$lang[total] $list[SumAssists]</div>\",130); return false'>
+		$assists</a></div></td>
+		
 		<td width='90px'><div align='center'>$killdeathratio:1</div></td>
-		<td width='70px'><div align='center'><a title='$lang[average] $creepkills | $lang[total] $list[SumCreepkills]'>$creepkills</a></div></td>
-		<td width='70px'><div align='center'><a title='$lang[average] $creepdenies | $lang[total] $list[SumCreepdenies]' >$creepdenies</a></div></td>
-		<td width='70px'><div align='center'><a title='$lang[average] $neutralkills | $lang[total] $list[SumNeutralkills]' >$neutralkills</a></div></td>
+		
+		<td width='70px'><div align='center'>
+		<a onMouseout='hidetooltip()' onMouseover='tooltip(\"<div align=left><i>$tooltipName</i><br><b>$lang[creeps]:</b><br>$lang[average] $creepkills<br>$lang[total] $list[SumCreepkills]</div>\",130); return false'>
+		$creepkills</a></div></td>
+		
+		<td width='70px'><div align='center'>
+		<a onMouseout='hidetooltip()' onMouseover='tooltip(\"<div align=left><i>$tooltipName</i><br><b>$lang[denies]:</b><br>$lang[average] $creepdenies<br>$lang[total] $list[SumCreepdenies]</div>\",130); return false'>
+		$creepdenies</a></div></td>
+		
+		<td width='70px'><div align='center'>
+		<a onMouseout='hidetooltip()' onMouseover='tooltip(\"<div align=left><i>$tooltipName</i><br><b>$lang[neutrals]:</b><br>$lang[average] $neutralkills<br>$lang[total] $list[SumNeutralkills]</div>\",130); return false'>
+		$neutralkills</a></div></td>
 		
 		</tr>";
 	 }

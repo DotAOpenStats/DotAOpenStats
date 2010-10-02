@@ -110,7 +110,7 @@
 	 echo $offset+$rowsperpage;
 	 echo "</div>";
 	 
-	 $sql = getTops($scoreFormula,$minPlayedRatio,$games,$order,$sortdb,$offset,$rowsperpage);
+	 $sql = getTops($scoreFormula,$minPlayedRatio,$games,$order,$sortdb,$offset,$rowsperpage,$DBScore,$ScoreMethod,$ScoreWins,$ScoreLosses,$ScoreDisc,$ScoreStart,$HideBannedUsersOnTop);
        
 	 $result = $db->query($sql);
 
@@ -145,13 +145,18 @@
 		$name=trim($list["name"]);
 		$name2=trim(strtolower($list["name"]));
 		$banname=$list["banname"];
+		//echo "$name ".$list["disc"]." | " ;
 		
 		if (trim(strtolower($banname)) == strtolower($name)) 
 		{$name = "<span style='color:#BD0000'>$list[name]</span>";}
 		
-		$totgames=$list["totgames"];
+		$totgames=$list["totgames"]."";
+		//AVG
 		$kills=ROUND($list["kills"],1);
 		$death=ROUND($list["deaths"],1);
+		//TOTAL
+		$totkills=ROUND($list["totkills"],1);
+		$totdeath=ROUND($list["totdeaths"],1);
 		$assists=ROUND($list["assists"],1);
 		$creepkills=ROUND($list["creepkills"],1);
 		$creepdenies=ROUND($list["creepdenies"],1);
@@ -159,6 +164,16 @@
 		$courierkills=ROUND($list["courierkills"],1);
 		$wins=$list["wins"];
 		$losses=$list["losses"];
+		$totalscore=ROUND($list["totalscore"],2);
+		
+		if ($totdeath >=1)
+	    {$killdeathratio = ROUND($totkills*1.0/$totdeath*1.0,1);} else {$killdeathratio = $totkills;}
+		
+		if ($totdeath == 0)
+	    {$killdeathratio = 1000;}
+		
+		if ($totkills == 0)
+	    {$killdeathratio = 0;}
 		
 		if ($wins <=0)
 		{$winlosses = 0;}
@@ -170,9 +185,10 @@
 		if ($wins >0)
 		{$winlosses = ROUND($wins/($wins+$losses), 3)*100;} 
 		
-		$totalscore=ROUND($list["totalscore"],2);
-		$killdeathratio=ROUND($list["killdeathratio"],1); 
 		
+		//$killdeathratio=ROUND($list["killdeathratio"],1); 
+
+	
 		  $data = array($counter, $name2, $name, $totalscore, $totgames, $wins ,$winlosses,$losses, $kills, $death,$assists,$killdeathratio,$creepkills,$creepdenies,$neutralkills, );
    
    $tags = array('{%COUNTER%}','{%NAME_URL%}', '{%NAME%}', '{%SCORE%}', '{%TOTGAMES%}', '{%WINS%}', '{%WINLOSSES%}','{%LOSSES%}','{%KILLS%}', '{%DEATHS%}', '{%ASSISTS%}', '{%KDRATIO%}', '{%CK%}', '{%CD%}','{%NEUTRALS%}'
@@ -187,12 +203,13 @@
 		
 		}
 		echo "</table><br/>";
-		   include('pagination.php'); 
+		include('pagination.php'); 
 
-   //include('./includes/get_tops.php');
-   echo " <body onload='requestActivities2(\"includes/get_tops.php\");'> ";
-   
-    echo "<div id='divActivities2'></div>";
+	//include('./includes/get_tops.php');
+   if ($AllTimeStats == 1)
+   {
+   echo " <body onload='requestActivities2(\"includes/get_tops.php?alltimestats\");'> ";
+   echo "<div id='divActivities2'></div>";}
 
   
   

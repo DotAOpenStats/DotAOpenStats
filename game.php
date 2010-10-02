@@ -40,22 +40,23 @@
   
   $sql = "
   SELECT winner, creatorname, duration, datetime, gamename 
-  FROM dotagames AS c 
-  LEFT JOIN games AS d ON d.id = c.gameid 
-  WHERE c.gameid='$gid'";
+  FROM dotagames AS dg 
+  LEFT JOIN games AS d ON d.id = dg.gameid 
+  WHERE dg.gameid='$gid'";
   $result = $db->query($sql);
   
    while ($list = $db->fetch_array($result,'assoc')) {
    		$creatorname=$list["creatorname"];
 		$duration=secondsToTime($list["duration"]);
 		$gametime=date($date_format,strtotime($list["datetime"]));
+		$replayDate = $list["datetime"];
 		$gamename=$list["gamename"];
 		$win=$list["winner"];
    }
    
-   $gametimenew = substr(str_ireplace(":","-",$gametime),0,16);
+   $gametimenew = substr(str_ireplace(":","-",date("Y-m-d H:i",strtotime($replayDate))),0,16);
    require_once('./includes/get_replay.php');
-   
+
   $pageTitle = "$lang[site_name] | $gamename";
   $pageContents = ob_get_contents();
   ob_end_clean();
@@ -91,16 +92,29 @@
 					                            </tr>";
 	   
        $sql = "
-	   SELECT winner, a.gameid, b.colour, newcolour, 
-original as hero, description, kills, deaths, assists, creepkills, creepdenies, neutralkills, towerkills, gold,  raxkills, courierkills, item1, item2, item3, item4, item5, item6, 
-it1.icon as itemicon1, it2.icon as itemicon2, it3.icon as itemicon3, it4.icon as itemicon4, it5.icon as itemicon5, it6.icon as itemicon6, 
-it1.name as itemname1, it2.name as itemname2, it3.name as itemname3, it4.name as itemname4, it5.name as itemname5, it6.name as itemname6, 
-leftreason, b.left, b.name as name, e.name as banname 
-	   FROM dotaplayers AS a 
-	   LEFT JOIN gameplayers AS b ON b.gameid = a.gameid and a.colour = b.colour 
-	   LEFT JOIN dotagames AS c ON c.gameid = a.gameid 
-	   LEFT JOIN games AS d ON d.id = a.gameid 
-	   LEFT JOIN bans as e ON b.name = e.name
+	   SELECT winner, dp.gameid, gp.colour, newcolour, original as hero, description, kills, deaths, assists, creepkills, creepdenies, neutralkills, towerkills, gold,  raxkills, courierkills, 
+	   item1, item2, item3, item4, item5, item6, 
+	   it1.icon as itemicon1, 
+	   it2.icon as itemicon2, 
+	   it3.icon as itemicon3, 
+	   it4.icon as itemicon4, 
+	   it5.icon as itemicon5, 
+	   it6.icon as itemicon6, 
+	   it1.name as itemname1, 
+	   it2.name as itemname2, 
+	   it3.name as itemname3, 
+	   it4.name as itemname4, 
+	   it5.name as itemname5, 
+	   it6.name as itemname6, 
+	   leftreason, 
+	   gp.left, 
+	   gp.name as name, 
+	   b.name as banname 
+	   FROM dotaplayers AS dp 
+	   LEFT JOIN gameplayers AS gp ON gp.gameid = dp.gameid and dp.colour = gp.colour 
+	   LEFT JOIN dotagames AS dg ON dg.gameid = dp.gameid 
+	   LEFT JOIN games AS g ON g.id = dp.gameid 
+	   LEFT JOIN bans as b ON gp.name = b.name
 	   LEFT JOIN heroes as f ON hero = heroid
 	   LEFT JOIN items as it1 ON it1.itemid = item1
 	   LEFT JOIN items as it2 ON it2.itemid = item2
@@ -108,7 +122,8 @@ leftreason, b.left, b.name as name, e.name as banname
 	   LEFT JOIN items as it4 ON it4.itemid = item4
 	   LEFT JOIN items as it5 ON it5.itemid = item5
 	   LEFT JOIN items as it6 ON it6.itemid = item6
-	   WHERE a.gameid=$gid ORDER BY newcolour";
+	   WHERE dp.gameid=$gid 
+	   ORDER BY newcolour";
 	  
 	   $result = $db->query($sql);
 	   
@@ -165,9 +180,11 @@ leftreason, b.left, b.name as name, e.name as banname
 		$hero=$list["hero"];
 		$heroname=$list["description"];
 		
-		if ($hero!="") {$hero = "<a href='hero.php?hero=$hero'><img title='$heroname' alt='' width='28px' src='./img/heroes/$hero.gif' border=0></a>";}
+		if ($hero!="") {
+        $img = convEnt2($heroname)."<br><img src=img/heroes/$hero.gif>";
+		$hero = "<a onMouseout='hidetooltip()' onMouseover='tooltip(\"".$img."\",130)' href='hero.php?hero=$hero'><img alt='' width='28px' src='./img/heroes/$hero.gif' border=0></a>";}
 		else {$hero = "<img title='No hero' alt='' width='28px' src='./img/heroes/blank.gif'>";}
-		
+
 		$name=trim($list["name"]);
 		$name2=strtolower(trim($list["name"]));
 		$name3=trim($list["name"]);
@@ -194,7 +211,7 @@ leftreason, b.left, b.name as name, e.name as banname
 		
 		if ($UserPointsOnGamePage == 1)
 		{
-		    if ($AccuratePointsCalculation) //Calculate points from database
+		    if ($AccuratePointsCalculation == 1 AND $ScoreMethod == 1) //Calculate points from database
 		    {
 		    $getSql = "SELECT *, case when (kills = 0) then 0 when (deaths = 0) then 1000 else ((kills*1.0)/(deaths*1.0)) end as killdeathratio, ($scoreFormula) as totalscore 
 	 FROM ( 
@@ -246,9 +263,10 @@ SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.new
 	 
 	 $result2 = $db->query($getSql);
 	 $scoreAfter = $db->fetch_array($result2,'assoc');
-	 $CalPoints = $scoreAfter["totalscore"] - $scoreBefore["totalscore"];}
+	 $CalPoints = $scoreAfter["totalscore"] - $scoreBefore["totalscore"];
+	 }
 		//Or use "query-less" method
-		else{
+		else {
 		$CalPoints = (($kills-$deaths+$assists*0.5+$towerkills*0.5+$raxkills*0.2+($courierkills+$creepdenies)*0.1+$neutralkills*0.03+$creepkills*0.03) * .2)*3; 
 		
 		if ($win==2 AND $newcolour<=5 AND $CalPoints>=0) 
@@ -257,11 +275,36 @@ SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.new
 		if ($win==1 AND $newcolour>5 AND $CalPoints>=0) 
 		{$CalPoints = $CalPoints - (($deaths*.7) + ($kills*.5))+($assists*.2)+($courierkills+$creepdenies)*0.1+$towerkills*0.3+$raxkills*0.1;}	
 		}
+		$class = "DrawGame";
+		if ($ScoreMethod == 2) 
+		{
+		if ($win==1 AND $newcolour>5) {$CalPoints = $ScoreLosses; $class = 'NegativePoints';}
+		if ($win==1 AND $newcolour<=5) {$CalPoints = $ScoreWins; $class = 'PositivePoints';}
+		
+		if ($win==2 AND $newcolour<=5) {$CalPoints = $ScoreLosses; $class = 'NegativePoints';} 
+		if ($win==2 AND $newcolour>5) {$CalPoints = $ScoreWins; $class = 'PositivePoints';} 
+		if ($win==0) {$CalPoints = 0;}
+		
+		if (strstr($leftreason,"has lost the connection") 
+		OR strstr($leftreason,"was dropped")
+		OR strstr($leftreason,"Lagged out")
+		OR strstr($leftreason,"Dropped due to")) 
+		{$CalPoints = $ScoreDisc; $class = 'DisconnectPoints';} 
+		}
 
 		$CalPoints = ROUND($CalPoints,1);
 		if ($CalPoints<0) {
-		$Points = "<p class='alignright'><a title='$name3 has lost $CalPoints points for this game'><span class='NegativePoints'>$CalPoints</span></a></p>";} 
-		else {$Points = "<p class='alignright'><a title='$name3 gain $CalPoints points for this game'><span class='PositivePoints'>+$CalPoints</span></a></p>";}
+		                  if ($ScoreMethod == 1) {$class = 'DisconnectPoints';}
+						  
+		$Points = "<p class='alignright'><a title='$name3 has lost $CalPoints points for this game'><span class='$class'>$CalPoints</span></a></p>";} 
+		
+		else 
+		    {
+			  if ($ScoreMethod == 1) {$class = 'PositivePoints';}
+			 
+		$Points = "<p class='alignright'><a title='$name3 gain $CalPoints points for this game'><span class='$class'>+$CalPoints</span></a></p>";}
+		if ($CalPoints==0) 
+		{$Points = "<p class='alignright'><a title='$name3 gain $CalPoints points for this game'><span class='$class'>$CalPoints</span></a></p>";}
 		}
 		//User points mod	
 		
@@ -303,7 +346,32 @@ SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.new
 			<td></td>
 			</tr>";
 			}
+			
+			$a1 = convEnt2($list["itemname1"])."<br><img src=img/items/$itemicon1>";
+			$a2 = convEnt2($list["itemname2"])."<br><img src=img/items/$itemicon2>";
+			$a3 = convEnt2($list["itemname3"])."<br><img src=img/items/$itemicon3>";
+			$a4 = convEnt2($list["itemname4"])."<br><img src=img/items/$itemicon4>";
+			$a5 = convEnt2($list["itemname5"])."<br><img src=img/items/$itemicon5>";
+			$a6 = convEnt2($list["itemname6"])."<br><img src=img/items/$itemicon6>";
+			
+		if ($list["itemname1"]!="") 
+		{$ic1 = "onMouseout='hidetooltip()' onMouseover='tooltip(\"".$a1."\",130)'";} else {$ic1 = "";}
 		
+		if ($list["itemname2"]!="") 
+		{$ic2 = "onMouseout='hidetooltip()' onMouseover='tooltip(\"".$a2."\",130)'";}  else {$ic2 = "";}
+		
+		if ($list["itemname3"]!="") 
+		{$ic3 = "onMouseout='hidetooltip()' onMouseover='tooltip(\"".$a3."\",130)'";} else {$ic3 = "";}
+		
+		if ($list["itemname4"]!="") 
+		{$ic4 = "onMouseout='hidetooltip()' onMouseover='tooltip(\"".$a4."\",130)'";} else {$ic4 = "";}
+		if ($list["itemname5"]!="") 
+		{$ic5 = "onMouseout='hidetooltip()' onMouseover='tooltip(\"".$a5."\",130)'";} else {$ic5 = "";}
+		
+		if ($list["itemname6"]!="") 
+		{$ic6 = "onMouseout='hidetooltip()' onMouseover='tooltip(\"".$a6."\",130)'";} else {$ic6 = "";}
+		
+
 		echo "<tr class='row'>
 		      <td><a href='user.php?u=$name2'>$name</a> $Points</td>
 			  <td>$hero</td>
@@ -317,12 +385,13 @@ SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.new
 			  <td><div align='center'>$gold</div></td>
 			  
 			  <td><div align='left'>
-			  <img title=\"$list[itemname1]\" alt='' width='28px' src='./img/items/$itemicon1'>
-			  <img title=\"$list[itemname2]\" alt='' width='28px' src='./img/items/$itemicon2'>
-			  <img title=\"$list[itemname3]\" alt='' width='28px' src='./img/items/$itemicon3'>
-			  <img title=\"$list[itemname4]\" alt='' width='28px' src='./img/items/$itemicon4'>
-			  <img title=\"$list[itemname5]\" alt='' width='28px' src='./img/items/$itemicon5'>
-			  <img title=\"$list[itemname6]\" alt='' width='28px' src='./img/items/$itemicon6'>
+			  <img $ic1 title=\"\" alt='' width='28px' src='./img/items/$itemicon1'>
+			  <img $ic2 title=\"\" alt='' width='28px' src='./img/items/$itemicon2'>
+			  <img $ic3 title=\"\" alt='' width='28px' src='./img/items/$itemicon3'>
+			  <img $ic4 title=\"\" alt='' width='28px' src='./img/items/$itemicon4'>
+			  <img $ic5 title=\"\" alt='' width='28px' src='./img/items/$itemicon5'>
+			  <img $ic6  title=\"\" alt='' width='28px' src='./img/items/$itemicon6'>
+			  
 			  </div>
 			  </td>
 			  
@@ -348,7 +417,6 @@ SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.new
     <div id='divActivities2'></div>";*/
   
   }
-  
   
   include('footer.php');
   ?>

@@ -33,6 +33,8 @@
 *
 -->
 **********************************************/
+     if (!$_GET) {echo 'This file cannot be called directly.'; die;}
+	  
      require_once ('../config.php');
 	 require_once("../lang/$default_language.php");
 	 require_once('../includes/class.database.php');

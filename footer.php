@@ -64,23 +64,23 @@
   $time = $time[1] + $time[0];
   $finish = $time;
   $total_time = round(($finish - $start), 4);
-	
-	if (isset($pageGen))
-	{
-   echo "<table><tr>
-   <td align='center'>Page generated in: $total_time sec with ".$db->get_query_cout()." queries.</td>
-   </tr></table><br>";   
-   }
 		   
    $data = array('Select style:',date('Y'),$chooses);
    $tags = array('{L_SEL_STYLE}','{Y}','{SELECT_STYLE}');
    
    echo str_replace($tags, $data, file_get_contents("./style/$default_style/footer.html"));
 			
-            while ($file = readdir($handle)) {echo "$file<br>";}
+            while ($file = readdir($handle)) {echo "$file";}
 			
             closedir($handle); 
          }
   echo "</select></form>";
+  	
+	if ($pageGen == 1)
+	{
+   echo "<table><tr>
+   <td align='center'>Page generated in: $total_time sec with ".$db->get_query_cout()." queries.</td>
+   </tr></table><br>";   
+   } else echo "<br>";
   
   ?> 

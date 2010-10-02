@@ -143,30 +143,75 @@ return $return.$return2.$seconds_left.".".$milliseconds;
      function getCountTops($games){
 	 $count = "
   SELECT COUNT(*) as count 
-  FROM( select name from gameplayers as gp, dotagames as dg, games as ga,dotaplayers as dp 
-  WHERE dg.winner <> 0 
-  AND dp.gameid = gp.gameid 
-  AND dg.gameid = dp.gameid 
-  AND dp.gameid = ga.id 
-  AND gp.gameid = dg.gameid 
-  AND gp.colour = dp.colour 
-  GROUP BY gp.name having count(*) >= $games) as h
+  FROM( 
+       SELECT name 
+	   FROM gameplayers as gp, 
+	   dotagames as dg, 
+	   games as ga,
+	   dotaplayers as dp 
+	   WHERE dg.winner <> 0 
+	   AND dp.gameid = gp.gameid 
+	   AND dg.gameid = dp.gameid 
+	   AND dp.gameid = ga.id 
+	   AND gp.gameid = dg.gameid 
+	   AND gp.colour = dp.colour 
+	   GROUP BY gp.name having count(*) >= $games) as h
   LIMIT 1";
   
   return $count;
 	 }
 
-     function getTops($scoreFormula,$minPlayedRatio,$games,$order,$sortdb,$offset,$rowsperpage){
-    $text = "SELECT *, case when (kills = 0) then 0 when (deaths = 0) then 1000 else ((kills*1.0)/(deaths*1.0)) end as killdeathratio, ($scoreFormula) as totalscore 
+     function getTops($scoreFormula,$minPlayedRatio,$games,$order,$sortdb,$offset,$rowsperpage,$DBScore,$ScoreMethod,$ScoreWins,$ScoreLosses,$ScoreDisc,$ScoreStart,$HideBannedUsersOnTop){
+	 if ($DBScore == 0)
+    {//($scoreFormula) as totalscore
+	    if ($ScoreMethod == 2) 
+		{$scoreFormula = "$ScoreStart + (wins*$ScoreWins) + (losses*$ScoreLosses) + (disc*$ScoreDisc)";}
+		
+	    if ($HideBannedUsersOnTop == 1) {$_sql = "AND bans.name is null";} else {$_sql = "";}
+		
+	$text = "
+	SELECT *, 
+	case when (kills = 0) then 0 
+	when (deaths = 0) then 1000 
+	else ((kills*1.0)/(deaths*1.0)) end as killdeathratio, 
+	($scoreFormula) as totalscore 
 	 FROM ( 
-	 SELECT gp.name as name, bans.name as banname, avg(dp.courierkills) as courierkills, avg(dp.raxkills) as raxkills,
-avg(dp.towerkills) as towerkills, avg(dp.assists) as assists, avg(dp.creepdenies) as creepdenies, avg(dp.creepkills) as creepkills,
-avg(dp.neutralkills) as neutralkills, avg(dp.deaths) as deaths, avg(dp.kills) as kills, count(*) as totgames, 
-case when (kills = 0) then 0 when (deaths = 0) then 1000 else ((kills*1.0)/(deaths*1.0)) end as killdeathratio,
-SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.newcolour > 6)) 
-     AND gp.`left`/ga.duration >= $minPlayedRatio) then 1 else 0 end) as wins, 
-     SUM(case when(((dg.winner = 2 and dp.newcolour < 6) or (dg.winner = 1 and dp.newcolour > 6)) 
-     AND gp.`left`/ga.duration >= $minPlayedRatio) then 1 else 0 end) as losses
+	 SELECT 
+	 gp.name as name, 
+	 bans.name as banname, 
+	 avg(dp.courierkills) as courierkills, 
+	 avg(dp.raxkills) as raxkills,
+	 avg(dp.towerkills) as towerkills, 
+	 avg(dp.assists) as assists, 
+	 avg(dp.creepdenies) as creepdenies, 
+	 avg(dp.creepkills) as creepkills,
+	 avg(dp.neutralkills) as neutralkills, 
+	 avg(dp.deaths) as deaths, 
+	 avg(dp.kills) as kills, 
+	 SUM(dp.kills) as totkills,
+	 SUM(dp.deaths) as totdeaths,
+	 COUNT(*) as totgames, 
+	 case when (kills = 0) then 0 
+	 when (deaths = 0) then 1000 
+	 else ((kills*1.0)/(deaths*1.0)) 
+	 end as killdeathratio,
+	 SUM(case when(((dg.winner = 1 and dp.newcolour < 6) 
+	 or (dg.winner = 2 and dp.newcolour > 6)) 
+     AND gp.`left`/ga.duration >= $minPlayedRatio) then 1 
+	 else 0 end) as wins, 
+     SUM(case when(((dg.winner = 2 and dp.newcolour < 6) 
+	 or (dg.winner = 1 and dp.newcolour > 6)) 
+     AND gp.`left`/ga.duration >= $minPlayedRatio) 
+	 then 1 else 0 end) as losses
+	 
+	 , SUM(
+	 (gp.`leftreason` LIKE ('%has lost the connection%'))  
+	 OR (gp.`leftreason` LIKE ('%was dropped%')) 
+	 OR (gp.`leftreason` LIKE ('%Lagged out%')) 
+	 OR (gp.`leftreason` LIKE ('%Dropped due to%'))
+	 ) as disc 
+	 
+	 
      FROM gameplayers as gp 
      LEFT JOIN dotagames as dg ON gp.gameid = dg.gameid 
      LEFT JOIN dotaplayers as dp ON dg.gameid = dp.gameid 
@@ -174,10 +219,53 @@ SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.new
 	 AND dp.newcolour <> 12 
 	 AND dp.newcolour <> 6
 	 LEFT JOIN games as ga ON dp.gameid = ga.id 
-	 LEFT JOIN bans on bans.name = gp.name
-	 WHERE dg.winner <> 0  
+	 LEFT JOIN bans on bans.name = gp.name 
+	 WHERE dg.winner <>0 $_sql
 	 GROUP BY gp.name having totgames >= $games) as i 
-	 ORDER BY $order $sortdb, name $sortdb LIMIT $offset, $rowsperpage";
+	 ORDER BY $order $sortdb, name $sortdb 
+	 LIMIT $offset, $rowsperpage";}
+	 else
+	 {
+	 if ($HideBannedUsersOnTop == 1) {$_sql = "AND bans.name is null";} else {$_sql = "";}
+	 
+	 $text = "
+	 SELECT *, 
+	 case when (kills = 0) then 0 
+	 when (deaths = 0) then 1000 
+	 else ((kills*1.0)/(deaths*1.0)) 
+	 end as killdeathratio 
+	 FROM (
+          SELECT gp.name as name, 
+		  bans.name as banname, 
+		  avg(dp.courierkills) as courierkills, 
+		  avg(dp.raxkills) as raxkills,
+		  avg(dp.towerkills) as towerkills, 
+		  avg(dp.assists) as assists, 
+		  avg(dp.creepdenies) as creepdenies, 
+		  avg(dp.creepkills) as creepkills,
+		  avg(dp.neutralkills) as neutralkills, 
+		  avg(dp.deaths) as deaths, 
+		  avg(dp.kills) as kills, 
+		  sc.score as totalscore, 
+		  COUNT(*) as totgames, 
+		  SUM(case when(((dg.winner = 1 and dp.newcolour < 6) 
+		  or (dg.winner = 2 and dp.newcolour > 6)) 
+		  AND gp.`left`/ga.duration >= $minPlayedRatio) then 1 else 0 end) as wins, 
+		  SUM(case when(((dg.winner = 2 and dp.newcolour < 6) 
+		  or (dg.winner = 1 and dp.newcolour > 6)) 
+		  AND gp.`left`/ga.duration >= $minPlayedRatio) then 1 else 0 end) as losses
+		  FROM gameplayers as gp 
+		  LEFT JOIN dotagames as dg ON gp.gameid = dg.gameid 
+		  LEFT JOIN dotaplayers as dp ON dg.gameid = dp.gameid 
+		  AND gp.colour = dp.colour and dp.newcolour <> 12 AND dp.newcolour <> 6
+		  LEFT JOIN games as ga ON dp.gameid = ga.id 
+		  LEFT JOIN scores as sc ON sc.name = gp.name 
+		  LEFT JOIN bans on bans.name = gp.name 
+		  WHERE dg.winner <> 0 $_sql
+		  GROUP BY gp.name having totgames >= $games) as i 
+	 ORDER BY $order $sortdb, name $sortdb 
+	 LIMIT $offset, $rowsperpage";
+	 }
 	 
 	 return $text;
 }
@@ -223,27 +311,53 @@ SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.new
 	}
 
     function getHeroInfo($heroid, $minPlayedRatio, $minPlayedRatio) {
-	$text = "SELECT *, (kills*1.0/deaths) as kdratio, (wins*1.0/losses) as winratio, summary, skills, stats From 
-	(SELECT count(*) as totgames, original,
-	SUM(case when(((c.winner = 1 and a.newcolour < 6) or (c.winner = 2 and a.newcolour > 6)) AND d.`left`/e.duration >= $minPlayedRatio) then 1 else 0 end) as wins, 
-	SUM(case when(((c.winner = 2 and a.newcolour < 6) or (c.winner = 1 and a.newcolour > 6)) AND d.`left`/e.duration >= $minPlayedRatio) then 1 else 0 end) as losses, 
-	SUM(kills) as kills, SUM(deaths) as deaths, SUM(assists) as assists, SUM(creepkills) as creepkills, SUM(creepdenies) as creepdenies, SUM(neutralkills) as neutralkills, SUM(towerkills) as towerkills, SUM(raxkills) as raxkills, SUM(courierkills) as courierkills
-	FROM dotaplayers AS a 
+	$text = "SELECT *, 
+	(kills*1.0/deaths) as kdratio, 
+	(wins*1.0/losses) as winratio, 
+	summary, 
+	skills, 
+	stats 
+	FROM 
+	(SELECT count(*) as totgames, 
+	original,
+	SUM(case when(((dg.winner = 1 and dp.newcolour < 6) 
+	or (dg.winner = 2 and dp.newcolour > 6)) 
+	AND gp.`left`/g.duration >= $minPlayedRatio) then 1 else 0 end) as wins, 
+	SUM(case when(((dg.winner = 2 and dp.newcolour < 6) 
+	or (dg.winner = 1 and dp.newcolour > 6)) 
+	AND gp.`left`/g.duration >= $minPlayedRatio) then 1 else 0 end) as losses, 
+	SUM(kills) as kills, 
+	SUM(deaths) as deaths, 
+	SUM(assists) as assists, 
+	SUM(creepkills) as creepkills, 
+	SUM(creepdenies) as creepdenies, 
+	SUM(neutralkills) as neutralkills, 
+	SUM(towerkills) as towerkills, 
+	SUM(raxkills) as raxkills, 
+	SUM(courierkills) as courierkills
+	FROM dotaplayers AS dp 
 	LEFT JOIN heroes as b ON hero = heroid 
-	LEFT JOIN dotagames as c ON c.gameid = a.gameid
-	LEFT JOIN gameplayers as d ON d.gameid = a.gameid and a.colour = d.colour 
-	LEFT JOIN games as e ON d.gameid = e.id where original='$heroid' group by original) as y 
-	LEFT JOIN heroes as z ON y.original = z.heroid";
+	LEFT JOIN dotagames as dg ON dg.gameid = dp.gameid
+	LEFT JOIN gameplayers as gp ON gp.gameid = dp.gameid and dp.colour = gp.colour 
+	LEFT JOIN games as g ON gp.gameid = g.id 
+	WHERE original='$heroid' 
+	GROUP BY original) as y 
+	LEFT JOIN heroes as h ON y.original = h.heroid";
 	
 	return $text;
 	}
 	
 	function getHeroHistoryCount($heroid) {
-	$text = "SELECT Count(*) as  count 
-	 FROM (SELECT name FROM dotaplayers AS a LEFT JOIN gameplayers AS b ON b.gameid = a.gameid and a.colour = b.colour 
-     LEFT JOIN dotagames AS c ON c.gameid = a.gameid 
-     LEFT JOIN games AS d ON d.id = a.gameid LEFT JOIN heroes as e ON a.hero = heroid 
-     WHERE heroid = '$heroid')as t";
+	$text = "
+	SELECT COUNT(*) AS  count 
+	 FROM (
+	       SELECT name 
+	       FROM dotaplayers AS dp 
+	       LEFT JOIN gameplayers AS gp ON gp.gameid = dp.gameid and dp.colour = gp.colour 
+	       LEFT JOIN dotagames AS dg ON dg.gameid = dp.gameid 
+	       LEFT JOIN games AS g ON g.id = dp.gameid 
+	       LEFT JOIN heroes as e ON dp.hero = heroid 
+	       WHERE heroid = '$heroid')as t LIMIT 1";
  
 	return $text;
 	}
@@ -252,32 +366,72 @@ SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.new
 	
 	
 	function getHeroHistory($minPlayedRatio,$heroid,$order,$sortdb,$offset, $rowsperpage,$LEAVER) {
-	$text = "SELECT CASE WHEN (kills = 0) THEN 0 WHEN (deaths = 0) then 1000 ELSE (kills*1.0/deaths*1.0) end as kdratio, a.gameid as gameid, d.gamename, kills, deaths, assists, creepkills, neutralkills, creepdenies, towerkills, raxkills, courierkills, b.name as name, f.name as banname, CASE when(gamestate = '17') then 'PRIV' else 'PUB' end as type, 
-  CASE when ((winner=1 and newcolour < 6) or (winner=2 and newcolour > 5)) AND b.`left`/d.duration >= $minPlayedRatio  then 'WON' when ((winner=2 and newcolour < 6) or (winner=1 and newcolour > 5)) AND b.`left`/d.duration >= $minPlayedRatio  then 'LOST' when  winner=0 then 'DRAW' else '$LEAVER' end as result
- FROM dotaplayers AS a LEFT JOIN gameplayers AS b ON b.gameid = a.gameid and a.colour = b.colour 
- LEFT JOIN dotagames AS c ON c.gameid = a.gameid 
- LEFT JOIN games AS d ON d.id = a.gameid 
- LEFT JOIN heroes as e ON a.hero = heroid 
- LEFT JOIN bans as f ON b.name = f.name
- WHERE original = '$heroid' 
- ORDER BY $order $sortdb LIMIT $offset, $rowsperpage";
+	$text = "
+	SELECT CASE WHEN (kills = 0) THEN 0 WHEN (deaths = 0) then 1000 ELSE (kills*1.0/deaths*1.0) end as kdratio, 
+	dp.gameid as gameid, 
+	g.gamename, 
+	kills, 
+	deaths,
+	assists, 
+	creepkills, 
+	neutralkills, 
+	creepdenies, 
+	towerkills, 
+	raxkills, 
+	courierkills, 
+	b.name as name, 
+	f.name as banname, 
+	CASE when(gamestate = '17') then 'PRIV' else 'PUB' end as type, 
+	CASE when ((winner=1 AND newcolour < 6) 
+	or (winner=2 and newcolour > 5)) 
+	AND b.`left`/g.duration >= $minPlayedRatio  then 'WON' when ((winner=2 AND newcolour < 6) 
+	or (winner=1 and newcolour > 5)) 
+	AND b.`left`/g.duration >= $minPlayedRatio  then 'LOST' when  winner=0 then 'DRAW' else '$LEAVER' end as result 
+	FROM dotaplayers AS dp 
+	LEFT JOIN gameplayers AS b ON b.gameid = dp.gameid 
+	AND dp.colour = b.colour 
+	LEFT JOIN dotagames AS dg ON dg.gameid = dp.gameid
+	LEFT JOIN games AS g ON g.id = dp.gameid 
+	LEFT JOIN heroes as e ON dp.hero = heroid 
+	LEFT JOIN bans as f ON b.name = f.name 
+	WHERE original = '$heroid' 
+	ORDER BY $order $sortdb 
+	LIMIT $offset, $rowsperpage";
  
 	return $text;
 	}
 	
-	function getUserGameHistory($LEAVER,$username,$order,$sortdb,$offset, $rowsperpage) {
-	$text = "SELECT winner, a.gameid as id, newcolour, datetime, gamename, original, description, kills, deaths, assists, creepkills, creepdenies, neutralkills, name, 
- CASE when(gamestate = '17') then 'PRIV' else 'PUB' end as type,
- CASE WHEN (kills = 0) THEN 0 WHEN (deaths = 0) then 1000 ELSE (kills*1.0/deaths) end as kdratio,
- CASE when ((winner=1 and newcolour < 6) or (winner=2 and newcolour > 5)) AND b.`left`/d.duration >= 0.8  then 'WON' when ((winner=2 and newcolour < 6) or (winner=1 and newcolour > 5)) AND b.`left`/d.duration >= 0.8  then 'LOST' when  winner=0 then 'DRAW' else '$LEAVER' end as outcome 
- FROM dotaplayers AS a 
- LEFT JOIN gameplayers AS b ON b.gameid = a.gameid and a.colour = b.colour 
- LEFT JOIN dotagames AS c ON c.gameid = a.gameid 
- LEFT JOIN games AS d ON d.id = a.gameid 
- LEFT JOIN heroes as e ON a.hero = heroid 
- WHERE LOWER(name) = LOWER('$username') and original <> 'NULL' 
- ORDER BY $order $sortdb, d.id $sortdb 
- LIMIT $offset, $rowsperpage";
+	function getUserGameHistory($LEAVER,$username,$order,$sortdb,$offset, $rowsperpage,$minPlayedRatio) {
+	$text = "SELECT 
+	winner, 
+	dp.gameid as id, 
+	newcolour, 
+	datetime, 
+	gamename, 
+	original, 
+	description, 
+	kills, 
+	deaths, 
+	assists, 
+	creepkills, 
+	creepdenies, 
+	neutralkills, 
+	name, 
+    CASE when(gamestate = '17') then 'PRIV' else 'PUB' end as type,
+    CASE WHEN (kills = 0) THEN 0 WHEN (deaths = 0) then 1000 ELSE (kills*1.0/deaths) end as kdratio,
+    CASE when ((winner=1 and newcolour < 6) 
+	or (winner=2 and newcolour > 5)) 
+	AND gp.`left`/g.duration >= $minPlayedRatio  then 'WON' when ((winner=2 and newcolour < 6) 
+	or (winner=1 and newcolour > 5)) 
+	AND gp.`left`/g.duration >= $minPlayedRatio  then 'LOST' when  winner=0 then 'DRAW' else '$LEAVER' end as outcome 
+	FROM dotaplayers AS dp 
+	LEFT JOIN gameplayers AS gp ON gp.gameid = dp.gameid and dp.colour = gp.colour 
+	LEFT JOIN dotagames AS dg ON dg.gameid = dp.gameid 
+	LEFT JOIN games AS g ON g.id = dp.gameid 
+	LEFT JOIN heroes as e ON dp.hero = heroid 
+	WHERE LOWER(name) = LOWER('$username') and original <> 'NULL' 
+	ORDER BY $order $sortdb, g.id $sortdb 
+	LIMIT $offset, $rowsperpage";
  
 	return $text;
 	}

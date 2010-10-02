@@ -378,21 +378,13 @@ opacity: 0.1;
 }
 
 
-.Achieved{
-color:#007F0F;
-}
+.Achieved{color:#FCFF00;}
+.NotAchieved{color:#6F6F6F;}
 
-.NotAchieved{
-color:#6F6F6F;
-}
-
-.PositivePoints {
-color:#0DB900;
-}
-
-.NegativePoints {
-color:#DF0000;
-}
+.PositivePoints {color:#0DB900;}
+.NegativePoints {color:#FFE327;}
+.DrawGame{color:#FFE327;}
+.DisconnectPoints{color:#D00005;}
 
 #dhtmltooltip{
 position: absolute;

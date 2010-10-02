@@ -56,7 +56,7 @@
    $lang["monthly_top"],
    $lang["home"],
    $lang["search"],
-   "dota,allstars,stats,open stats",
+   "dota,stats,open stats,statistics,hero,users",
    "Dota Open Stats",
    $lang["dota_games"],
    $lang["admins"],

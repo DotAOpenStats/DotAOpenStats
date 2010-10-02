@@ -366,7 +366,6 @@ class database {
     
         // Execute the query:
         $q_id = @mysql_query($query_string, $this->link_ident);
-    
         // Update query count
         $this->query_count++;
     
@@ -375,8 +374,9 @@ class database {
             $this->error('The database returned a invalid result.');
             return false;
         }
-    
+		
         return $q_id;
+		 
     }
     
 

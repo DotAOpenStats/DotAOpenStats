@@ -34,6 +34,8 @@
 -->
 **********************************************/
 
+   if ($HideBannedUsersOnTop ==1) {$hide_banned = "AND bans.name is null";} else {$hide_banned = "";}
+
    if ($monthRow1 == 1)
    {
      echo "<div align='center'><table class='tableA'> <tr>
@@ -46,16 +48,17 @@
 	 <td valign='top'>
 	        <table>";
 
-   $phraseKills = "SELECT original as topHero, description as topHeroName, kills as topValue, b.name as topUser, a.gameid as topGame
+   $stepKills = "SELECT original as topHero, description as topHeroName, kills as topValue, b.name as topUser, a.gameid as topGame
 		FROM dotaplayers AS a 
 		LEFT JOIN gameplayers AS b ON b.gameid = a.gameid and a.colour = b.colour 
 		LEFT JOIN games as c on a.gameid = c.id 
 		LEFT JOIN bans on b.name = bans.name 
 		JOIN heroes as d on hero = heroid 
 		WHERE $sqlYear = '$year' AND $sqlMonth = '$month' $day_stats
-		AND bans.name is null  ORDER BY topValue DESC, a.id ASC LIMIT $monthly_stats";
+		$hide_banned  ORDER BY topValue DESC, a.id ASC LIMIT $monthly_stats";
 		
-		$result = $db->query($phraseKills);
+		$result = $db->query($stepKills);
+		$db->close($result);
 		while ($list = $db->fetch_array($result,'assoc')) {
 		if ($list["topValue"]>0)
 		{echo "<tr class='row'><td width='180px'><a href='hero.php?hero=$list[topHero]' title='$list[topHeroName]'>
@@ -73,15 +76,15 @@
 		      <td valign='top'><table>";
 			  
 			  
-		$phraseAssists = "SELECT original as topHero, description as topHeroName, assists as topValue, b.name as topUser, a.gameid as topGame
+		$stepAssists = "SELECT original as topHero, description as topHeroName, assists as topValue, b.name as topUser, a.gameid as topGame
 		FROM dotaplayers AS a 
 		LEFT JOIN gameplayers AS b ON b.gameid = a.gameid and a.colour = b.colour 
 		LEFT JOIN games as c on a.gameid = c.id 
         LEFT JOIN bans on b.name = bans.name 		
 		JOIN heroes as d on hero = heroid WHERE $sqlYear = '$year' AND $sqlMonth = '$month' $day_stats
-		AND bans.name is null  ORDER BY topValue DESC, a.id ASC LIMIT $monthly_stats";
+		$hide_banned  ORDER BY topValue DESC, a.id ASC LIMIT $monthly_stats";
 		
-		$result = $db->query($phraseAssists);
+		$result = $db->query($stepAssists);
 		while ($list = $db->fetch_array($result,'assoc')) {
 		if ($list["topValue"]>0)
 		{echo "<tr class='row'><td width='180px'><a href='hero.php?hero=$list[topHero]' title='$list[topHeroName]'>
@@ -100,15 +103,15 @@
 		      <td valign='top'><table>";
 			  
 			  
-		$phraseDeaths = "SELECT original as topHero, description as topHeroName, deaths as topValue, b.name as topUser, a.gameid as topGame
+		$stepDeaths = "SELECT original as topHero, description as topHeroName, deaths as topValue, b.name as topUser, a.gameid as topGame
 		FROM dotaplayers AS a 
 		LEFT JOIN gameplayers AS b ON b.gameid = a.gameid and a.colour = b.colour 
 		LEFT JOIN games as c on a.gameid = c.id 
         LEFT JOIN bans on b.name = bans.name 		
 		JOIN heroes as d on hero = heroid WHERE $sqlYear = '$year' AND $sqlMonth = '$month' $day_stats
-		AND bans.name is null  ORDER BY topValue DESC, a.id ASC LIMIT $monthly_stats";
+		 $hide_banned  ORDER BY topValue DESC, a.id ASC LIMIT $monthly_stats";
 		
-		$result = $db->query($phraseDeaths);
+		$result = $db->query($stepDeaths);
 		while ($list = $db->fetch_array($result,'assoc')) {
 		if ($list["topValue"]>0)
 		{echo "<tr class='row'><td width='180px'><a href='hero.php?hero=$list[topHero]' title='$list[topHeroName]'>
@@ -126,15 +129,15 @@
 		      <td valign='top'><table>";
 			  
 			  
-		$phraseCK = "SELECT original as topHero, description as topHeroName, creepkills as topValue, b.name as topUser, a.gameid as topGame
+		$stepCK = "SELECT original as topHero, description as topHeroName, creepkills as topValue, b.name as topUser, a.gameid as topGame
 		FROM dotaplayers AS a 
 		LEFT JOIN gameplayers AS b ON b.gameid = a.gameid and a.colour = b.colour 
 		LEFT JOIN games as c on a.gameid = c.id 
         LEFT JOIN bans on b.name = bans.name 		
 		JOIN heroes as d on hero = heroid WHERE $sqlYear = '$year' AND $sqlMonth = '$month' $day_stats
-		AND bans.name is null  ORDER BY topValue DESC, a.id ASC LIMIT $monthly_stats";
+		 $hide_banned  ORDER BY topValue DESC, a.id ASC LIMIT $monthly_stats";
 		
-		$result = $db->query($phraseCK);
+		$result = $db->query($stepCK);
 		while ($list = $db->fetch_array($result,'assoc')) {
 		if ($list["topValue"]>0)
 		{echo "<tr class='row'><td width='180px'><a href='hero.php?hero=$list[topHero]' title='$list[topHeroName]'>
@@ -151,15 +154,15 @@
 		echo "</td>
 		      <td valign='top'><table>";
 			  
-		$phraseCD = "SELECT original as topHero, description as topHeroName, creepdenies as topValue, b.name as topUser, a.gameid as topGame
+		$stepCD = "SELECT original as topHero, description as topHeroName, creepdenies as topValue, b.name as topUser, a.gameid as topGame
 		FROM dotaplayers AS a 
 		LEFT JOIN gameplayers AS b ON b.gameid = a.gameid and a.colour = b.colour 
 		LEFT JOIN games as c on a.gameid = c.id 
         LEFT JOIN bans on b.name = bans.name 		
 		JOIN heroes as d on hero = heroid WHERE $sqlYear = '$year' AND $sqlMonth = '$month' $day_stats
-		AND bans.name is null  ORDER BY topValue DESC, a.id ASC LIMIT $monthly_stats";
+		 $hide_banned  ORDER BY topValue DESC, a.id ASC LIMIT $monthly_stats";
 		
-		$result = $db->query($phraseCD);
+		$result = $db->query($stepCD);
 		while ($list = $db->fetch_array($result,'assoc')) {
 		if ($list["topValue"]>0)
 		{echo "<tr class='row'><td width='180px'><a href='hero.php?hero=$list[topHero]' title='$list[topHeroName]'>
@@ -188,16 +191,16 @@
 	 <td valign='top'>
 	        <table>";
 		
-		$phraseGold = "SELECT original as topHero, description as topHeroName, gold as topValue, b.name as topUser, a.gameid as topGame
+		$stepGold = "SELECT original as topHero, description as topHeroName, gold as topValue, b.name as topUser, a.gameid as topGame
 		FROM dotaplayers AS a 
 		LEFT JOIN gameplayers AS b ON b.gameid = a.gameid and a.colour = b.colour 
 		LEFT JOIN games as c on a.gameid = c.id 
 		LEFT JOIN bans on b.name = bans.name 
 		JOIN heroes as d on hero = heroid 
 		WHERE $sqlYear = '$year' AND $sqlMonth = '$month' $day_stats
-		AND bans.name is null  ORDER BY topValue DESC, a.id ASC LIMIT $monthly_stats";
+		 $hide_banned  ORDER BY topValue DESC, a.id ASC LIMIT $monthly_stats";
 		
-		$result = $db->query($phraseGold);
+		$result = $db->query($stepGold);
 		while ($list = $db->fetch_array($result,'assoc')) {
 		if ($list["topValue"]>0)
 		{echo "<tr class='row'><td width='180px'><a href='hero.php?hero=$list[topHero]' title='$list[topHeroName]'>
@@ -214,15 +217,15 @@
 		echo "</td>
 		      <td valign='top'><table>";  
 			  
-		$phraseCK = "SELECT original as topHero, description as topHeroName, neutralkills as topValue, b.name as topUser, a.gameid as topGame
+		$stepCK = "SELECT original as topHero, description as topHeroName, neutralkills as topValue, b.name as topUser, a.gameid as topGame
 		FROM dotaplayers AS a 
 		LEFT JOIN gameplayers AS b ON b.gameid = a.gameid and a.colour = b.colour 
 		LEFT JOIN games as c on a.gameid = c.id 
         LEFT JOIN bans on b.name = bans.name 		
 		JOIN heroes as d on hero = heroid WHERE $sqlYear = '$year' AND $sqlMonth = '$month' $day_stats
-		AND bans.name is null  ORDER BY topValue DESC, a.id ASC LIMIT $monthly_stats";
+		 $hide_banned  ORDER BY topValue DESC, a.id ASC LIMIT $monthly_stats";
 		
-		$result = $db->query($phraseCK);
+		$result = $db->query($stepCK);
 		while ($list = $db->fetch_array($result,'assoc')) {
 		if ($list["topValue"]>0)
 		{echo "<tr class='row'><td width='180px'><a href='hero.php?hero=$list[topHero]' title='$list[topHeroName]'>
@@ -239,15 +242,15 @@
 		echo "</td>
 		      <td valign='top'><table>";  
 			  
-		$phraseCK = "SELECT original as topHero, description as topHeroName, towerkills as topValue, b.name as topUser, a.gameid as topGame
+		$stepCK = "SELECT original as topHero, description as topHeroName, towerkills as topValue, b.name as topUser, a.gameid as topGame
 		FROM dotaplayers AS a 
 		LEFT JOIN gameplayers AS b ON b.gameid = a.gameid and a.colour = b.colour 
 		LEFT JOIN games as c on a.gameid = c.id 
         LEFT JOIN bans on b.name = bans.name 		
 		JOIN heroes as d on hero = heroid WHERE $sqlYear = '$year' AND $sqlMonth = '$month' $day_stats
-		AND bans.name is null  ORDER BY topValue DESC, a.id ASC LIMIT $monthly_stats";
+		 $hide_banned  ORDER BY topValue DESC, a.id ASC LIMIT $monthly_stats";
 		
-		$result = $db->query($phraseCK);
+		$result = $db->query($stepCK);
 		while ($list = $db->fetch_array($result,'assoc')) {
 		if ($list["topValue"]>0)
 		{echo "<tr class='row'><td width='180px'><a href='hero.php?hero=$list[topHero]' title='$list[topHeroName]'>
@@ -264,15 +267,15 @@
 		echo "</td>
 		      <td valign='top'><table>";  
 			  
-		$phraseCK = "SELECT original as topHero, description as topHeroName, raxkills as topValue, b.name as topUser, a.gameid as topGame
+		$stepCK = "SELECT original as topHero, description as topHeroName, raxkills as topValue, b.name as topUser, a.gameid as topGame
 		FROM dotaplayers AS a 
 		LEFT JOIN gameplayers AS b ON b.gameid = a.gameid and a.colour = b.colour 
 		LEFT JOIN games as c on a.gameid = c.id 
         LEFT JOIN bans on b.name = bans.name 		
 		JOIN heroes as d on hero = heroid WHERE $sqlYear = '$year' AND $sqlMonth = '$month' $day_stats
-		AND bans.name is null  ORDER BY topValue DESC, a.id ASC LIMIT $monthly_stats";
+		 $hide_banned  ORDER BY topValue DESC, a.id ASC LIMIT $monthly_stats";
 		
-		$result = $db->query($phraseCK);
+		$result = $db->query($stepCK);
 		while ($list = $db->fetch_array($result,'assoc')) {
 		if ($list["topValue"]>0)
 		{echo "<tr class='row'><td width='180px'><a href='hero.php?hero=$list[topHero]' title='$list[topHeroName]'>
@@ -289,16 +292,16 @@
 		echo "</td>
 		      <td valign='top'><table>";  
 			  
-		$phraseCK = "SELECT original as topHero, description as topHeroName, courierkills as topValue, b.name as topUser, a.gameid as topGame
+		$stepCK = "SELECT original as topHero, description as topHeroName, courierkills as topValue, b.name as topUser, a.gameid as topGame
 		FROM dotaplayers AS a 
 		LEFT JOIN gameplayers AS b ON b.gameid = a.gameid and a.colour = b.colour 
 		LEFT JOIN games as c on a.gameid = c.id 
         LEFT JOIN bans on b.name = bans.name 		
 		JOIN heroes as d on hero = heroid 
 		WHERE $sqlYear = '$year' AND $sqlMonth = '$month' $day_stats
-		AND bans.name is null  ORDER BY topValue DESC, a.id ASC LIMIT $monthly_stats";
+		 $hide_banned  ORDER BY topValue DESC, a.id ASC LIMIT $monthly_stats";
 		
-		$result = $db->query($phraseCK);
+		$result = $db->query($stepCK);
 		while ($list = $db->fetch_array($result,'assoc')) {
 		if ($list["topValue"]>0)
 		{echo "<tr class='row'><td width='180px'><a href='hero.php?hero=$list[topHero]' title='$list[topHeroName]'>
@@ -328,7 +331,7 @@
 	 <td valign='top'>
 	        <table>";
 			
-		$phraseKDR = "SELECT name as topUser, case when (totKills = 0) then 0 when (totDeaths = 0) then 1000 else ((totKills*1.0)/(totDeaths*1.0)) end as topValue from (Select b.name as name, MAX(a.id) as id,
+		$stepKDR = "SELECT name as topUser, case when (totKills = 0) then 0 when (totDeaths = 0) then 1000 else ((totKills*1.0)/(totDeaths*1.0)) end as topValue from (Select b.name as name, MAX(a.id) as id,
 		SUM(kills) as totKills,
 		SUM(deaths) as totDeaths 
 		FROM dotaplayers AS a 
@@ -339,12 +342,12 @@
 		WHERE winner <> 0 
 		AND $sqlYear = '$year' 
 		AND $sqlMonth = '$month' $day_stats 
-		AND bans.name is null 
+		 $hide_banned 
 		GROUP BY b.name having count(*) >= $minGamesPlayed) as subsel 
 		ORDER BY topValue DESC, id ASC 
 		LIMIT $monthly_stats";
 		
-		$result = $db->query($phraseKDR);
+		$result = $db->query($stepKDR);
 		while ($list = $db->fetch_array($result,'assoc')) {
 		$list["topValue"] = ROUND($list["topValue"],2);
 		if ($list["topValue"]>0)
@@ -358,7 +361,7 @@
 		echo "</td>
 		      <td valign='top'><table>";  
 			  
-		$phraseADR = "SELECT name as topUser, case when (totAssists = 0) then 0 when (totDeaths = 0) then 1000 else ((totAssists*1.0)/(totDeaths*1.0)) end as topValue from (Select b.name as name, MAX(a.id) as id,
+		$stepADR = "SELECT name as topUser, case when (totAssists = 0) then 0 when (totDeaths = 0) then 1000 else ((totAssists*1.0)/(totDeaths*1.0)) end as topValue from (Select b.name as name, MAX(a.id) as id,
 		SUM(assists) as totAssists,
 		SUM(deaths) as totDeaths 
 		FROM dotaplayers AS a 
@@ -369,12 +372,12 @@
 		where winner <> 0 
 		AND $sqlYear = '$year' 
 		AND $sqlMonth = '$month' $day_stats 
-		AND bans.name is null 
+		 $hide_banned 
 		GROUP BY b.name having count(*) >= $minGamesPlayed) as subsel 
 		ORDER BY topValue DESC, id ASC 
 		LIMIT $monthly_stats";
 		
-		$result = $db->query($phraseADR);
+		$result = $db->query($stepADR);
 		while ($list = $db->fetch_array($result,'assoc')) {
 		$list["topValue"] = ROUND($list["topValue"],2);
 		if ($list["topValue"]>0)
@@ -388,7 +391,7 @@
 		echo "</td>
 		      <td valign='top'><table>";  
 			  
-		$phraseMG = "SELECT name as topUser, totGames as topValue from (Select b.name as name, MAX(a.id) as id,
+		$stepMG = "SELECT name as topUser, totGames as topValue from (Select b.name as name, MAX(a.id) as id,
 		COUNT(*) as totGames,
 		SUM(deaths) as totDeaths 
 		FROM dotaplayers AS a 
@@ -404,7 +407,7 @@
 		ORDER BY topValue DESC, id ASC 
 		LIMIT $monthly_stats";
 		
-		$result = $db->query($phraseMG);
+		$result = $db->query($stepMG);
 		while ($list = $db->fetch_array($result,'assoc')) {
 		$list["topValue"] = ROUND($list["topValue"],2);
 		if ($list["topValue"]>0)
@@ -418,7 +421,7 @@
 		echo "</td>
 		      <td valign='top'><table>";  
 			  
-		$phraseBW = "SELECT name as topUser, 100*wins*1.0/(totgames*1.0) as topValue, ' %' as topValueUnit from (Select b.name as name, MAX(a.id) as id,
+		$stepBW = "SELECT name as topUser, 100*wins*1.0/(totgames*1.0) as topValue, ' %' as topValueUnit from (Select b.name as name, MAX(a.id) as id,
 		count(*) as totgames,
 		SUM(case when((d.winner = 1 and a.newcolour < 6) or (d.winner = 2 and a.newcolour > 6)) then 1 else 0 end) as wins, 
 		SUM(case when((d.winner = 2 and a.newcolour < 6) or (d.winner = 1 and a.newcolour > 6)) then 1 else 0 end) as losses
@@ -427,7 +430,7 @@
 		LEFT JOIN games as c on a.gameid = c.id 
 		LEFT JOIN dotagames as d on d.gameid = c.id 
 		LEFT JOIN bans on b.name = bans.name  
-		where winner <> 0 AND bans.name is null  
+		where winner <> 0  $hide_banned  
 		AND b.name is not null  
 		AND $sqlYear = '$year' 
 		AND $sqlMonth = '$month' $day_stats 
@@ -436,7 +439,7 @@
 		ORDER BY topValue DESC, id ASC 
 		LIMIT $monthly_stats";
 		
-		$result = $db->query($phraseBW);
+		$result = $db->query($stepBW);
 		while ($list = $db->fetch_array($result,'assoc')) {
 		$list["topValue"] = ROUND($list["topValue"],1);
 		if ($list["topValue"]>0)
@@ -450,7 +453,7 @@
 		echo "</td>
 		      <td valign='top'><table>";  
 			  
-		$phraseTS = "SELECT name as topUser, 100*playedTime*1.0/gameDuration*1.0 as topValue, ' %' as topValueUnit from (Select b.name as name, MAX(a.id) as id,
+		$stepTS = "SELECT name as topUser, 100*playedTime*1.0/gameDuration*1.0 as topValue, ' %' as topValueUnit from (Select b.name as name, MAX(a.id) as id,
 		SUM(`left`) as playedTime,
 		SUM(duration) as gameDuration 
 		FROM dotaplayers AS a 
@@ -458,7 +461,7 @@
 		LEFT JOIN games as c on a.gameid = c.id 
 		LEFT JOIN dotagames as d on d.gameid = c.id 
 		LEFT JOIN bans on b.name = bans.name  
-		where winner <> 1000 AND bans.name is null  
+		where winner <> 1000  $hide_banned  
 		AND b.name is not null  
 		AND $sqlYear = '$year' 
 		AND $sqlMonth = '$month' $day_stats 
@@ -466,7 +469,7 @@
 		ORDER BY topValue DESC, id ASC 
 		LIMIT $monthly_stats";
 		
-		$result = $db->query($phraseTS);
+		$result = $db->query($stepTS);
 		while ($list = $db->fetch_array($result,'assoc')) {
 		$list["topValue"] = ROUND($list["topValue"],1);
 		if ($list["topValue"]>0)
@@ -493,7 +496,7 @@
 	 <td valign='top'>
 	        <table>";
 			
-		$phraseMK = "SELECT name as topUser, sumKills as topValue from (Select b.name as name, MAX(a.id) as id,
+		$stepMK = "SELECT name as topUser, sumKills as topValue from (Select b.name as name, MAX(a.id) as id,
 		SUM(kills) as sumKills 
 		FROM dotaplayers AS a 
 		LEFT JOIN gameplayers AS b ON a.gameid = b.gameid and a.colour = b.colour 
@@ -502,12 +505,12 @@
 		LEFT JOIN bans on b.name = bans.name  
 		WHERE $sqlYear = '$year' 
 		AND $sqlMonth = '$month' $day_stats 
-		AND bans.name is null 
+		 $hide_banned 
 		GROUP BY b.name having count(*) >= $minGamesPlayed) as subsel 
 		ORDER BY topValue DESC, id ASC 
 		LIMIT $monthly_stats";
 		
-		$result = $db->query($phraseMK);
+		$result = $db->query($stepMK);
 		while ($list = $db->fetch_array($result,'assoc')) {
 		$list["topValue"] = ROUND($list["topValue"],2);
 		if ($list["topValue"]>0)
@@ -521,7 +524,7 @@
 		echo "</td>
 		      <td valign='top'><table>";  
 			  
-		$phraseMA = "SELECT name as topUser, sumAssists as topValue from (Select b.name as name, MAX(a.id) as id,
+		$stepMA = "SELECT name as topUser, sumAssists as topValue from (Select b.name as name, MAX(a.id) as id,
 		SUM(assists) as sumAssists 
 		FROM dotaplayers AS a 
 		LEFT JOIN gameplayers AS b ON a.gameid = b.gameid and a.colour = b.colour 
@@ -530,12 +533,12 @@
 		LEFT JOIN bans on b.name = bans.name  
 		WHERE $sqlYear = '$year' 
 		AND $sqlMonth = '$month' $day_stats 
-		AND bans.name is null 
+		 $hide_banned 
 		GROUP BY b.name having count(*) >= $minGamesPlayed) as subsel 
 		ORDER BY topValue DESC, id ASC 
 		LIMIT $monthly_stats";
 		
-		$result = $db->query($phraseMA);
+		$result = $db->query($stepMA);
 		while ($list = $db->fetch_array($result,'assoc')) {
 		$list["topValue"] = ROUND($list["topValue"]);
 		   if ($list["topValue"]>0)
@@ -549,7 +552,7 @@
 		echo "</td>
 		      <td valign='top'><table>";  
 			  
-		$phraseMD = "SELECT name as topUser, sumDeaths as topValue from (Select b.name as name, MAX(a.id) as id,
+		$stepMD = "SELECT name as topUser, sumDeaths as topValue from (Select b.name as name, MAX(a.id) as id,
 		SUM(deaths) as sumDeaths 
 		FROM dotaplayers AS a 
 		LEFT JOIN gameplayers AS b ON a.gameid = b.gameid and a.colour = b.colour 
@@ -558,12 +561,12 @@
 		LEFT JOIN bans on b.name = bans.name  
 		WHERE $sqlYear = '$year' 
 		AND $sqlMonth = '$month' $day_stats 
-		AND bans.name is null 
+		 $hide_banned 
 		GROUP BY b.name having count(*) >= $minGamesPlayed) as subsel 
 		ORDER BY topValue DESC, id ASC 
 		LIMIT $monthly_stats";
 		
-		$result = $db->query($phraseMD);
+		$result = $db->query($stepMD);
 		while ($list = $db->fetch_array($result,'assoc')) {
 
 		   if ($list["topValue"]>0)
@@ -577,7 +580,7 @@
 		echo "</td>
 		      <td valign='top'><table>";  
 			  
-		$phraseCK = "SELECT name as topUser, sumCreepKills as topValue from (Select b.name as name, MAX(a.id) as id,
+		$stepCK = "SELECT name as topUser, sumCreepKills as topValue from (Select b.name as name, MAX(a.id) as id,
 		SUM(creepkills) as sumCreepKills 
 		FROM dotaplayers AS a 
 		LEFT JOIN gameplayers AS b ON a.gameid = b.gameid and a.colour = b.colour 
@@ -586,12 +589,12 @@
 		LEFT JOIN bans on b.name = bans.name  
 		WHERE $sqlYear = '$year' 
 		AND $sqlMonth = '$month' $day_stats 
-		AND bans.name is null 
+		 $hide_banned 
 		GROUP BY b.name having count(*) >= $minGamesPlayed) as subsel 
 		ORDER BY topValue DESC, id ASC 
 		LIMIT $monthly_stats";
 		
-		$result = $db->query($phraseCK);
+		$result = $db->query($stepCK);
 		while ($list = $db->fetch_array($result,'assoc')) {
 
 		   if ($list["topValue"]>0)
@@ -606,7 +609,7 @@
 		echo "</td>
 		      <td valign='top'><table>";  
 			  
-		$phraseCK = "SELECT name as topUser, sumCreepDenies as topValue from (Select b.name as name, MAX(a.id) as id,
+		$stepCK = "SELECT name as topUser, sumCreepDenies as topValue from (Select b.name as name, MAX(a.id) as id,
 		SUM(creepdenies) as sumCreepDenies 
 		FROM dotaplayers AS a 
 		LEFT JOIN gameplayers AS b ON a.gameid = b.gameid and a.colour = b.colour 
@@ -615,12 +618,12 @@
 		LEFT JOIN bans on b.name = bans.name  
 		WHERE $sqlYear = '$year' 
 		AND $sqlMonth = '$month' $day_stats 
-		AND bans.name is null 
+		 $hide_banned 
 		GROUP BY b.name having count(*) >= $minGamesPlayed) as subsel 
 		ORDER BY topValue DESC, id ASC 
 		LIMIT $monthly_stats";
 		
-		$result = $db->query($phraseCK);
+		$result = $db->query($stepCK);
 		while ($list = $db->fetch_array($result,'assoc')) {
 
 		   if ($list["topValue"]>0)
@@ -644,7 +647,7 @@
 	 <td valign='top'>
 	        <table>";
 			
-		$phraseAVGK = "SELECT name as topUser, sumKills*1.0/totGames*1.0 as topValue from (Select b.name as name, MAX(a.id) as id,
+		$stepAVGK = "SELECT name as topUser, sumKills*1.0/totGames*1.0 as topValue from (Select b.name as name, MAX(a.id) as id,
 		COUNT(*) as totGames,
 		SUM(kills) as sumKills 
 		FROM dotaplayers AS a 
@@ -655,12 +658,12 @@
 		where winner <> 0 
 		AND $sqlYear = '$year' 
 		AND $sqlMonth = '$month' $day_stats 
-		AND bans.name is null 
+		 $hide_banned 
 		GROUP BY b.name having count(*) >= $minGamesPlayed) as subsel 
 		ORDER BY topValue DESC, id ASC 
 		LIMIT $monthly_stats";
 		
-		$result = $db->query($phraseAVGK);
+		$result = $db->query($stepAVGK);
 		while ($list = $db->fetch_array($result,'assoc')) {
 		$list["topValue"] = ROUND($list["topValue"],2);
 		if ($list["topValue"]>0)
@@ -674,7 +677,7 @@
 		echo "</td>
 		      <td valign='top'><table>";  
 			  
-		$phraseAVGA = "SELECT name as topUser, sumAssists*1.0/totGames*1.0 as topValue from (Select b.name as name, MAX(a.id) as id,
+		$stepAVGA = "SELECT name as topUser, sumAssists*1.0/totGames*1.0 as topValue from (Select b.name as name, MAX(a.id) as id,
 		COUNT(*) as totGames,
 		SUM(assists) as sumAssists 
 		FROM dotaplayers AS a 
@@ -685,12 +688,12 @@
 		where winner <> 0 
 		AND $sqlYear = '$year' 
 		AND $sqlMonth = '$month' $day_stats 
-		AND bans.name is null 
+		 $hide_banned 
 		GROUP BY b.name having count(*) >= $minGamesPlayed) as subsel 
 		ORDER BY topValue DESC, id ASC 
 		LIMIT $monthly_stats";
 		
-		$result = $db->query($phraseAVGA);
+		$result = $db->query($stepAVGA);
 		while ($list = $db->fetch_array($result,'assoc')) {
         $list["topValue"] = ROUND($list["topValue"],2);
 		   if ($list["topValue"]>0)
@@ -704,7 +707,7 @@
 		echo "</td>
 		      <td valign='top'><table>";  
 			  
-		$phraseAVGD = "SELECT name as topUser, sumDeaths*1.0/totGames*1.0 as topValue from (Select b.name as name, MAX(a.id) as id,
+		$stepAVGD = "SELECT name as topUser, sumDeaths*1.0/totGames*1.0 as topValue from (Select b.name as name, MAX(a.id) as id,
 		COUNT(*) as totGames,
 		SUM(deaths) as sumDeaths 
 		FROM dotaplayers AS a 
@@ -715,12 +718,12 @@
 		where winner <> 0 
 		AND $sqlYear = '$year' 
 		AND $sqlMonth = '$month' $day_stats 
-		AND bans.name is null 
+		 $hide_banned 
 		GROUP BY b.name having count(*) >= $minGamesPlayed) as subsel 
 		ORDER BY topValue DESC, id ASC 
 		LIMIT $monthly_stats";
 		
-		$result = $db->query($phraseAVGD);
+		$result = $db->query($stepAVGD);
 		while ($list = $db->fetch_array($result,'assoc')) {
         $list["topValue"] = ROUND($list["topValue"],2);
 		   if ($list["topValue"]>0)
@@ -735,7 +738,7 @@
 		echo "</td>
 		      <td valign='top'><table>";  
 			  
-		$phraseAVGCK = "SELECT name as topUser, sumCreepKills*1.0/totGames*1.0 as topValue from (Select b.name as name, MAX(a.id) as id,
+		$stepAVGCK = "SELECT name as topUser, sumCreepKills*1.0/totGames*1.0 as topValue from (Select b.name as name, MAX(a.id) as id,
 		COUNT(*) as totGames,
 		SUM(creepkills) as sumCreepKills 
 		FROM dotaplayers AS a 
@@ -746,12 +749,12 @@
 		where winner <> 0 
 		AND $sqlYear = '$year' 
 		AND $sqlMonth = '$month' $day_stats 
-		AND bans.name is null 
+		 $hide_banned 
 		GROUP BY b.name having count(*) >= $minGamesPlayed) as subsel 
 		ORDER BY topValue DESC, id ASC 
 		LIMIT $monthly_stats";
 		
-		$result = $db->query($phraseAVGCK);
+		$result = $db->query($stepAVGCK);
 		while ($list = $db->fetch_array($result,'assoc')) {
         $list["topValue"] = ROUND($list["topValue"],1);
 		   if ($list["topValue"]>0)
@@ -766,7 +769,7 @@
 		echo "</td>
 		      <td valign='top'><table>";  
 			  
-		$phraseAVGCD = "SELECT name as topUser, sumCreepDenies*1.0/totGames*1.0 as topValue from (Select b.name as name, MAX(a.id) as id,
+		$stepAVGCD = "SELECT name as topUser, sumCreepDenies*1.0/totGames*1.0 as topValue from (Select b.name as name, MAX(a.id) as id,
 		COUNT(*) as totGames,
 		SUM(creepdenies) as sumCreepDenies 
 		FROM dotaplayers AS a 
@@ -777,12 +780,12 @@
 		where winner <> 0 
 		AND $sqlYear = '$year' 
 		AND $sqlMonth = '$month' $day_stats 
-		AND bans.name is null 
+		 $hide_banned 
 		GROUP BY b.name having count(*) >= $minGamesPlayed) as subsel 
 		ORDER BY topValue DESC, id ASC 
 		LIMIT $monthly_stats";
 		
-		$result = $db->query($phraseAVGCD);
+		$result = $db->query($stepAVGCD);
 		while ($list = $db->fetch_array($result,'assoc')) {
         $list["topValue"] = ROUND($list["topValue"],2);
 		   if ($list["topValue"]>0)

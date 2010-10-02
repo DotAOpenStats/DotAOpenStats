@@ -59,8 +59,8 @@
     if (isset($_POST["days"]) AND $_POST["days"]!=0)
   {$day_ = safeEscape($_POST["days"]);
   $day_stats = " AND $sqlDay = '$day_' ";
-  }
-  
+  } else {$day_ = "";}
+ 
   
   $sql = "SELECT $sqlYear as y, $sqlMonth as m, $sqlMonthName as mn 
   FROM games 
@@ -68,8 +68,6 @@
   ORDER BY $sqlYear DESC";
   
   $result = $db->query($sql);
-  
-  
   echo "<form name='myform' method='post' action=''>";
   
   
@@ -108,15 +106,18 @@
   
   //DAYS 
   if ($DaysOnMonthlyStats == 1)
-  {$getDays = getDays($month);
+  {
+  $getDays = getDays($month);
   $buildDay = "<select id='dayid' name='days'><option value='0'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>";
   for ( $counter = 1; $counter <= $getDays; $counter += 1) {
-  $buildDay .= "<option $select value='$counter'>&nbsp;$counter</option>";
+  //if (isset($_POST["days"]) AND $_POST["days"]!=0 and ($_POST["days"] == $counter)) 
+  //{$selectd = "selected";} else {$selectd = "";}
+  $buildDay .= "<option value='$counter'>&nbsp;$counter</option>";
   }
   $buildDay .= "</select>";
   } else {$buildDay = "";}
 
-  if (isset($_POST["days"]) AND $_POST["days"]!=0) {$DisplayDay = $day_;} else {$DisplayDay = "";}
+  if (isset($_POST["days"]) AND $_POST["days"]!=0) {$DisplayDay = $day_;} else {$DisplayDay = ""; echo $day_;}
    
    $DisplayMonthName = getMonthName($month,$lang["jan"],$lang["feb"],$lang["mar"],$lang["apr"],$lang["may"],$lang["jun"],$lang["jul"],$lang["aug"],$lang["sep"],$lang["oct"],$lang["nov"],$lang["dec"]);
    
