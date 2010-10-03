@@ -79,8 +79,12 @@ $sql = "SELECT *, case when (kills = 0) then 0 when (deaths = 0) then 1000 else 
   <th><div align='center'>$lang[denies]</div></th>
   <th><div align='center'>$lang[neutrals]</div></th>
 	 </tr>";
-	 while ($list = $db->fetch_array($result,'assoc')) {
 	 
+	 if ($db->num_rows($result) <=0) {echo "<tr><td class='padLeft'>No ranks for $monthName $year</td></tr>";}
+	 else
+	 {	    $noRanks = "";
+	 while ($list = $db->fetch_array($result,'assoc')) {
+
 	    $totgames=$list["totgames"];
 		$kills=ROUND($list["kills"],1);
 		$death=ROUND($list["deaths"],1);
@@ -144,7 +148,7 @@ $sql = "SELECT *, case when (kills = 0) then 0 when (deaths = 0) then 1000 else 
 		</tr>";
 	 }
 	 
-
+  }
  
 		echo "</table></div>";
 		

@@ -258,7 +258,7 @@
 	$result = $db->query($sql);
 	$row = $db->fetch_array($result,'assoc');
     $disc = $row["disc"]; }
-    
+	
 	echo "<table>
 	<tr>
 	<td style='width:36%;padding-left:8px; height:24px;'><div align='left'>$lang[show_hero_stats] <span $COLOR>$realname</span></div></td>
@@ -359,9 +359,10 @@
 		if ($assists >0)
 		{$AssistsPerGame = ROUND($assists/$totgames,2);} else {$AssistsPerGame = 0;}
 		
-		if ($ScoreMethod == 2)
-		{$totscore = $ScoreStart+($wins * 5) - ($losses * 3) - ($disc*10) ; 
+		if ($ScoreMethod == 2 AND $DBScore == 0)
+		{$totscore = $ScoreStart + ($wins * $ScoreWins) + ($losses * $ScoreLosses) + ($disc*$ScoreDisc) ; 
 		//$totscore = ROUND( $ScoreStart+(($wins * 5) - ($losses * 3)) , 2) ; 
+		if ($BANNED !="") {$totscore  = $ScoreStart + ($ScoreDisc*10);}
 		}
 	?>
 	

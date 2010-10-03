@@ -220,7 +220,7 @@ return $return.$return2.$seconds_left.".".$milliseconds;
 	 AND dp.newcolour <> 6
 	 LEFT JOIN games as ga ON dp.gameid = ga.id 
 	 LEFT JOIN bans on bans.name = gp.name 
-	 WHERE dg.winner <>0 $_sql
+	 WHERE dg.winner <>0 $_sql 
 	 GROUP BY gp.name having totgames >= $games) as i 
 	 ORDER BY $order $sortdb, name $sortdb 
 	 LIMIT $offset, $rowsperpage";}
@@ -246,6 +246,8 @@ return $return.$return2.$seconds_left.".".$milliseconds;
 		  avg(dp.neutralkills) as neutralkills, 
 		  avg(dp.deaths) as deaths, 
 		  avg(dp.kills) as kills, 
+		  SUM(dp.kills) as totkills,
+	      SUM(dp.deaths) as totdeaths,
 		  sc.score as totalscore, 
 		  COUNT(*) as totgames, 
 		  SUM(case when(((dg.winner = 1 and dp.newcolour < 6) 
@@ -254,10 +256,20 @@ return $return.$return2.$seconds_left.".".$milliseconds;
 		  SUM(case when(((dg.winner = 2 and dp.newcolour < 6) 
 		  or (dg.winner = 1 and dp.newcolour > 6)) 
 		  AND gp.`left`/ga.duration >= $minPlayedRatio) then 1 else 0 end) as losses
+		  
+		  , SUM(
+	 (gp.`leftreason` LIKE ('%has lost the connection%'))  
+	 OR (gp.`leftreason` LIKE ('%was dropped%')) 
+	 OR (gp.`leftreason` LIKE ('%Lagged out%')) 
+	 OR (gp.`leftreason` LIKE ('%Dropped due to%'))
+	 ) as disc 
+		  
 		  FROM gameplayers as gp 
 		  LEFT JOIN dotagames as dg ON gp.gameid = dg.gameid 
 		  LEFT JOIN dotaplayers as dp ON dg.gameid = dp.gameid 
-		  AND gp.colour = dp.colour and dp.newcolour <> 12 AND dp.newcolour <> 6
+		  AND gp.colour = dp.colour 
+		  AND dp.newcolour <> 12 
+		  AND dp.newcolour <> 6
 		  LEFT JOIN games as ga ON dp.gameid = ga.id 
 		  LEFT JOIN scores as sc ON sc.name = gp.name 
 		  LEFT JOIN bans on bans.name = gp.name 

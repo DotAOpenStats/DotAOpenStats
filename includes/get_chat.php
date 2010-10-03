@@ -215,7 +215,7 @@
 				$text = convEnt2($content['text']);
 				
 	if($mode == 'All' || getTeam($playerColor) == 1) 
-	{$ply = "<a href='user.php?u=$playerName'><span class='$playerColor'>$playerName</span></a>";} else $ply = "";
+	{$ply = "<a href='user.php?u=$playerName'><span class='$playerColor'>$playerName</span></a>&nbsp;";} else $ply = "";
 	
 	$timeSec = secondsToTime($time/1000);
 				
@@ -233,78 +233,76 @@
 							{
 								$victim = trim($content['victim']);
 								$killer = $content['killer'];
-								if($firstBlood)
-								{
-									if($content['killer'] < 12)
-									{
-			echo "<td width='500px' class='GameSystem'>
-			<div style='background-color:#7D0001;'><span class='$slotcolor[$killer]'>$slotname[$killer]</span>
-			$text<span class='$slotcolor[$victim]'>$slotname[$victim]</span> <b>for first blood</b></div></td>";
-									$firstBlood = false;
-									}
-									else
-									{
-									echo "<td width='500px' class='GameSystem'>
-									<span class='$slotcolor[$killer]'>$slotname[$killer]</span> $text<span class='$slotcolor[$victim]'> $slotname[$victim]</span></td>";
-									}
-								}
-								else
-								{
-								if($victim == $killer)
-								{
-								echo "<td width='500px' class='GameSystem'><span class='$slotcolor[$killer]'>$slotname[$killer]</span> has killed himself!</td>";
-									}
-				else if(($victim < 6 && $killer < 6) || ($victim > 6 && $killer > 6) && $killer <= 11)
-									{
-				                 echo "<td width='500px' class='GameSystem'>
-				<span class='$slotcolor[$killer]'>$slotname[$killer]</span> <span class='$slotcolor[$victim]'>$victim]</span></td>";
-									}
-									else
-									{
-									echo "<td width='500px' class='GameSystem'><span class='$slotcolor[$killer]'>$slotname[$killer]</span> $text<span class='$slotcolor[$victim]'> $slotname[$victim]</span></td>";
-									}
-								}
-							}
-							else if($content['type'] == 'Courier')
-							{
-							$victim = trim($content['victim']);
-							$killer = $content['killer'];
-							echo "<td width='500px' class='GameSystem'><span class='$slotcolor[$victim]'>$slotname[$victim] </span>$text<span class='$slotcolor[$killer]'> $slotname[$killer]</span></td>";
-							}
-							else if($content['type'] == 'Tower')
-							{
-							$killer = $content['killer'];
+	if($firstBlood)
+	{
+		if($content['killer'] < 12)
+		{
+		echo "<td width='500px' class='GameSystem'>
+		<div style='background-color:#580202;'><span class='$slotcolor[$killer]'>$slotname[$killer]</span>
+		$text<span class='$slotcolor[$victim]'>$slotname[$victim]</span> <b>for first blood</b></div></td>";
+		$firstBlood = false;
+		}
+		else
+		{
+		echo "<td width='500px' class='GameSystem'>
+		<span class='$slotcolor[$killer]'>$slotname[$killer]</span> $text<span class='$slotcolor[$victim]'> $slotname[$victim]</span></td>";
+		}
+	 }
+	  else
+	  {
+	  if($victim == $killer)
+	  {
+	  echo "<td width='500px' class='GameSystem'><span class='$slotcolor[$killer]'>$slotname[$killer]</span> has killed himself!</td>";
+	  }
+	  else if(($victim < 6 && $killer < 6) || ($victim > 6 && $killer > 6) && $killer <= 11)
+	  {
+	  echo "<td width='500px' class='GameSystem'>
+	  <span class='$slotcolor[$killer]'>$slotname[$killer]</span> denied his teammate <span class='$slotcolor[$victim]'>$slotname[$victim]</span></td>";
+	  }
+	  else
+	  {
+	  echo "<td width='500px' class='GameSystem'><span class='$slotcolor[$killer]'>$slotname[$killer]</span> $text<span class='$slotcolor[$victim]'> $slotname[$victim]</span></td>";
+	  }
+	}
+  }
+	  else if($content['type'] == 'Courier')
+	  {
+	  $victim = trim($content['victim']);
+	  $killer = $content['killer'];
+	  echo "<td width='500px' class='GameSystem'><span class='$slotcolor[$victim]'>$slotname[$victim] </span>$text<span class='$slotcolor[$killer]'> $slotname[$killer]</span></td>";
+	  }
+	  else if($content['type'] == 'Tower')
+	  {
+	  $killer = $content['killer'];
 								
-							echo "<td width='500px' class='GameSystem'><span class='$slotcolor[$killer]'>$slotname[$killer]</span>$text $content[side]  level  $content[level]<span class=".strtolower($content['team'])."> $content[team] </span> tower</td>";
-							}
-							else if($content['type'] == 'Rax')
-							{
-							$killer = $content['killer'];
-						    echo "<td width='500px' class='GameSystem'><span class='$slotcolor[$killer]'>$slotname[$killer]</span>$text $content[side] $content[raxtype]<span class='".strtolower($content['team'])."'> $content[team]</span> barracks</td>";
-								
-							}
-				else if($content['type'] == 'Throne') {echo "<td width='500px' class='GameSystem'>$text</td>";}
-				else if($content['type'] == 'Tree')   {echo "<td width='500px' class='GameSystem'>$text</td>";}
-						}
-						else
-						{
+	  echo "<td width='500px' class='GameSystem'><span class='$slotcolor[$killer]'>$slotname[$killer]</span>$text $content[side]  level  $content[level]<span class=".strtolower($content['team'])."> $content[team] </span> tower</td>";
+	  }
+	  else if($content['type'] == 'Rax')
+	  {
+	  $killer = $content['killer'];
+	  echo "<td width='500px' class='GameSystem'><span class='$slotcolor[$killer]'>$slotname[$killer]</span>$text $content[side] $content[raxtype]<span class='".strtolower($content['team'])."'> $content[team]</span> barracks</td>";
+	  }
+	  else if($content['type'] == 'Throne') {echo "<td width='500px' class='GameSystem'>$text</td>";}
+	  else if($content['type'] == 'Tree')   {echo "<td width='500px' class='GameSystem'>$text</td>";}
+	  }
+	 else
+	{
 	if(getTeam($playerColor) == 1)
-						{
-			echo "<td width='500px' align='left' class='sentinel'><span style='color:#B32704;'>$text</span></td>";
-						}
-						    else
-						    {
-			echo "<td width='500px' align='right' class='scourge'><span style='color:#00A404;'>$text</span></td>";
-						    }
-						}
-			echo "<td width='90px' style='text-align:center'>".secondsToTime($time/1000)."</td>
-			
-			<td width='250px'>";
-                        if($mode == 'All' || getTeam($playerColor) == 2)
-						{
-						echo "<a href='user.php?u=$playerName'><span class='$playerColor'>$playerName</span></a>";
-						}
-						echo "</td></tr>";
+	{
+	echo "<td width='500px' align='left' class='sentinel'><span style='color:#B32704;'>$text</span></td>";
+	}
+	   else
+	   {
+	   echo "<td width='500px' align='right' class='scourge'><span style='color:#00A404;'>$text</span></td>";
+	   }
+	}
+	echo "<td width='90px' style='text-align:center'>".secondsToTime($time/1000)."</td>
+	<td width='250px'>";
+    if($mode == 'All' || getTeam($playerColor) == 2)
+	{
+	echo "<a href='user.php?u=$playerName'><span class='$playerColor'>$playerName</span></a>";
+	}
+	echo "</td></tr>";
 			}
 		}	
 	}

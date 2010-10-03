@@ -58,11 +58,11 @@
 		$hide_banned  ORDER BY topValue DESC, a.id ASC LIMIT $monthly_stats";
 		
 		$result = $db->query($stepKills);
-		$db->close($result);
+		//$db->close($result);
 		while ($list = $db->fetch_array($result,'assoc')) {
 		if ($list["topValue"]>0)
-		{echo "<tr class='row'><td width='180px'><a href='hero.php?hero=$list[topHero]' title='$list[topHeroName]'>
-		 <img style='vertical-align: middle;' width='32px' height='32px' src='img/heroes/$list[topHero].gif' border=0/></a>
+		{echo "<tr class='row'><td align='left' width='180px'><a href='hero.php?hero=$list[topHero]' title='$list[topHeroName]'>
+		 <img alt='' style='vertical-align: middle;' width='32px' height='32px' src='img/heroes/$list[topHero].gif' border=0/></a>
 		 (<a href='game.php?gameid=$list[topGame]'>$list[topValue]</a>) 
 		 
 		 <a href='user.php?u=$list[topUser]' title='$list[topUser]'>$list[topUser]</a>
@@ -87,7 +87,7 @@
 		$result = $db->query($stepAssists);
 		while ($list = $db->fetch_array($result,'assoc')) {
 		if ($list["topValue"]>0)
-		{echo "<tr class='row'><td width='180px'><a href='hero.php?hero=$list[topHero]' title='$list[topHeroName]'>
+		{echo "<tr class='row'><td align='left' width='180px'><a href='hero.php?hero=$list[topHero]' title='$list[topHeroName]'>
 		 <img style='vertical-align: middle;' width='32px' height='32px' src='img/heroes/$list[topHero].gif' border=0/></a>
 		 (<a href='game.php?gameid=$list[topGame]'>$list[topValue]</a>) 
 		 
@@ -114,7 +114,7 @@
 		$result = $db->query($stepDeaths);
 		while ($list = $db->fetch_array($result,'assoc')) {
 		if ($list["topValue"]>0)
-		{echo "<tr class='row'><td width='180px'><a href='hero.php?hero=$list[topHero]' title='$list[topHeroName]'>
+		{echo "<tr class='row'><td align='left' width='180px'><a href='hero.php?hero=$list[topHero]' title='$list[topHeroName]'>
 		 <img style='vertical-align: middle;' width='32px' height='32px' src='img/heroes/$list[topHero].gif' border=0/></a>
 		 (<a href='game.php?gameid=$list[topGame]'>$list[topValue]</a>) 
 		 
@@ -140,7 +140,7 @@
 		$result = $db->query($stepCK);
 		while ($list = $db->fetch_array($result,'assoc')) {
 		if ($list["topValue"]>0)
-		{echo "<tr class='row'><td width='180px'><a href='hero.php?hero=$list[topHero]' title='$list[topHeroName]'>
+		{echo "<tr class='row'><td align='left' width='180px'><a href='hero.php?hero=$list[topHero]' title='$list[topHeroName]'>
 		 <img style='vertical-align: middle;' width='32px' height='32px' src='img/heroes/$list[topHero].gif' border=0/></a>
 		 (<a href='game.php?gameid=$list[topGame]'>$list[topValue]</a>) 
 		 
@@ -165,7 +165,7 @@
 		$result = $db->query($stepCD);
 		while ($list = $db->fetch_array($result,'assoc')) {
 		if ($list["topValue"]>0)
-		{echo "<tr class='row'><td width='180px'><a href='hero.php?hero=$list[topHero]' title='$list[topHeroName]'>
+		{echo "<tr class='row'><td align='left' width='180px'><a href='hero.php?hero=$list[topHero]' title='$list[topHeroName]'>
 		 <img style='vertical-align: middle;' width='32px' height='32px' src='img/heroes/$list[topHero].gif' border=0/></a>
 		 (<a href='game.php?gameid=$list[topGame]'>$list[topValue]</a>) 
 		 
@@ -203,7 +203,7 @@
 		$result = $db->query($stepGold);
 		while ($list = $db->fetch_array($result,'assoc')) {
 		if ($list["topValue"]>0)
-		{echo "<tr class='row'><td width='180px'><a href='hero.php?hero=$list[topHero]' title='$list[topHeroName]'>
+		{echo "<tr class='row'><td align='left' width='180px'><a href='hero.php?hero=$list[topHero]' title='$list[topHeroName]'>
 		 <img style='vertical-align: middle;' width='32px' height='32px' src='img/heroes/$list[topHero].gif' border=0/></a>
 		 (<a href='game.php?gameid=$list[topGame]'>$list[topValue]</a>) 
 		 
@@ -228,7 +228,7 @@
 		$result = $db->query($stepCK);
 		while ($list = $db->fetch_array($result,'assoc')) {
 		if ($list["topValue"]>0)
-		{echo "<tr class='row'><td width='180px'><a href='hero.php?hero=$list[topHero]' title='$list[topHeroName]'>
+		{echo "<tr class='row'><td align='left' width='180px'><a href='hero.php?hero=$list[topHero]' title='$list[topHeroName]'>
 		 <img style='vertical-align: middle;' width='32px' height='32px' src='img/heroes/$list[topHero].gif' border=0/></a>
 		 (<a href='game.php?gameid=$list[topGame]'>$list[topValue]</a>) 
 		 
@@ -253,7 +253,7 @@
 		$result = $db->query($stepCK);
 		while ($list = $db->fetch_array($result,'assoc')) {
 		if ($list["topValue"]>0)
-		{echo "<tr class='row'><td width='180px'><a href='hero.php?hero=$list[topHero]' title='$list[topHeroName]'>
+		{echo "<tr class='row'><td align='left' width='180px'><a href='hero.php?hero=$list[topHero]' title='$list[topHeroName]'>
 		 <img style='vertical-align: middle;' width='32px' height='32px' src='img/heroes/$list[topHero].gif' border=0/></a>
 		 (<a href='game.php?gameid=$list[topGame]'>$list[topValue]</a>) 
 		 
@@ -278,7 +278,7 @@
 		$result = $db->query($stepCK);
 		while ($list = $db->fetch_array($result,'assoc')) {
 		if ($list["topValue"]>0)
-		{echo "<tr class='row'><td width='180px'><a href='hero.php?hero=$list[topHero]' title='$list[topHeroName]'>
+		{echo "<tr class='row'><td align='left' width='180px'><a href='hero.php?hero=$list[topHero]' title='$list[topHeroName]'>
 		 <img style='vertical-align: middle;' width='32px' height='32px' src='img/heroes/$list[topHero].gif' border=0/></a>
 		 (<a href='game.php?gameid=$list[topGame]'>$list[topValue]</a>) 
 		 
@@ -304,7 +304,7 @@
 		$result = $db->query($stepCK);
 		while ($list = $db->fetch_array($result,'assoc')) {
 		if ($list["topValue"]>0)
-		{echo "<tr class='row'><td width='180px'><a href='hero.php?hero=$list[topHero]' title='$list[topHeroName]'>
+		{echo "<tr class='row'><td align='left' width='180px'><a href='hero.php?hero=$list[topHero]' title='$list[topHeroName]'>
 		 <img style='vertical-align: middle;' width='32px' height='32px' src='img/heroes/$list[topHero].gif' border=0/></a>
 		 (<a href='game.php?gameid=$list[topGame]'>$list[topValue]</a>) 
 		 
@@ -351,7 +351,7 @@
 		while ($list = $db->fetch_array($result,'assoc')) {
 		$list["topValue"] = ROUND($list["topValue"],2);
 		if ($list["topValue"]>0)
-		{echo "<tr class='row'><td width='180px'>($list[topValue]) 
+		{echo "<tr class='row'><td align='left' width='180px'>($list[topValue]) 
 		 <a href='user.php?u=$list[topUser]' title='$list[topUser]'>$list[topUser]</a>
 		 </td></tr>";} else {echo "<tr class='row'><td width='180px'></td></tr>";}
 		 }
@@ -381,7 +381,7 @@
 		while ($list = $db->fetch_array($result,'assoc')) {
 		$list["topValue"] = ROUND($list["topValue"],2);
 		if ($list["topValue"]>0)
-		{echo "<tr class='row'><td width='180px'>($list[topValue]) 
+		{echo "<tr class='row'><td align='left' width='180px'>($list[topValue]) 
 		 <a href='user.php?u=$list[topUser]' title='$list[topUser]'>$list[topUser]</a>
 		 </td></tr>";} else {echo "<tr class='row'><td width='180px'></td></tr>";}
 		 }
@@ -411,7 +411,7 @@
 		while ($list = $db->fetch_array($result,'assoc')) {
 		$list["topValue"] = ROUND($list["topValue"],2);
 		if ($list["topValue"]>0)
-		{echo "<tr class='row'><td width='180px'>($list[topValue]) 
+		{echo "<tr class='row'><td align='left' width='180px'>($list[topValue]) 
 		 <a href='user.php?u=$list[topUser]' title='$list[topUser]'>$list[topUser]</a>
 		 </td></tr>";} else {echo "<tr class='row'><td width='180px'></td></tr>";}
 		 }
@@ -443,7 +443,7 @@
 		while ($list = $db->fetch_array($result,'assoc')) {
 		$list["topValue"] = ROUND($list["topValue"],1);
 		if ($list["topValue"]>0)
-		{echo "<tr class='row'><td width='180px'>($list[topValue] %) 
+		{echo "<tr class='row'><td align='left' width='180px'>($list[topValue] %) 
 		 <a href='user.php?u=$list[topUser]' title='$list[topUser]'>$list[topUser]</a>
 		 </td></tr>";} else {echo "<tr class='row'><td width='180px'></td></tr>";}
 		 }
@@ -473,7 +473,7 @@
 		while ($list = $db->fetch_array($result,'assoc')) {
 		$list["topValue"] = ROUND($list["topValue"],1);
 		if ($list["topValue"]>0)
-		{echo "<tr class='row'><td width='180px'>($list[topValue] %) 
+		{echo "<tr class='row'><td align='left' width='180px'>($list[topValue] %) 
 		 <a href='user.php?u=$list[topUser]' title='$list[topUser]'>$list[topUser]</a>
 		 </td></tr>";} else {echo "<tr class='row'><td width='180px'></td></tr>";}
 		 }
@@ -514,7 +514,7 @@
 		while ($list = $db->fetch_array($result,'assoc')) {
 		$list["topValue"] = ROUND($list["topValue"],2);
 		if ($list["topValue"]>0)
-		{echo "<tr class='row'><td width='180px'>($list[topValue]) 
+		{echo "<tr class='row'><td align='left' width='180px'>($list[topValue]) 
 		 <a href='user.php?u=$list[topUser]' title='$list[topUser]'>$list[topUser]</a>
 		 </td></tr>";} else {echo "<tr class='row'><td width='180px'></td></tr>";}
 		 }
@@ -542,7 +542,7 @@
 		while ($list = $db->fetch_array($result,'assoc')) {
 		$list["topValue"] = ROUND($list["topValue"]);
 		   if ($list["topValue"]>0)
-		   {echo "<tr class='row'><td width='180px'>($list[topValue]) 
+		   {echo "<tr class='row'><td align='left' width='180px'>($list[topValue]) 
 		   <a href='user.php?u=$list[topUser]' title='$list[topUser]'>$list[topUser]</a>
 		   </td></tr>";} else {echo "<tr class='row'><td width='180px'></td></tr>";}
 		   }
@@ -570,7 +570,7 @@
 		while ($list = $db->fetch_array($result,'assoc')) {
 
 		   if ($list["topValue"]>0)
-		   {echo "<tr class='row'><td width='180px'>($list[topValue]) 
+		   {echo "<tr class='row'><td align='left' width='180px'>($list[topValue]) 
 		   <a href='user.php?u=$list[topUser]' title='$list[topUser]'>$list[topUser]</a>
 		   </td></tr>";} else {echo "<tr class='row'><td width='180px'></td></tr>";}
 		   }
@@ -598,7 +598,7 @@
 		while ($list = $db->fetch_array($result,'assoc')) {
 
 		   if ($list["topValue"]>0)
-		   {echo "<tr class='row'><td width='180px'>($list[topValue]) 
+		   {echo "<tr class='row'><td align='left' width='180px'>($list[topValue]) 
 		   <a href='user.php?u=$list[topUser]' title='$list[topUser]'>$list[topUser]</a>
 		   </td></tr>";} else {echo "<tr class='row'><td width='180px'></td></tr>";}
 		   }
@@ -627,7 +627,7 @@
 		while ($list = $db->fetch_array($result,'assoc')) {
 
 		   if ($list["topValue"]>0)
-		   {echo "<tr class='row'><td width='180px'>($list[topValue]) 
+		   {echo "<tr class='row'><td align='left' width='180px'>($list[topValue]) 
 		   <a href='user.php?u=$list[topUser]' title='$list[topUser]'>$list[topUser]</a>
 		   </td></tr>";} else {echo "<tr class='row'><td width='180px'></td></tr>";}
 		   }
@@ -667,7 +667,7 @@
 		while ($list = $db->fetch_array($result,'assoc')) {
 		$list["topValue"] = ROUND($list["topValue"],2);
 		if ($list["topValue"]>0)
-		{echo "<tr class='row'><td width='180px'>($list[topValue]) 
+		{echo "<tr class='row'><td align='left' width='180px'>($list[topValue]) 
 		 <a href='user.php?u=$list[topUser]' title='$list[topUser]'>$list[topUser]</a>
 		 </td></tr>";} else {echo "<tr class='row'><td width='180px'></td></tr>";}
 		 }
@@ -697,7 +697,7 @@
 		while ($list = $db->fetch_array($result,'assoc')) {
         $list["topValue"] = ROUND($list["topValue"],2);
 		   if ($list["topValue"]>0)
-		   {echo "<tr class='row'><td width='180px'>($list[topValue]) 
+		   {echo "<tr class='row'><td align='left' width='180px'>($list[topValue]) 
 		   <a href='user.php?u=$list[topUser]' title='$list[topUser]'>$list[topUser]</a>
 		   </td></tr>";} else {echo "<tr class='row'><td width='180px'></td></tr>";}
 		   }
@@ -727,7 +727,7 @@
 		while ($list = $db->fetch_array($result,'assoc')) {
         $list["topValue"] = ROUND($list["topValue"],2);
 		   if ($list["topValue"]>0)
-		   {echo "<tr class='row'><td width='180px'>($list[topValue]) 
+		   {echo "<tr class='row'><td align='left' width='180px'>($list[topValue]) 
 		   <a href='user.php?u=$list[topUser]' title='$list[topUser]'>$list[topUser]</a>
 		   </td></tr>";} else {echo "<tr class='row'><td width='180px'></td></tr>";}
 		   }
@@ -758,7 +758,7 @@
 		while ($list = $db->fetch_array($result,'assoc')) {
         $list["topValue"] = ROUND($list["topValue"],1);
 		   if ($list["topValue"]>0)
-		   {echo "<tr class='row'><td width='180px'>($list[topValue]) 
+		   {echo "<tr class='row'><td align='left' width='180px'>($list[topValue]) 
 		   <a href='user.php?u=$list[topUser]' title='$list[topUser]'>$list[topUser]</a>
 		   </td></tr>";} else {echo "<tr class='row'><td width='180px'></td></tr>";}
 		   }
@@ -789,7 +789,7 @@
 		while ($list = $db->fetch_array($result,'assoc')) {
         $list["topValue"] = ROUND($list["topValue"],2);
 		   if ($list["topValue"]>0)
-		   {echo "<tr class='row'><td width='180px'>($list[topValue]) 
+		   {echo "<tr class='row'><td align='left' width='180px'>($list[topValue]) 
 		   <a href='user.php?u=$list[topUser]' title='$list[topUser]'>$list[topUser]</a>
 		   </td></tr>";} else {echo "<tr class='row'><td width='180px'></td></tr>";}
 		   }
