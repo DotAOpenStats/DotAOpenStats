@@ -75,6 +75,12 @@ width:95%;
 padding-left:22px;
 }
 
+.tableD {
+padding-top:1pt;
+padding-bottom:1pt;
+padding-left:4pt;
+}
+
 
 .tableHeroPageTop {width:95%;}
 .tableHeroPage {margin-top:4px;width:96%;border: 0px solid #000;}

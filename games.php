@@ -64,14 +64,21 @@
 
   include('pagination.php');
 
-  $sql = "SELECT g.id, map, datetime, gamename, ownername, duration, creatorname, dg.winner, CASE WHEN(gamestate = '17') THEN 'PRIV' ELSE 'PUB' end AS type FROM games as g LEFT JOIN dotagames as dg ON g.id = dg.gameid WHERE map LIKE '%dota%' ORDER BY $order $sortdb LIMIT $offset, $rowsperpage";
+  $sql = "SELECT 
+          g.id, map, datetime, gamename, ownername, duration, creatorname, dg.winner, 
+		  CASE WHEN(gamestate = '17') THEN 'PRIV' ELSE 'PUB' end AS type 
+		  FROM games as g 
+		  LEFT JOIN dotagames as dg ON g.id = dg.gameid 
+		  WHERE map LIKE '%dota%' 
+		  ORDER BY $order $sortdb 
+		  LIMIT $offset, $rowsperpage";
   
   $result = $db->query($sql);
   
   
   echo "<div align='center'><table class='tableA'> 
   <tr>
-  <th><div align='left'><a href='{$_SERVER['PHP_SELF']}?order=game&sort=$sort'>$lang[game]</a></div></th>
+  <th class='tableD'><div align='left'><a href='{$_SERVER['PHP_SELF']}?order=game&sort=$sort'>$lang[game]</a></div></th>
   <th><div align='left'><a href='{$_SERVER['PHP_SELF']}?order=duration&sort=$sort'>$lang[duration]</a></div></th>
   <th><div align='left'><a href='{$_SERVER['PHP_SELF']}?order=type&sort=$sort'>$lang[type]</a></div></th>
   <th><div align='left'><a href='{$_SERVER['PHP_SELF']}?order=date&sort=$sort'>$lang[date]</a></div></th>
@@ -89,8 +96,13 @@
 		$creator=trim($list["creatorname"]);
 		$creator2=trim(strtolower($list["creatorname"]));
 		$winner=$list["winner"];
+		$dispWinner = "";
+		if ($winner == 1) {$dispWinner = "onMouseout='hidetooltip()' onMouseover='tooltip(\"<b>Map</b>: $map<br><b>Winner: </b>Sentinel\", 150); return false'";}
+		if ($winner == 2) {$dispWinner = "onMouseout='hidetooltip()' onMouseover='tooltip(\"<b>Map</b>: $map<br><b>Winner: </b>Scourge\", 150); return false'";}
+		if ($winner == 0) {$dispWinner = "onMouseout='hidetooltip()' onMouseover='tooltip(\"<b>Map</b>: $map<br><b>Draw Game\", 150); return false'";}
+
 	echo "<tr class='row'>
-	<td width='300px'><div align='left'><a href='game.php?gameid=$gameid'>$gamename</a></div></td>
+	<td title='' class='tableD' width='300px'><div align='left'><a $dispWinner  href='game.php?gameid=$gameid'>$gamename</a></div></td>
 	<td width='160px'><div align='left'>$duration</div></td>
 	<td width='100px'><div align='left'>$type</div></td>
 	<td width='200px'><div align='left'>$gametime</div></td>

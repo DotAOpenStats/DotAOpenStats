@@ -72,6 +72,12 @@ width:95%;
 padding-left:22px;
 }
 
+.tableD {
+padding-top:1pt;
+padding-bottom:1pt;
+padding-left:4pt;
+}
+
 .tableHeroPageTop {width:95%;}
 .tableHeroPage {margin-top:4px;width:96%;border: 0px solid #000;}
 .tableHeroPageTopCell {text-align:left;padding:12px;}
@@ -382,8 +388,8 @@ opacity: 0.1;
 .NotAchieved{color:#6F6F6F;}
 
 .PositivePoints {color:#0DB900;}
-.NegativePoints {color:#FFE327;}
-.DrawGame{color:#FFE327;}
+.NegativePoints {color:#B70000;}
+.DrawGame{color:#CB8100;}
 .DisconnectPoints{color:#D00005;}
 
 #dhtmltooltip{

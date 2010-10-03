@@ -316,7 +316,7 @@
 	$result = $db->query($sql);
 	
 	$row = $db->fetch_array($result,'assoc');
-	$db->close($result);
+	//$db->close($result);
 	$firstgame=$row["MIN(datetime)"];
 		$minLoading=millisecondsToTime($row["MIN(loadingtime)"]);
 		$maxLoading=millisecondsToTime($row["MAX(loadingtime)"]);

@@ -165,6 +165,7 @@
 		$wins=$list["wins"];
 		$losses=$list["losses"];
 		$totalscore=ROUND($list["totalscore"],2);
+		$totdisc = $list["disc"]; 
 		
 		if ($totdeath >=1)
 	    {$killdeathratio = ROUND($totkills*1.0/$totdeath*1.0,1);} else {$killdeathratio = $totkills;}

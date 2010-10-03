@@ -55,8 +55,8 @@
   <td style='height:24px;' width='30%'>$lang[head_admin]  <span style='color:red'>$head_admin</span></td>
   <td width='70%'> $lang[tot_admin] $total_admins</td></tr></table></div>";
   echo "
-  <div align='center'><table style='width:95%;margin:8px;'> 
-  <th>$lang[admin_name]</th>
+  <div align='center'><table class='tableA'> 
+  <th class='tableD'>$lang[admin_name]</th>
   <th>$lang[admin_server]</th>
   </tr>";
   
@@ -68,7 +68,7 @@
   {$name = "<span style='color:#00C412'>$name</span>";}
   
   echo "<tr class='row'>
-  <td width='30%'><div align='left'><a href='user.php?u=$link'>$name</a></td>
+  <td class='tableD' width='30%'><div align='left'><a href='user.php?u=$link'>$name</a></td>
   <td width='70%'><div align='left'>$list[server]</td>
   </tr>
   ";

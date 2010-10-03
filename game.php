@@ -44,15 +44,15 @@
   LEFT JOIN games AS d ON d.id = dg.gameid 
   WHERE dg.gameid='$gid'";
   $result = $db->query($sql);
+  $replayDate = "";
   
-   while ($list = $db->fetch_array($result,'assoc')) {
+   $list = $db->fetch_array($result,'assoc');
    		$creatorname=$list["creatorname"];
 		$duration=secondsToTime($list["duration"]);
 		$gametime=date($date_format,strtotime($list["datetime"]));
 		$replayDate = $list["datetime"];
 		$gamename=$list["gamename"];
 		$win=$list["winner"];
-   }
    
    $gametimenew = substr(str_ireplace(":","-",date("Y-m-d H:i",strtotime($replayDate))),0,16);
    require_once('./includes/get_replay.php');

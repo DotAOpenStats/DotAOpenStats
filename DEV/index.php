@@ -5,7 +5,7 @@
 
 		
 	define("MAX_SIZE", 20); //20 KB max
-	define("VERSION", "1.1.5");
+	define("VERSION", "1.1.6");
 	
 	
 	echo '
@@ -1131,7 +1131,12 @@ function confirmDelete(delUrl) {
 	
 	$news_id = $db->get_insert_id();
 	
-	if ($result) {echo "<br>News successfully added!<br><br><a href='index.php?addnews&edit_news=$news_id'>Back to previous page</a><br/><br/>";}
+	if ($result) {echo "<div align='center'>
+	<table style='width:320px;margin-top:32px;'>
+	<tr><th>News successfully added!</th></tr>
+	<tr>
+	<td><a href='index.php?addnews&edit_news=$news_id'>Back to previous page</a></td>
+	</tr></table></div>";}
 	  }
 	  	//EDIT NEWS
 		if (isset($_GET['edit_news']))
@@ -1155,7 +1160,10 @@ function confirmDelete(delUrl) {
 		$sql = "UPDATE news SET news_content = '$mytext', news_title='$mytitle' $update WHERE news_id = $news_id  LIMIT 1";
 		
 		$result = $db->query($sql);
-		if ($result) {echo "<br>News successfully updated!<br><br><a href='index.php?addnews&edit_news=$news_id'>Back to previous page</a><br/><br/>";}
+		if ($result) {echo "<div align='center'>
+	<table style='width:320px;margin-top:32px;'>
+	<tr>
+	<th>News successfully updated!</th></tr><tr><td><a href='index.php?addnews&edit_news=$news_id'>Back to previous page</a></td></tr></table></div>";}
 		}
 		
 	}
@@ -1167,8 +1175,10 @@ function confirmDelete(delUrl) {
 	
 	$result = $db->query($sql);
 	
-	if ($result) {echo "<br/>News successfully deleted!<br/><br/>
-	<a href='index.php?addnews'>Back to previous page</a>";}
+	if ($result) {echo "<div align='center'>
+	<table style='width:320px;margin-top:32px;'>
+	<tr><th>News successfully deleted!</th></tr><tr><td>
+	<a href='index.php?addnews'>Back to previous page</a></td></tr></table></div>";}
 	}
 	
 	
