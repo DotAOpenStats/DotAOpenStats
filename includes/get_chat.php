@@ -238,14 +238,14 @@
 									if($content['killer'] < 12)
 									{
 			echo "<td width='500px' class='GameSystem'>
-			<span class='$slotcolor[$killer]'>$slotname[$killer]</span>
-			$text<span class='$slotcolor[$victim]'>$slotname[$victim]</span> for first blood</td>";
+			<div style='background-color:#7D0001;'><span class='$slotcolor[$killer]'>$slotname[$killer]</span>
+			$text<span class='$slotcolor[$victim]'>$slotname[$victim]</span> <b>for first blood</b></div></td>";
 									$firstBlood = false;
 									}
 									else
 									{
 									echo "<td width='500px' class='GameSystem'>
-									<span class='$slotcolor[$killer]'>$slotname[$killer]</span>$text<span class='$slotcolor[$victim]'>$slotname[$victim]</span></td>";
+									<span class='$slotcolor[$killer]'>$slotname[$killer]</span> $text<span class='$slotcolor[$victim]'> $slotname[$victim]</span></td>";
 									}
 								}
 								else
@@ -257,11 +257,11 @@
 				else if(($victim < 6 && $killer < 6) || ($victim > 6 && $killer > 6) && $killer <= 11)
 									{
 				                 echo "<td width='500px' class='GameSystem'>
-				<span class='$slotcolor[$killer]'>$slotname[$killer]</span>$victim]</span></td>";
+				<span class='$slotcolor[$killer]'>$slotname[$killer]</span> <span class='$slotcolor[$victim]'>$victim]</span></td>";
 									}
 									else
 									{
-									echo "<td width='500px' class='GameSystem'><span class='$slotcolor[$killer]'>$slotname[$killer]</span>$text<span class='$slotcolor[$victim]'>$slotname[$victim]</span></td>";
+									echo "<td width='500px' class='GameSystem'><span class='$slotcolor[$killer]'>$slotname[$killer]</span> $text<span class='$slotcolor[$victim]'> $slotname[$victim]</span></td>";
 									}
 								}
 							}
@@ -269,18 +269,18 @@
 							{
 							$victim = trim($content['victim']);
 							$killer = $content['killer'];
-							echo "<td width='500px' class='GameSystem'><span class='$slotcolor[$victim]'>$slotname[$victim]</span>$text<span class='$slotcolor[$killer]'>$slotname[$killer]</span></td>";
+							echo "<td width='500px' class='GameSystem'><span class='$slotcolor[$victim]'>$slotname[$victim] </span>$text<span class='$slotcolor[$killer]'> $slotname[$killer]</span></td>";
 							}
 							else if($content['type'] == 'Tower')
 							{
 							$killer = $content['killer'];
 								
-							echo "<td width='500px' class='GameSystem'><span class='$slotcolor[$killer]'>$slotname[$killer]</span>$text.$content[side]  level  $content[level]<span class=".strtolower($content['team']).">$content[team]</span> tower</td>";
+							echo "<td width='500px' class='GameSystem'><span class='$slotcolor[$killer]'>$slotname[$killer]</span>$text $content[side]  level  $content[level]<span class=".strtolower($content['team'])."> $content[team] </span> tower</td>";
 							}
 							else if($content['type'] == 'Rax')
 							{
 							$killer = $content['killer'];
-						    echo "<td width='500px' class='GameSystem'><span class='$slotcolor[$killer]'>$slotname[$killer]</span>$text.$content[side] $content[raxtype]<span class='".strtolower($content['team'])."'>$content[team]</span> barracks</td>";
+						    echo "<td width='500px' class='GameSystem'><span class='$slotcolor[$killer]'>$slotname[$killer]</span>$text $content[side] $content[raxtype]<span class='".strtolower($content['team'])."'> $content[team]</span> barracks</td>";
 								
 							}
 				else if($content['type'] == 'Throne') {echo "<td width='500px' class='GameSystem'>$text</td>";}
