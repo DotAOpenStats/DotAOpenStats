@@ -87,7 +87,7 @@
   
   while ($list = $db->fetch_array($result,'assoc')) {
         $gameid=$list["id"]; 
-		$map=substr($list["map"], strripos($list["map"], '\\')+1);
+		$map=convEnt2(substr($list["map"], strripos($list["map"], '\\')+1));
 		$type=$list["type"];
 		$gametime=date($date_format,strtotime($list["datetime"]));
 		$gamename=trim($list["gamename"]);
@@ -97,8 +97,8 @@
 		$creator2=trim(strtolower($list["creatorname"]));
 		$winner=$list["winner"];
 		$dispWinner = "";
-		if ($winner == 1) {$dispWinner = "onMouseout='hidetooltip()' onMouseover='tooltip(\"<b>Map</b>: $map<br><b>Winner: </b>Sentinel\", 150); return false'";}
-		if ($winner == 2) {$dispWinner = "onMouseout='hidetooltip()' onMouseover='tooltip(\"<b>Map</b>: $map<br><b>Winner: </b>Scourge\", 150); return false'";}
+		if ($winner == 1) {$dispWinner = "onMouseout='hidetooltip()' onMouseover='tooltip(\"<b>Map</b>: $map<br><b>$lang[winner]: </b>$lang[Sentinel]\", 150); return false'";}
+		if ($winner == 2) {$dispWinner = "onMouseout='hidetooltip()' onMouseover='tooltip(\"<b>Map</b>: $map<br><b>$lang[winner]: </b>$lang[Scourge]\", 150); return false'";}
 		if ($winner == 0) {$dispWinner = "onMouseout='hidetooltip()' onMouseover='tooltip(\"<b>Map</b>: $map<br><b>Draw Game\", 150); return false'";}
 
 	echo "<tr class='row'>

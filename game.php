@@ -61,7 +61,8 @@
   $pageContents = ob_get_contents();
   ob_end_clean();
   echo str_replace('<!--TITLE-->', $pageTitle, $pageContents);
-
+  //echo $replayloc;
+  
 	if(file_exists($replayloc)){$DownloadReplay = "| <a href='$replayurl'>$lang[download_rep]</a> <!--<input type='button' class='inputButton' value='$lang[download_rep]' onclick='location.href=\"$replayurl\"'--> | <a href='#info'>Game Log</a>";}
 	else {$DownloadReplay = "";}
 
@@ -276,7 +277,7 @@ SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.new
 		{$CalPoints = $CalPoints - (($deaths*.7) + ($kills*.5))+($assists*.2)+($courierkills+$creepdenies)*0.1+$towerkills*0.3+$raxkills*0.1;}	
 		}
 		$class = "DrawGame";
-		if ($ScoreMethod == 2) 
+		if ($ScoreMethod == 2 AND $DBScore == 0) 
 		{
 		if ($win==1 AND $newcolour>5) {$CalPoints = $ScoreLosses; $class = 'NegativePoints';}
 		if ($win==1 AND $newcolour<=5) {$CalPoints = $ScoreWins; $class = 'PositivePoints';}
@@ -289,6 +290,9 @@ SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.new
 		OR strstr($leftreason,"was dropped")
 		OR strstr($leftreason,"Lagged out")
 		OR strstr($leftreason,"Dropped due to")) 
+		{$CalPoints = $ScoreDisc; $class = 'DisconnectPoints';} 
+		
+		if (trim(strtolower($banname)) == strtolower($name3)) 
 		{$CalPoints = $ScoreDisc; $class = 'DisconnectPoints';} 
 		}
 

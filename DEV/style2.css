@@ -237,7 +237,7 @@ cursor: #D10303;
 }
 
 .pagination {
-	padding: 0px;
+	padding-right: 8px;
 	margin: 0px;
 	text-align:right;
 }

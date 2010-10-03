@@ -1,11 +1,12 @@
 <?PHP
+
 	include('config.php');
 	//include("../lang/english.php");
 	include("../includes/common.php");
 
 		
 	define("MAX_SIZE", 20); //20 KB max
-	define("VERSION", "1.1.6");
+	define("VERSION", "1.1.7");
 	
 	
 	echo '
@@ -91,13 +92,13 @@
 		 
 		 echo "<div style='float:left;margin-left:2px;margin-top:2px;' align='center'><table style='width:400px;'><tr><th><div align='center'>You have been successfully logged in.</div></th></tr></table></div>";
 		 
-		 /*$ch = curl_init('http://openstats.iz.rs/version_check.php?check');
+		$ch = curl_init('http://openstats.iz.rs/version_check.php?check');
 		 curl_setopt($ch, CURLOPT_HEADER, 0);
          curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		 curl_setopt($ch, CURLOPT_REFERER, $_SERVER['HTTP_REFERER']);
 		 curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.7.5) Gecko/20041107 Firefox/1.0');
          curl_exec ($ch);
-         curl_close ($ch);*/
+         curl_close ($ch);
 		 
 	 	 }
 		 else
@@ -468,8 +469,12 @@ function confirmDelete(delUrl) {
 	$sql = "SELECT id,name,ip,date,gamename,admin,reason FROM bans ORDER BY date DESC LIMIT $offset, $rowsperpage";
 	$result = $db->query($sql);
 	
-	echo "<div style='padding-right:3%;text-align:right'>
-	<a href='index.php?addban'><b><img alt='' style='vertical-align: middle;' width='22px' height='22px' src='../img/items/BTNCritterChicken.gif' border=0/>[+] Add ban</b></a></div>
+	echo "<div align='center'><table style='width:98%'><tr><td align='left'>
+	<a href='index.php?addban'><b><img alt='' style='vertical-align: middle;' width='22px' height='22px' src='../img/items/BTNCritterChicken.gif' border=0/> Add ban </a> </td>
+	
+	 <td  align='right'><a href='index.php?remove_dupbans'><b><img alt='' style='vertical-align: middle;' width='20px' height='20px' src='../img/items/BTNCancel.gif' border=0/> Remove duplicated bans </a></td>
+	 </tr></table></div>
+	 
 	<div align='center'>
 	<table style='width:98%' border=1><tr>
 	<th>ID</th>
@@ -487,9 +492,9 @@ function confirmDelete(delUrl) {
 	$bannedby = strtolower($row["admin"]);
 	$ip = substr($row["ip"],0,7)."xx.xx";
 	$name = strtolower(trim($row["name"]));
-	echo "<tr>
+	echo "<tr class='row'>
 	<td width='48px'>$row[id]</td>
-	<td width='130px'><b><a href='../user.php?u=$name'>$row[name]</a></b></td>
+	<td width='130px' style='padding-left:2px'><b><a href='../user.php?u=$name'>$row[name]</a></b></td>
 	<td width='160px'>$row[gamename]</td>
 	<td width='64px'><a title='Delete ban: $row[name]' href='index.php?bans&delete=$row[id]'>Delete</a></td>
 	<td width='64px'>$ip</td>
@@ -614,6 +619,25 @@ function confirmDelete(delUrl) {
 	$result = $db->query($sql);
 	if ($result) {echo "<div align='center'><table style='width:400px;margin-top:40px;'></tr><th>$banname successfully banned</th></tr><tr><td><a href='index.php?addban'>Back to previous page</a></td></tr></table></div>";}
 	
+	}
+	
+	if (isset($_GET['remove_dupbans']) AND $_SERVER['REQUEST_METHOD'] != 'POST'){
+	$sql = "SELECT count(*), name FROM bans GROUP BY name having count(*) > 1 ORDER BY name DESC";
+	
+    $result = $db->query($sql);
+	$duplicates = $db->num_rows($result);
+	$del_duplicates = $duplicates;
+	if ($duplicates>=1) {
+    while ($row = $db->fetch_array($result,'assoc')) {
+	$duplicates = $row['count(*)'];
+	$del_duplicates = $duplicates - 1;
+    $name = $row["name"];
+	$sql2 = "DELETE FROM bans WHERE name = '$name' LIMIT $del_duplicates";
+    $result2 = $db->query($sql2);
+	   }
+	}
+	
+	echo "<div align='center'><table style='width:400px;margin-top:40px;'><tr><td>Removed <b>$del_duplicates</b> duplicated bans</td></tr><tr><td><a href='index.php?bans'>Back to previous page</a></td></tr></table></div>";
 	}
 	
 	
@@ -1048,6 +1072,9 @@ function confirmDelete(delUrl) {
 			<button title="color" onclick="showColorGrid2(\'none\')" type="button" style="background-image:url(\'img/editor/colors.gif\');"></button><span id="colorpicker201" class="colorpicker201"></span>
 
 			<button title="youtube" onclick="InsertYoutube();" type="button" style="background-image:url(\'img/editor/icon_youtube.gif\');"></button>
+			
+			<input name="html" value="html" title="Enable HTML. This will disable BBCode" type="checkbox"/>
+			<span style="color:#000;"><b>HTML</b></span>
 	</div>
 	
 	 <textarea class="reply" id="reply" name="reply" style="padding-top:4px;height:260px;width:680px;">'.$news_content.'</textarea>
@@ -1057,8 +1084,12 @@ function confirmDelete(delUrl) {
 	
 		if (isset($_GET['edit_news'])){	
 		$pre_title = $news_title;
+		if (!isset($_POST['html']))
+		{
 		$pre_news = BBCode($news_content);
-		$pre_news = str_replace("\n","<br>",$pre_news);
+		//$pre_news = convEnt($news_content);
+		$pre_news = str_replace("\n","<br>",$pre_news);} 
+		else {$pre_news = EscapeStr($news_content);}
 		
 		echo "<hr><table style='width:70%;'><tr>
 		<th><div align='left'>Preview</div></th><th></th></tr>
@@ -1083,9 +1114,12 @@ function confirmDelete(delUrl) {
 	 $dateis = date($date_format,strtotime($row["news_date"]));
 	 $title = "$row[news_title]";
 	 $text = "$row[news_content]";
+	 $text = str_replace("<br>","\n",$text);
+	 $text = str_replace("<","&lt;",$text);
+	 $text = convEnt($text);
 	 $text = BBDecode($text);
 	 $text = substr($text,0,200)." ...";
-	echo "<tr>
+	echo "<tr class='row'>
 	<td valign='top' width='40px'><div align='left'>$row[news_id]</div></td>
 	<td valign='top' width='250px'><b><a href='index.php?addnews&edit_news=$row[news_id]'>$title</a></b><br><hr style='width:50%;'>$text<br><br><br></td>
 	<td valign='top' width='80px'><div align='center'>$dateis</div></td>
@@ -1109,9 +1143,15 @@ function confirmDelete(delUrl) {
 	{
 
 	$mytext = trim($_POST['reply']);
+	if (!isset($_POST['html']))
+	{$mytext = my_nl2br($mytext);
+	//$mytext = convEnt2($mytext);
+	$mytext = BBCode($mytext);} 
+	else {
+	$mytext = str_replace("&","&amp;",$mytext);
 	$mytext = my_nl2br($mytext);
-	$mytext = convEnt2($mytext);
-	$mytext = BBCode($mytext);
+	$mytext = EscapeStr($mytext);
+	} 
 	
 	$mytitle = trim($_POST['new_subject']); 
 	$mytitle = my_nl2br($mytitle);
@@ -1146,9 +1186,19 @@ function confirmDelete(delUrl) {
 		$news_id = safeEscape($_GET['edit_news']);
 		$mytext = trim($_POST['reply']);
 		//$mytext = my_nl2br($mytext);
+		if (!isset($_POST['html']))
+		{
+		$mytext = str_replace("&","&amp;",$mytext);
 		$mytext = convEnt2($mytext);
 		$mytext = BBCode($mytext);
-		$mytext = str_replace("\n", "<br>", $mytext);
+		$mytext = str_replace("\n", "<br>", $mytext);}
+		else {
+		$mytext = str_replace("&","&amp;",$mytext);
+		$mytext = my_nl2br($mytext);
+		//$mytext = convEnt2($mytext);
+		$mytext = EscapeStr($mytext);
+		} 
+		
 		
 		$mytitle = trim($_POST['new_subject']);
 		$mytitle = my_nl2br($mytitle);
@@ -1705,9 +1755,9 @@ function confirmDelete(delUrl) {
 	   
        if (file_exists("./backup/".$_GET['delete_backup'])){
        $res = unlink("./backup/".$_GET['delete_backup']);}
-	          if ($res) {echo "<br><br>File '".$_GET['delete_backup']."' successfully deleted.<br><br>
+	          if (isset($res)) {echo "<br><br>File '".$_GET['delete_backup']."' successfully deleted.<br><br>
 			  <a href='index.php?backup'>Back to previous page</a>";} 
-			  else {echo "File not exists";}
+			  else {$res=""; echo "File not exists";}
        }
 	   
 	   if (isset($_GET['show_tables']) AND !isset($_GET['backup']) AND !isset($_GET['doit'])){
@@ -1803,13 +1853,13 @@ function confirmDelete(delUrl) {
 	  }
 	  
 	  echo "</table></div><br><br>";
-	   
+
+	 }	   
 	echo '</body><div>
 	 <table><tr>
 	 <td style="padding-right:12px;text-align:right;" align="right">
 	 &copy; '.date("Y").' <a href=\'http://openstats.iz.rs\'><b>DotA OpenStats</b></a></td>
 	 </tr></table></div>';
-	 }
 
 	} //IS LOOGED
 	?>
