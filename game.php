@@ -77,19 +77,19 @@
         </table>";
 		
 		echo "<table><tr>
-		            <th class='padLeft' width=150px><div align='center'>$lang[player]</div></th>
-					<th  width=40px><div align='center'>$lang[hero]</div></th>
-					<th  width=50px><div align='center'>$lang[kills]</div></th>
-					<th  width=50px><div align='center'>$lang[deaths]</div></td>
-					<th  width=60px><div align='center'>$lang[assists]</div></th>
-					<th  width=60px><div align='center'>$lang[creeps]</div></th>
-					<th  width=60px><div align='center'>$lang[denies]</div></th>
-					<th  width=60px><div align='center'>$lang[neutrals]</div></th>
-					<th  width=60px><div align='center'>$lang[towers]</div></th> 
-					<th  width=60px><div align='center'>$lang[gold]</div></th>
-					<th  width=220x><div align='center'>$lang[items]</div></th>
-					<th  width=60px><div align='left'>$lang[left_at]</div></th>
-					<th  width=100px>Reason</th>	
+		            <th class='padLeft' width='150px'><div align='center'>$lang[player]</div></th>
+					<th  width='40px'><div align='center'>$lang[hero]</div></th>
+					<th  width='50px'><div align='center'>$lang[kills]</div></th>
+					<th  width='50px'><div align='center'>$lang[deaths]</div></td>
+					<th  width='60px'><div align='center'>$lang[assists]</div></th>
+					<th  width='60px'><div align='center'>$lang[creeps]</div></th>
+					<th  width='60px'><div align='center'>$lang[denies]</div></th>
+					<th  width='60px'><div align='center'>$lang[neutrals]</div></th>
+					<th  width='60px'><div align='center'>$lang[towers]</div></th> 
+					<th  width='60px'><div align='center'>$lang[gold]</div></th>
+					<th  width='220x'><div align='center'>$lang[items]</div></th>
+					<th  width='60px'><div align='left'>$lang[left_at]</div></th>
+					<th  width='100px'>$lang[reason]</th>	
 					                            </tr>";
 	   
        $sql = "
@@ -410,7 +410,7 @@ SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.new
      if(file_exists($replayloc)) {
      //include('./includes/AJAX2.php');
 	  echo "<input type='button' class='inputButton' value='$lang[gamelog]' onclick='javascript:toggle();' />
-	  <a href='javascript:toggle();' id='displayText' name='info'>Show</a>
+	  <a class='inputButton' href='javascript:toggle();' id='displayText' name='info'>show</a>
 	  <div id='toggleText' style='display: none'>";
      require('./includes/get_chat.php');
 	 echo "</div>";

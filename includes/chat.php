@@ -596,7 +596,7 @@ class replay {
 					$percent = ord($actionblock{$n+1});
 					$temp['player_id'] = '';
 					$temp['type'] = 'Throne';
-					$temp['text'] = 'The Frozen Throne is at '.$percent.' percent health';
+					$temp['text'] = 'The Frozen Throne is at '.$percent.' % health';
 					$temp['time'] = $this->time;
 					$temp['mode'] = 'System';
 					$this->chat[] = $temp;
@@ -607,7 +607,7 @@ class replay {
 					$percent = ord($actionblock{$n+1});
 					$temp['player_id'] = '';
 					$temp['type'] = 'Tree';
-					$temp['text'] = 'The World Tree is at '.$percent.' percent health';
+					$temp['text'] = 'The World Tree is at '.$percent.' % health';
 					$temp['time'] = $this->time;
 					$temp['mode'] = 'System';
 					$this->chat[] = $temp;

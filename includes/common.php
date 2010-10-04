@@ -609,5 +609,22 @@ $replace = array(
 return preg_replace($search , $replace, $text);
 }
 
+  function convHTML($ic1,$ic2,$ic3,$ic4,$ic5,$ic6,$HTML,$hero,$hero2,$url){
+  
+              $HTML = str_replace("$ic1","",$HTML);
+			  $HTML = str_replace("$ic2","",$HTML);
+			  $HTML = str_replace("$ic3","",$HTML);
+			  $HTML = str_replace("$ic4","",$HTML);
+			  $HTML = str_replace("$ic5","",$HTML);
+			  $HTML = str_replace("$ic6","",$HTML);
+			  $HTML = str_replace("'./img/items/","'$url/img/items/",$HTML);
+			  $HTML = str_replace("$hero",
+			  "<img title='$hero2' alt='' width='32px' height='32px' src='$url/img/heroes/$hero2.gif'>",$HTML);
+			  //$HTML = BBDecode($HTML);
+              //$HTML = strip_tags($HTML);
+			  return $HTML;
+  
+  }
+
 
 ?>

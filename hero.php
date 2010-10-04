@@ -179,7 +179,7 @@
 	$towerkills=$list["towerkills"];
 	$raxkills=$list["raxkills"];
 	
-	echo "<tr>
+	echo "<tr class='row'>
 	<td style='padding-left:4px;width:160px;' ><a href='user.php?u=$name2'>$name</a></td>
 	<td width='220px'><a title='$list[gamename]' href='game.php?gameid=$gameid'>$gamename</a></td>
 	<td width='56px'>$type</td>

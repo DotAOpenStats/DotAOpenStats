@@ -97,9 +97,15 @@
 		$creator2=trim(strtolower($list["creatorname"]));
 		$winner=$list["winner"];
 		$dispWinner = "";
-		if ($winner == 1) {$dispWinner = "onMouseout='hidetooltip()' onMouseover='tooltip(\"<b>Map</b>: $map<br><b>$lang[winner]: </b>$lang[Sentinel]\", 150); return false'";}
-		if ($winner == 2) {$dispWinner = "onMouseout='hidetooltip()' onMouseover='tooltip(\"<b>Map</b>: $map<br><b>$lang[winner]: </b>$lang[Scourge]\", 150); return false'";}
-		if ($winner == 0) {$dispWinner = "onMouseout='hidetooltip()' onMouseover='tooltip(\"<b>Map</b>: $map<br><b>Draw Game\", 150); return false'";}
+		if ($winner == 1) {$dispWinner = "onMouseout='hidetooltip()' onMouseover='tooltip(\"<b>Map</b>: $map<br><b>$lang[winner]: </b>$lang[Sentinel]\", 150); return false'";
+		$gamename = "<span class='GamesSentinel'>$gamename</span>";
+		}
+		
+		if ($winner == 2) {$dispWinner = "onMouseout='hidetooltip()' onMouseover='tooltip(\"<b>Map</b>: $map<br><b>$lang[winner]: </b>$lang[Scourge]\", 150); return false'";
+		$gamename = "<span class='GamesScourge'>$gamename</span>";}
+		
+		if ($winner == 0) {$dispWinner = "onMouseout='hidetooltip()' onMouseover='tooltip(\"<b>Map</b>: $map<br><b>Draw Game\", 150); return false'";
+		$gamename = "<span class='GamesDraw'>$gamename</span>";}
 
 	echo "<tr class='row'>
 	<td title='' class='tableD' width='300px'><div align='left'><a $dispWinner  href='game.php?gameid=$gameid'>$gamename</a></div></td>

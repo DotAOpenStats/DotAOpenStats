@@ -8,8 +8,7 @@
 	 require_once('../includes/db_connect.php');
 	 require_once("../lang/$default_language.php");
 	 
-	 if (isset($_GET['games'])) {$games = safeEscape($_GET['games']);} else {$games = 2;}
-	 
+	 	 
 	 $sqlYear = EscapeStr($_GET["sqlyear"]);
 	 $sqlMonth = EscapeStr($_GET["sqlmonth"]);
 	 //$day_stats = EscapeStr($_GET["daystats"]); 
@@ -17,9 +16,22 @@
      $year = EscapeStr($_GET["year"]);
 	 $month = EscapeStr($_GET["month"]);
 	 $day = EscapeStr($_GET["day"]);
+	 
+	 if (isset($_GET['games'])) {$games = safeEscape($_GET['games']);} else {$games = 2;}
+	 
+	  if ($DBScore == 0)
+      {
+	     if ($ScoreMethod == 2) 
+		    {$scoreFormula = "$ScoreStart + (wins*$ScoreWins) + (losses*$ScoreLosses) + (disc*$ScoreDisc)";}
 
+	 if ($HideBannedUsersOnTop == 1) {$_sql = "AND bans.name is null";} else {$_sql = "";}
 
-$sql = "SELECT *, case when (kills = 0) then 0 when (deaths = 0) then 1000 else ((kills*1.0)/(deaths*1.0)) end as killdeathratio, ($scoreFormula) as totalscore 
+$sql = "
+	SELECT *, 
+	case when (kills = 0) then 0 
+	when (deaths = 0) then 1000 
+	else ((kills*1.0)/(deaths*1.0)) end as killdeathratio, 
+	($scoreFormula) as totalscore 
 	 FROM ( 
 	 SELECT 
 	 gp.name as name, 
@@ -28,23 +40,41 @@ $sql = "SELECT *, case when (kills = 0) then 0 when (deaths = 0) then 1000 else 
 	 avg(dp.raxkills) as raxkills,
 	 avg(dp.towerkills) as towerkills, 
 	 avg(dp.assists) as assists, 
-	 SUM(dp.assists) as SumAssists, 
+	 SUM(dp.assists) as SumAssists,
 	 avg(dp.creepdenies) as creepdenies, 
-	 SUM(dp.creepdenies) as SumCreepdenies,
 	 avg(dp.creepkills) as creepkills,
-	 SUM(dp.creepkills) as SumCreepkills,
 	 avg(dp.neutralkills) as neutralkills, 
-	 SUM(dp.neutralkills) as SumNeutralkills,
 	 avg(dp.deaths) as deaths, 
-	 SUM(dp.deaths) as SumDeaths,
 	 avg(dp.kills) as kills, 
+	 SUM(dp.kills) as totkills,
+	 SUM(dp.deaths) as totdeaths,
+	 SUM(dp.creepkills) as SumCreepkills,
+	 SUM(dp.neutralkills) as SumNeutralkills,
+	 SUM(dp.creepdenies) as SumCreepdenies, 
+	 SUM(dp.deaths) as SumDeaths, 
 	 SUM(dp.kills) as SumKills,
-	 count(*) as totgames, 
-	 case when (kills = 0) then 0 when (deaths = 0) then 1000 else ((kills*1.0)/(deaths*1.0)) end as killdeathratio, 
-	 SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.newcolour > 6)) 
-     AND gp.`left`/ga.duration >= $minPlayedRatio) then 1 else 0 end) as wins, 
-     SUM(case when(((dg.winner = 2 and dp.newcolour < 6) or (dg.winner = 1 and dp.newcolour > 6)) 
-     AND gp.`left`/ga.duration >= $minPlayedRatio) then 1 else 0 end) as losses
+	 COUNT(*) as totgames, 
+	 case when (kills = 0) then 0 
+	 when (deaths = 0) then 1000 
+	 else ((kills*1.0)/(deaths*1.0)) 
+	 end as killdeathratio,
+	 SUM(case when(((dg.winner = 1 and dp.newcolour < 6) 
+	 or (dg.winner = 2 and dp.newcolour > 6)) 
+     AND gp.`left`/ga.duration >= $minPlayedRatio) then 1 
+	 else 0 end) as wins, 
+     SUM(case when(((dg.winner = 2 and dp.newcolour < 6) 
+	 or (dg.winner = 1 and dp.newcolour > 6)) 
+     AND gp.`left`/ga.duration >= $minPlayedRatio) 
+	 then 1 else 0 end) as losses
+	 
+	 , SUM(
+	 (gp.`leftreason` LIKE ('%has lost the connection%'))  
+	 OR (gp.`leftreason` LIKE ('%was dropped%')) 
+	 OR (gp.`leftreason` LIKE ('%Lagged out%')) 
+	 OR (gp.`leftreason` LIKE ('%Dropped due to%'))
+	 ) as disc 
+	 
+	 
      FROM gameplayers as gp 
      LEFT JOIN dotagames as dg ON gp.gameid = dg.gameid 
      LEFT JOIN dotaplayers as dp ON dg.gameid = dp.gameid 
@@ -52,12 +82,70 @@ $sql = "SELECT *, case when (kills = 0) then 0 when (deaths = 0) then 1000 else 
 	 AND dp.newcolour <> 12 
 	 AND dp.newcolour <> 6
 	 LEFT JOIN games as ga ON dp.gameid = ga.id 
-	 LEFT JOIN bans on bans.name = gp.name
-	 WHERE dg.winner <> 0  
-	 AND $sqlYear = '$year' AND $sqlMonth = '$month' $day_stats
+	 LEFT JOIN bans on bans.name = gp.name 
+	 WHERE dg.winner <>0 AND $sqlYear = '$year' AND $sqlMonth = '$month' $day_stats 
+	 $_sql
 	 GROUP BY gp.name having totgames >= $games) as i 
-	 ORDER BY totalscore DESC, name DESC LIMIT 5";
-       
+	 ORDER BY totalscore DESC, name DESC LIMIT $monthly_stats";}
+	  else
+	 {
+	 if ($HideBannedUsersOnTop == 1) {$_sql = "AND bans.name is null";} else {$_sql = "";}
+	 $sql = "
+	 SELECT *, 
+	 case when (kills = 0) then 0 
+	 when (deaths = 0) then 1000 
+	 else ((kills*1.0)/(deaths*1.0)) 
+	 end as killdeathratio 
+	 FROM (
+          SELECT gp.name as name, 
+		  bans.name as banname, 
+		  avg(dp.courierkills) as courierkills, 
+		  avg(dp.raxkills) as raxkills,
+		  avg(dp.towerkills) as towerkills, 
+		  avg(dp.assists) as assists, 
+		  avg(dp.creepdenies) as creepdenies, 
+		  avg(dp.creepkills) as creepkills,
+		  avg(dp.neutralkills) as neutralkills, 
+		  avg(dp.deaths) as deaths, 
+		  avg(dp.kills) as kills, 
+		  SUM(dp.kills) as totkills,
+		  SUM(dp.assists) as SumAssists,
+		  SUM(dp.creepkills) as SumCreepkills,
+	      SUM(dp.neutralkills) as SumNeutralkills,
+	      SUM(dp.creepdenies) as SumCreepdenies, 
+		  SUM(dp.deaths) as SumDeaths, 
+	      SUM(dp.kills) as SumKills,
+		  sc.score as totalscore, 
+		  COUNT(*) as totgames, 
+		  SUM(case when(((dg.winner = 1 and dp.newcolour < 6) 
+		  or (dg.winner = 2 and dp.newcolour > 6)) 
+		  AND gp.`left`/ga.duration >= $minPlayedRatio) then 1 else 0 end) as wins, 
+		  SUM(case when(((dg.winner = 2 and dp.newcolour < 6) 
+		  or (dg.winner = 1 and dp.newcolour > 6)) 
+		  AND gp.`left`/ga.duration >= $minPlayedRatio) then 1 else 0 end) as losses
+		  
+		  , SUM(
+	 (gp.`leftreason` LIKE ('%has lost the connection%'))  
+	 OR (gp.`leftreason` LIKE ('%was dropped%')) 
+	 OR (gp.`leftreason` LIKE ('%Lagged out%')) 
+	 OR (gp.`leftreason` LIKE ('%Dropped due to%'))
+	 ) as disc 
+		  
+		  FROM gameplayers as gp 
+		  LEFT JOIN dotagames as dg ON gp.gameid = dg.gameid 
+		  LEFT JOIN dotaplayers as dp ON dg.gameid = dp.gameid 
+		  AND gp.colour = dp.colour 
+		  AND dp.newcolour <> 12 
+		  AND dp.newcolour <> 6
+		  LEFT JOIN games as ga ON dp.gameid = ga.id 
+		  LEFT JOIN scores as sc ON sc.name = gp.name 
+		  LEFT JOIN bans on bans.name = gp.name 
+		  WHERE dg.winner <> 0 $_sql
+		  GROUP BY gp.name having totgames >= $games) as i 
+	 ORDER BY totalscore DESC, name DESC LIMIT $monthly_stats";
+	 }
+  
+	   
 	 $result = $db->query($sql);
 	 
 	 $monthName = getMonthName($month,$lang["jan"],$lang["feb"],$lang["mar"],$lang["apr"],$lang["may"],$lang["jun"],$lang["jul"],$lang["aug"],$lang["sep"],$lang["oct"],$lang["nov"],$lang["dec"]);

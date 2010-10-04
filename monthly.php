@@ -82,9 +82,9 @@
    $month=safeEscape($_POST["months"]); 
     if ($_POST["years"] == $list["y"]) {$select = "selected";} else {$select = "";}   
 	  }
-  $buildYears .= "<option $select value='$list[y]'>$list[y]</option>";
+      $buildYears .= "<option $select value='$list[y]'>$list[y]</option>";
    }
-  $buildYears .= "</select>";
+      $buildYears .= "</select>";
 
   
   ///////// MONTHS

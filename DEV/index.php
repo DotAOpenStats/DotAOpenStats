@@ -6,7 +6,7 @@
 
 		
 	define("MAX_SIZE", 20); //20 KB max
-	define("VERSION", "1.1.7");
+	define("VERSION", "1.1.7"); //REMEMBER: It's still 1.1.7, this is just update
 	
 	
 	echo '
@@ -472,7 +472,7 @@ function confirmDelete(delUrl) {
 	echo "<div align='center'><table style='width:98%'><tr><td align='left'>
 	<a href='index.php?addban'><b><img alt='' style='vertical-align: middle;' width='22px' height='22px' src='../img/items/BTNCritterChicken.gif' border=0/> Add ban </a> </td>
 	
-	 <td  align='right'><a href='index.php?remove_dupbans'><b><img alt='' style='vertical-align: middle;' width='20px' height='20px' src='../img/items/BTNCancel.gif' border=0/> Remove duplicated bans </a></td>
+	 <td  align='right'><a href='index.php?remove_dupbans'><b><img alt='' style='vertical-align: middle;' width='20px' height='20px' src='../img/items/BTNCancel.gif' border=0/> Remove duplicate bans </a></td>
 	 </tr></table></div>
 	 
 	<div align='center'>
@@ -637,7 +637,7 @@ function confirmDelete(delUrl) {
 	   }
 	}
 	
-	echo "<div align='center'><table style='width:400px;margin-top:40px;'><tr><td>Removed <b>$del_duplicates</b> duplicated bans</td></tr><tr><td><a href='index.php?bans'>Back to previous page</a></td></tr></table></div>";
+	echo "<div align='center'><table style='width:400px;margin-top:40px;'><tr><td>Removed <b>$del_duplicates</b> duplicate bans</td></tr><tr><td><a href='index.php?bans'>Back to previous page</a></td></tr></table></div><br><br>";
 	}
 	
 	
@@ -1087,6 +1087,7 @@ function confirmDelete(delUrl) {
 		if (!isset($_POST['html']))
 		{
 		$pre_news = BBCode($news_content);
+		$pre_news = my_nl2br($pre_news);
 		//$pre_news = convEnt($news_content);
 		$pre_news = str_replace("\n","<br>",$pre_news);} 
 		else {$pre_news = EscapeStr($news_content);}
@@ -1143,6 +1144,7 @@ function confirmDelete(delUrl) {
 	{
 
 	$mytext = trim($_POST['reply']);
+	$mytext = convEnt2($mytext);
 	if (!isset($_POST['html']))
 	{$mytext = my_nl2br($mytext);
 	//$mytext = convEnt2($mytext);
@@ -1740,7 +1742,7 @@ function confirmDelete(delUrl) {
 		echo("</TR>\n");
 	      }
       }
-      echo("</TABLE></div>");
+      echo("</TABLE></div><br>");
 	    } else {echo "Directory <b>backup</b> not exists. Please create backup directory in your ACP folder";}
 	   }
 

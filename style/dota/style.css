@@ -305,12 +305,15 @@ cursor: #D10303;
 	
 td.pagination {height: 24px;}
 
+.GamesSentinel {color:#CF0002;}
+.GamesScourge {color:#00CF1D;}
+.GamesDraw {color:#E7BE00;}
 
 /* Replay Colors */
-.sentinel {color:#8D2323;text-align: left;}
-.scourge {text-align: right; color:#1B8319;}
+.sentinel {text-align: left; color:#8D2323;}
+.scourge   {text-align: left; color:#04C500;}
 
-.all  {text-align:center; color:#DCDCDC;}
+.all  {text-align:left; color:#DCDCDC;}
 
 .red       {color: #DD0000;}
 .blue     {color: #004EFF;}
@@ -318,14 +321,14 @@ td.pagination {height: 24px;}
 .purple  {color: #7711AA;}
 .yellow  {color: #FFFF00;}
 .orange  {color: #FF9900 ;}
-.dark-green  {color: #24573d;}
+.dark-green  {color: #00751E;}
 .pink     {color: #FF66CC;}
 .gray {color: #888888;}
 .light-blue  {color: #55BBEE;}
 .darkgreen  {color: #006F3F;}
 .brown  {color: #6F3F00;}
 .observer  {color: #FFFFFF;}
-.GameSystem {color: #DCDCDC; text-align: center;}
+.GameSystem {color: #FFF6B9; text-align: left;}
 
 a.banned {color: #e56879;}
 .won     {color: #86E573;}

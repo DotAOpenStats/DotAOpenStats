@@ -91,7 +91,7 @@
   
   $celltitle = " title='$reason'";
   
-  if (strlen($reason)>=25) {$reason = "".strtolower(substr($reason,0,25))."...";}
+  if (strlen($reason)>=40) {$reason = "".strtolower(substr($reason,0,40))."...";}
   
   $data = array($celltitle, $list['id'], $name, $reason, $list['gamename'], $get_date, strtolower($list['admin']),$list['admin']);
    

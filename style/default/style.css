@@ -286,6 +286,10 @@ td.pagination{
 height: 24px;
 }
 
+.GamesSentinel {color:#CF0002;}
+.GamesScourge {color:#00CF1D;}
+.GamesDraw {color:#707070;}
+
 /* Colors */
 .sentinel
 {
@@ -300,7 +304,7 @@ height: 24px;
 }
 .all
 {
-	text-align:center;
+	text-align:left;
 	color:#7B7B7B;
 }
 

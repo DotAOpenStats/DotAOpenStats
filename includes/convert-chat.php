@@ -10,7 +10,226 @@ Based on:
 - DOTA Replay Parser By Rush4Hire   -  http://rush4hire.com
 *
 *********/
+class ActivatedHero {
+    private $Data;
+    private $Skills;
+    // Used to for evading duplicated actions
+    private $lastSkilledTime = 0;
+    // Used for limiting skill levels
+    private $limitStats = 0;
+    
+    
+    /**
+    * Constructor
+    * @param mixed $heroData
+    */
+    function ActivatedHero($heroData) {
+        $this->Data = $heroData;
+        $this->Skills = array();
+    }
+    
+    /**
+    * Add learned skill to hero
+    * 
+    * @param mixed $skill - Skill Data 
+    * @param mixed $time - Time learned ( non converted in miliseconds )
+    */
+    function setSkill($skill, $time) {
+        
+        // TODO - Handle duplication / Level limit / Skill limit etc
+        // Level limit Common skills A0NR and Aamk
+        if($this->limitStats >= 10 && ($skill->getId() == "Aamk" || $skill->getId() == "A0NR")) {
+            return;
+        }
+        
+        // Handling duplication
+        if($time - $this->lastSkilledTime < DUPLICATE_SKILLING_TIME_LIMIT)
+            return;
+        
+        $this->lastSkilledTime = $time;
+        
+        // Limit learned skills to 25
+        if ( count ( $this->Skills ) >= 25 ) {
+            return;    
+        }
+        
+        // Add skill  
+        $this->Skills[$time] = $skill;
+        
+        if($skill->getId() == "Aamk" || $skill->getId() == "A0NR") {
+            $this->limitStats++;
+        }
+    }
+    
+    /**
+    * @return Skills[time in miliseconds] = XML Skill data
+    */
+    function getSkills() {
+        return $this->Skills;
+    }
+    
+    /**
+    * Get Hero ID
+    * @return String Hero ID
+    */
+    function getId() {
+        return $this->Data->getId();
+    }
+    
+    function getName() {
+        return $this->Data->getName();
+    }
+    
+    /**
+    * Return XML data for Hero
+    * @return data - XML Data for Hero
+    */
+    function getData() {
+        return $this->Data;
+    }
+    
+    /**
+    * @return int Level
+    */
+    function getLevel() {
+        return count ( $this->Skills);
+    }
+}
 
+
+class PlayerStats {
+    private $PID;
+      
+    public $HeroKills;
+    public $Deaths;
+    public $CreepKills;
+    public $CreepDenies;    
+    public $Assists;
+    public $EndGold;
+    public $Neutrals;
+    
+    private $DelayedSkills;
+    
+    public $Inventory;      // Array with 6 elements, for the 6 inventory slots
+    
+    private $Hero;    // Class ActivatedHero
+    
+    public $AA_Total;
+    public $AA_Hit;
+    public $HA_Total;
+    public $HA_Hit;
+    
+    // Dota broadcasts hero levels, so this is used to check for skill duplications and similiar incidents.
+    private $levelCap = 1;
+    
+    /**
+    * @desc Constructor
+    * @param Player's ID    
+    */
+    function PlayerStats($PID) {
+        $this->PID = $PID;
+        $this->Inventory = array();
+        $this->Hero = false; 
+        
+        $this->DelayedSkills = array();
+    }
+    
+    function setAA_Total($var) {
+        $this->AA_Total = $var;
+    }
+    function setAA_Hits($var) {
+        $this->AA_Hits = $var;
+    }
+    function setHA_Total($var) {
+        $this->HA_Total = $var;
+    }
+    function setHA_Hits($var) {
+        $this->HA_Hits = $var;
+    }
+    
+    /**
+    * 
+    * @desc Set Hero
+    * @param mixed Hero - ActivatedHero class
+    */
+    function setHero($hero) {
+        $this->Hero = $hero;
+    }
+    
+    /**
+    * Return hero data - ActivatedHero class
+    */
+    function getHero() {
+        if(!isset($this->Hero)) {
+            return false;
+        }
+        return $this->Hero;
+    }
+    
+    /**
+    * Get the current level cap
+    * @returns Integer - Current level cap
+    */
+    function getLevelCap() {
+        return $this->levelCap;
+    }
+    /**
+    * Set the level cap
+    * @param $levelCap - Level cap to set
+    */
+    function setLevelCap($levelCap) {
+        $this->levelCap = $levelCap;
+    }
+    
+    /**
+    * @return boolean TRUE if hero is set, FALSE otherwise
+    */
+    function isSetHero() {
+        if ( $this->Hero === false) {
+            return false;
+        }
+        return true;
+    }
+    
+    /**
+    * Queue up skills, to be added later
+    * 
+    * @param mixed $skill_data Skill Data
+    * @param mixed $time Replay time in miliseconds
+    * @param String $heroId Hero ID
+    */
+    function addDelayedSkill( $skill_data, $time, $heroId ) {
+        $this->DelayedSkills[] = array( 'skill_data' => $skill_data, 'time' => $time, 'heroId' => $heroId );
+    }
+    
+    /**
+    * Process delayed skills
+    * 
+    */
+    function processDelayedSkills() {
+        if ( count( $this->DelayedSkills) > 0 ) {
+            
+            foreach( $this->DelayedSkills as $element ) {
+                // if ( !is_object($this->Hero) ) continue;
+
+                if ( $this->Hero->getId() == $element['heroId'] ) {
+                   $this->Hero->setSkill ( $element['skill_data'], $element['time'] );
+                }
+                // TODO: Otherwise added the skill to the appropriate activated hero
+            }
+        }
+    }
+  }
+  
+
+
+
+
+///////////////////////////////////////////////////////
+///////////////////////////////////////////////////////
+///////////////////////////////////////////////////////
+///////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function convert_bool($value) {
 	if (!$value)
 		return false;

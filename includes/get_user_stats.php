@@ -37,8 +37,8 @@
 	$sql = "
 	SELECT 
 	original, description, max(kills) 
-	FROM dotaplayers AS a 
-	LEFT JOIN gameplayers AS b ON b.gameid = a.gameid AND a.colour = b.colour 
+	FROM dotaplayers AS dp 
+	LEFT JOIN gameplayers AS gp ON gp.gameid = dp.gameid AND dp.colour = gp.colour 
 	LEFT JOIN heroes on hero = heroid 
 	WHERE LOWER(name)= LOWER('$username') 
 	GROUP BY original 
