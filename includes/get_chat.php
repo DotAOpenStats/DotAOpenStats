@@ -207,7 +207,8 @@
 		$names[''] = 'System';
 		
          //////////////       COLORS              /////////////
-		 
+		 	$str = "<a href='http://".$_SERVER["SERVER_NAME"].dirname($_SERVER["PHP_SELF"])."/$replayloc'>Download</a> , ";
+			
 		if ($replay->chat) {
 			foreach ($replay->chat as $content) {
 				$time = $content['time'];
@@ -217,6 +218,7 @@
 				$playerColor = $colors[$playerID];
 				$text = convEnt2($content['text']);
 				$ply = "<span class='GameSystem'><i>(System)</i></span>";
+			
 				
 	if($mode == 'All' || getTeam($playerColor) == 1) 
 	{$ply = "<a href='user.php?u=$playerName'><span class='$playerColor'>$playerName</span></a>";} 
@@ -227,15 +229,15 @@
 	$timeSec = secondsToTime($time/1000);
 				
 				echo "<tr class='row'><td align='right' width='82px'>$timeSec</td>
-				<td style='width:100px;padding-right:4px;' align='right'>$ply: </td>
-				";
+				<td style='width:100px;padding-right:4px;' align='right'>$ply: </td>";
+				$str .= "$timeSec $ply: ";
 				
 				if($mode == 'All') 
-				{echo "<td class='all'>[All] $text</td>";}
+				{echo "<td class='all'>[All] $text</td>"; $str .= "[All] $text , ";}
 				
 				else if($mode == 'System') {
 					 if($content['type'] == 'Start') 
-					 {echo "<td class='GameSystem'>$text</td>";}
+					 {echo "<td class='GameSystem'>$text</td>"; $str.= "$text , ";}
 					 
 					        else if($content['type'] == 'Hero')
 							{
@@ -249,12 +251,14 @@
 		<div style='background-color:#580202;'><span class='$slotcolor[$killer]'>$slotname[$killer]</span>
 		$text<span class='$slotcolor[$victim]'>$slotname[$victim]</span> <b>for first blood</b></div></td>";
 		$firstBlood = false;
+		$str .= "$slotname[$killer] $text $slotname[$victim] for first blood ,";
 		}
 		else
 		{
 		echo "<td class='GameSystem'>
 		<span class='$slotcolor[$killer]'>$slotname[$killer]</span> 
 		$text<span class='$slotcolor[$victim]'> $slotname[$victim]</span></td>";
+		$str .= "$slotname[$killer] $text $slotname[$victim] , ";
 		}
 	 }
 	  else
@@ -262,15 +266,18 @@
 	  if($victim == $killer)
 	  {
 	  echo "<td class='GameSystem'><span class='$slotcolor[$killer]'>$slotname[$killer]</span> has killed himself!</td>";
+	  $str .= "$slotname[$killer] has killed himself! , ";
 	  }
 	  else if(($victim < 6 && $killer < 6) || ($victim > 6 && $killer > 6) && $killer <= 11)
 	  {
 	  echo "<td class='GameSystem'>
 	  <span class='$slotcolor[$killer]'>$slotname[$killer]</span> denied his teammate <span class='$slotcolor[$victim]'>$slotname[$victim]</span></td>";
+	  $str .= "$slotname[$killer] denied his teammate $slotname[$victim] , ";
 	  }
 	  else
 	  {
 	  echo "<td class='GameSystem'><span class='$slotcolor[$killer]'>$slotname[$killer]</span> $text<span class='$slotcolor[$victim]'> $slotname[$victim]</span></td>";
+	  $str .= "$slotname[$killer] $text $slotname[$victim] , ";
 	  }
 	}
   }
@@ -279,31 +286,37 @@
 	  $victim = trim($content['victim']);
 	  $killer = $content['killer'];
 	  echo "<td class='GameSystem'><span class='$slotcolor[$victim]'>$slotname[$victim] </span>$text<span class='$slotcolor[$killer]'> $slotname[$killer]</span></td>";
+	  $str .= "$slotname[$victim] $text $slotname[$killer] , ";
 	  }
 	  else if($content['type'] == 'Tower')
 	  {
 	  $killer = $content['killer'];
 								
 	  echo "<td class='GameSystem'><span class='$slotcolor[$killer]'>$slotname[$killer]</span>$text $content[side]  level  $content[level]<span class=".strtolower($content['team'])."> $content[team] </span> tower</td>";
+	  $str .= "$slotname[$killer] $text $content[side]  level  $content[level]  $content[team] tower , ";
 	  }
 	  else if($content['type'] == 'Rax')
 	  {
 	  $killer = $content['killer'];
 	  echo "<td class='GameSystem'><span class='$slotcolor[$killer]'>$slotname[$killer]</span>$text $content[side] $content[raxtype]<span class='".strtolower($content['team'])."'> $content[team]</span> barracks</td>";
+	  $str .= "$slotname[$killer] $text $content[side]$content[raxtype]  $content[team] , ";
 	  }
-	  else if($content['type'] == 'Throne') {echo "<td class='GameSystem'>$text</td>";}
-	  else if($content['type'] == 'Tree')   {echo "<td class='GameSystem'>$text</td>";}
+	  else if($content['type'] == 'Throne') {echo "<td class='GameSystem'>$text</td>"; $str .= "$text , ";}
+	  else if($content['type'] == 'Tree')   {echo "<td class='GameSystem'>$text</td>"; $str .= "$text , ";}
 	  }
 	 else
 	{
 	if ($mode == 9)
-	  {echo "<td align='left' class='scourge'><span style='color:#00A404;'>[Priv] $text</span></td>";}
+	  {echo "<td align='left' class='scourge'><span style='color:#00A404;'>[Priv] $text</span></td>";
+	  $str .= "[Priv] $text , ";}
 	  
        else
        {
-	   if(getTeam($playerColor) == 1) {echo "<td align='left' class='sentinel'><span style='color:#B32704;'>[Allies] $text</span></td>"; }
+	   if(getTeam($playerColor) == 1) {echo "<td align='left' class='sentinel'><span style='color:#B32704;'>[Allies] $text</span></td>"; 
+	   $str .= "[Allies] $text , ";}
 	   else
-	   { echo "<td align='left' class='scourge'><span style='color:#00A404;'>[Allies] $text</span></td>"; }
+	   { echo "<td align='left' class='scourge'><span style='color:#00A404;'>[Allies] $text</span></td>"; 
+	   $str .= "[Allies] $text , ";}}
        }
 	}
 
@@ -314,6 +327,21 @@
 	</td>
 	</tr>
 	     </table></div>";
+		 
+		 //STORE PARSED TEXT INTO ARRAY. WITH textarea YOU CAN OUTPUT HTML CODE FOR GAME LOG.
+		 /*
+		 $htmlOutput = "<style type='text/css'>*{margin: 0; padding: 0;} body{color: #fff; background-color: #000;}</style>\n\n";
+		 $permLink = "http://".$_SERVER["SERVER_NAME"].dirname($_SERVER["PHP_SELF"]);
+		 $parts=explode(",", $str);
+		 
+		 for($i=0; $i <= count($parts)-1; ++$i) {
+		 echo "<div align='left'>$parts[$i]</div>";
+		 $fix = str_replace("<a href='user.php?u=","<a href='$permLink/user.php?u=",$parts[$i]);
+		 $fix = str_replace("<span class='","<span style='color:",$fix);
+		 $htmlOutput .= "<div style=\"text-align: left;\">$fix</div>\n";
+		 }
+		  echo "<textarea>".$htmlOutput."</textarea>";
+		  */
 
-}
+
 ?>		

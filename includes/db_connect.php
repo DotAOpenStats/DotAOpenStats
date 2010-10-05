@@ -34,9 +34,15 @@
 *
 -->
 **********************************************/
-
+   if (isset($_debug) AND $_debug == 1)
+   {
    ini_set ("display_errors", "1");
    error_reporting(E_ALL);
+   } 
+     else 
+     {ini_set ("display_errors", "0");
+      error_reporting(NULL);}
+
 	
   $db = new database($server, $username, $password, $database);
   $db->connect(database);

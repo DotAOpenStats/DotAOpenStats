@@ -80,7 +80,4 @@
    
    echo str_replace($tags, $data, file_get_contents("./style/$default_style/header.html"));
    
-   
-
-   
 ?>

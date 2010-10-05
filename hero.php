@@ -1,4 +1,4 @@
-<?php
+ï»¿<?php
 /*********************************************
 <!-- 
 *   	DOTA OPENSTATS
@@ -44,7 +44,6 @@
 	$heroid=safeEscape($_GET["hero"]);
 	
 	$sql = getHero($heroid);
-	
 	$sql2 = getHeroInfo($heroid, $minPlayedRatio, $minPlayedRatio);
 	
 	$result = $db->query($sql);
@@ -78,10 +77,10 @@
 		$stats=convEnt($list["stats"]);
 		$skills=convEnt($list["skills"]);
 		
-		$summ = str_replace("’","&rsquo;",$summ );
-		$summ = str_replace("…","&hellip;",$summ );
-		$skills = str_replace("’","&rsquo;",$skills );
-		$skills = str_replace("ç","&ccedil;",$skills );
+		$summ = str_replace("â€™","&rsquo;",$summ );
+		$summ = str_replace("â€¦","&hellip;",$summ );
+		$skills = str_replace("â€™","&rsquo;",$skills );
+		$skills = str_replace("Ã§","&ccedil;",$skills );
 		
 		$stats = str_replace("Strength","<img style='vertical-align: middle;' alt='' src='./img/strength.gif' border=0 />Strength",$stats );
 		
@@ -89,15 +88,15 @@
 		
 		$stats = str_replace("Intelligence","<img style='vertical-align: middle;' alt='' src='./img/intelligence.gif' border=0 />Intelligence",$stats );
 		
-		$summ = str_replace("’","&rsquo;",$summ );
-		$skills = str_replace("’","&rsquo;",$skills );
+		$summ = str_replace("â€™","&rsquo;",$summ );
+		$skills = str_replace("â€™","&rsquo;",$skills );
 		
 		$data = array($hid,$hero,$lang["info"],$summ,$stats,$skills,$lang["wins"],$wins,$lang["games"],$totgames,$lang["losses"],$losses,$lang["w_l"],$winratio,$lang["kills"],$kills,$lang["assists"],$assists,$lang["deaths"],$deaths,$lang["kd"],$kdratio,$lang["creeps"],$creepkills,$lang["neutrals"],$neutralkills,$lang["denies"],$creepdenies,$lang["towers"],$towerkills,$lang["rax"],$raxkills,$lang["couriers"],$courierkills);
 		
 		$tags = array('{HEROID}','{HERO}', '{L_INFO}','{SUMMARY}','{STATS}','{SKILLS}','{L_WINS}','{WINS}','{L_GAMES}','{TOTGAMES}','{L_LOSSES}','{LOSSES}','{L_WLRATIO}','{WLRATIO}','{L_KILLS}','{KILLS}','{L_ASSISTS}','{ASSISTS}','{L_DEATHS}','{DEATHS}','{L_KD}','{KD}','{L_CREEPS}','{CREEPS}','{L_NEUTRALS}','{NEUTRALS}','{L_DENIES}','{DENIES}','{L_TOWERS}','{TOWERS}','{L_RAX}','{RAX}','{L_COURIERS}','{COURIERS}');
 		
 	 echo str_replace($tags, $data, file_get_contents("./style/$default_style/hero.html"));
-	 
+	  
      // HERO GAME HISTORY
 	 $sql = getHeroHistoryCount($heroid);
 	 
@@ -127,9 +126,11 @@
   if (isset($_GET['sort']) AND $_GET['sort'] == 'desc')
   {$sort = 'asc'; $sortdb = 'DESC';} else {$sort = 'desc'; $sortdb = 'ASC';}
 	 
-
-	 echo "<br>";
+    echo "<br>";
 	
+	if ($ShowHeroMostUsedItems==1) {
+	require_once("./includes/get_hero_items.php");
+	}
 	 
 	 echo "<div align='center'><table class='tableA'><tr><th>
 	 <div align='center'>$lang[hero_player_history] $hero</div>

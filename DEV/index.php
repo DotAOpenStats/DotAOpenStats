@@ -6,7 +6,7 @@
 
 		
 	define("MAX_SIZE", 20); //20 KB max
-	define("VERSION", "1.1.7"); //REMEMBER: It's still 1.1.7, this is just update
+	define("VERSION", "1.1.8");
 	
 	
 	echo '
@@ -136,10 +136,12 @@
 	$os_configuration = "Configuration";
 	$dashboard = "Dashboard";
 	$back_up = "Backup";
+	$gameid_check = "Manage Games";
 	
 	if (isset($_GET['bans'])) {$manage_bans = "<b>Manage Bans</b>";}
 	if (isset($_GET['addban'])) {$manage_bans = "<b>Manage Bans</b>";}
 	if (isset($_GET['heroes'])) {$edit_h = "<b>Edit Heroes</b>";}
+	if (isset($_GET['games'])) {$gameid_check = "<b>Manage Games</b>";}
 	if (isset($_GET['addhero'])) {$edit_h = "<b>Edit Heroes</b>";}
 	if (isset($_GET['items'])) {$edit_i = "<b>Manage Items</b>";}
 	if (isset($_GET['additem'])) {$edit_i = "<b>Manage Items</b>";}
@@ -157,6 +159,7 @@
 	| <a href='index.php?bans'>$manage_bans</a>
 	| <a href='index.php?heroes'>$edit_h</a>
 	| <a href='index.php?items'>$edit_i</a>
+	| <a href='index.php?games&check'>$gameid_check</a>
 	| <a href='index.php?addnews'>$add_news</a>
 	| <a href='index.php?conf'>$os_configuration</a>
 	| <a href='index.php?backup'>$back_up</a>
@@ -1305,7 +1308,14 @@ function confirmDelete(delUrl) {
 		  
 		  if ($AllTimeStats == "1") {$atsy = "checked";$atsn = "";} else {
           $atsy = "";
-          $atsn = "checked";}	  
+          $atsn = "checked";}	 
+
+      $FastGameWon = get_value_of('$FastGameWon');
+      $FastGameWon = trim($FastGameWon);
+		  
+		  if ($FastGameWon == "1") {$fgwy = "checked";$fgwn = "";} else {
+          $fgwy = "";
+          $fgwn = "checked";}			  
 	
       $ScoreStart = get_value_of('$ScoreStart');
       $ScoreStart = trim($ScoreStart);	
@@ -1415,7 +1425,13 @@ function confirmDelete(delUrl) {
       $ScoreMethod = trim($ScoreMethod); 
       if ($ScoreMethod == "1") {$scy = "checked";$scn = "";} else {
           $scy = "";
-          $scn = "checked";}	  
+          $scn = "checked";}	
+
+      $_debug = get_value_of('$_debug');
+      $_debug = trim($_debug); 
+      if ($_debug == "1") {$dbgy = "checked";$dbgn = "";} else {
+          $dbgy = "";
+          $dbgn = "checked";}		  
 		  
 	  
 	  $head_admin = get_value_of('$head_admin');
@@ -1457,6 +1473,20 @@ function confirmDelete(delUrl) {
 	  <tr>
 	  <td width="160px">Heroes per page</td>
 	  <td><input value="'.$heroes_per_page.'" type="text" name="heroes" size=5 /> The number of results returned in a page on the hero statistics page</td></tr>
+	  
+	  <tr>
+	  <td width="160px">Fastest/Longest Game Time Won</td>
+	  <td>
+	  <input type="radio" name="fgw" '.$fgwy.' value="1" /> Yes
+	  <input type="radio" name="fgw" '.$fgwn.' value="0" /> No 
+	  | (Display fastest and longest game on User page)</td></tr>
+	  
+	  <tr>
+	  <td width="160px">Enable debug</td>
+	  <td>
+	  <input type="radio" name="dbg" '.$dbgy.' value="1" /> Yes
+	  <input type="radio" name="dbg" '.$dbgn.' value="0" /> No 
+	  | (<b>Not recommended</b>. Enable error reportings.)</td></tr>
 	  
 	  <tr><th>Top page</th><th></th></tr>
 
@@ -1633,7 +1663,7 @@ function confirmDelete(delUrl) {
 	  <input type="radio" name="apc" '.$apcn.' value="0" /> No 
 	  | <a title="If this option above is enabled, points  will be calculated accurately (from database)
 	  It will calculate total score before and after selected game.
-	  This will also take up much more resources">(<b>*</b>Points from database. <b>This take up much more resources</b><br><span style="color:red">Only for Score Method 1</span)</a></td></tr>
+	  This will also take up much more resources">(<b>*</b>Points from database. <b>This take up much more resources</b>)<br><span style="color:red">Only for Score Method 1</span></a></td></tr>
 	  
 	  <tr><th>Database</th><th></th></tr>
 	  <tr>
@@ -1658,6 +1688,8 @@ function confirmDelete(delUrl) {
 	  write_value_of('$bans_per_page', "$bans_per_page", $_POST['bans']);
 	  write_value_of('$games_per_page', "$games_per_page", $_POST['games']);
 	  write_value_of('$heroes_per_page', "$heroes_per_page", $_POST['heroes']);
+	  write_value_of('$FastGameWon', "$FastGameWon", $_POST['fgw']);
+	  
 	  write_value_of('$top_players_per_page', "$top_players_per_page", $_POST['topplayers']);
 	  write_value_of('$news_per_page', "$news_per_page", $_POST['news']);
 	  write_value_of('$search_limit', "$search_limit", $_POST['search']);
@@ -1856,7 +1888,155 @@ function confirmDelete(delUrl) {
 	  
 	  echo "</table></div><br><br>";
 
-	 }	   
+	 }
+     //Manage Games
+	 if (isset($_GET['games']) AND isset($_GET['check']))
+	 {
+	     if (isset($_GET['check']))
+		 {function getColorOf($ncol) {
+  $class = "";
+         if ($ncol == 1) {$class = "style='color:#004EFF'";}
+		 if ($ncol == 2) {$class = "style='color:#00EEEE'";}
+		 if ($ncol == 3) {$class = "style='color:#7711AA'";}
+		 if ($ncol == 4) {$class = "style='color:#FFFF00'";}
+		 if ($ncol == 5) {$class = "style='color:#FF9900'";}
+		 if ($ncol == 7) {$class = "style='color:#FF66CC'";}
+		 if ($ncol == 8) {$class = "style='color:#888888;'";}
+		 if ($ncol == 9) {$class = "style='color:#55BBEE'";}
+		 if ($ncol == 10) {$class = "style='color:#006F3F'";}
+		 if ($ncol == 11) {$class = "style='color:#6F3F00'";}
+  return $class;
+  }
+  
+    echo "<form action='' name='myform' method='POST'><div align='center'><table class='tableA'><tr>
+		<th class='padLeft'>Enter GameID:</th></tr>
+		<tr>
+		<td class='padLeft'><input type='text' name='gid' size=12 maxlength=12>
+		<input value='submit' class='inputButton' type='submit'></td>
+		</tr>
+		</table></div></form>";
+  
+  if ($_SERVER['REQUEST_METHOD'] == 'POST')
+  {
+    if (isset($_GET['gameid'])) 
+	{
+	$gid = safeEscape($_GET['gameid']);
+	}
+	
+	if (isset($_POST["gid"])) {$gid = safeEscape(trim($_POST['gid']));}
+  
+  if (!is_numeric($gid)) {echo "Try again!"; die;}
+  
+  $sql = "SELECT winner, dp.gameid, gp.colour, newcolour, original as hero, description, kills, deaths, assists, creepkills, creepdenies, neutralkills, towerkills, gold,  raxkills, courierkills, 
+	   item1, item2, item3, item4, item5, item6, g.gamename as gn,
+	   it1.icon as itemicon1, 
+	   it2.icon as itemicon2, 
+	   it3.icon as itemicon3, 
+	   it4.icon as itemicon4, 
+	   it5.icon as itemicon5, 
+	   it6.icon as itemicon6, 
+	   it1.name as itemname1, 
+	   it2.name as itemname2, 
+	   it3.name as itemname3, 
+	   it4.name as itemname4, 
+	   it5.name as itemname5, 
+	   it6.name as itemname6, 
+	   leftreason, 
+	   gp.left, 
+	   gp.name as name, 
+	   b.name as banname 
+	   FROM dotaplayers AS dp 
+	   LEFT JOIN gameplayers AS gp ON gp.gameid = dp.gameid and dp.colour = gp.colour 
+	   LEFT JOIN dotagames AS dg ON dg.gameid = dp.gameid 
+	   LEFT JOIN games AS g ON g.id = dp.gameid 
+	   LEFT JOIN bans as b ON gp.name = b.name
+	   LEFT JOIN heroes as f ON hero = heroid
+	   LEFT JOIN items as it1 ON it1.itemid = item1
+	   LEFT JOIN items as it2 ON it2.itemid = item2
+	   LEFT JOIN items as it3 ON it3.itemid = item3
+	   LEFT JOIN items as it4 ON it4.itemid = item4
+	   LEFT JOIN items as it5 ON it5.itemid = item5
+	   LEFT JOIN items as it6 ON it6.itemid = item6
+	   WHERE dp.gameid=$gid 
+	   ORDER BY newcolour";
+		 
+		 $result = $db->query($sql);
+		 echo "<div align='center'><table class='tableA'><tr>
+		 <th><div align='center'>slot</div></th>
+		 <th>swap</th>
+		 <th><div align='center'>name</div></th>
+		 <th>hero</th>
+		 <th>k/d/a</th>
+		 <th>c/d/n</th>
+		 <th>Items</th>
+		 <th>GameID: $gid</th></tr>
+		 ";
+		 if ($db->num_rows($result)<=0) 
+		 {echo "Game with given ID doesn't exists. Check your <b>games</b> table</table>"; die;}
+		 $err = "";$scourge = 0;
+		 while ($row = $db->fetch_array($result,'assoc')) {
+		 $ncol = $row["newcolour"];
+		 if ($ncol == "") {$err .= "Field <b>'newcolour'</b> is empty.  Check <b>dotaplayers</b> table<br>";}
+		 $col = $row["colour"];
+		 if ($col == "") {$err .= "Field <b>'colour'</b> is empty.  Check <b>dotaplayers</b> table<br>";}
+		 $gid = $row["gameid"];
+		 if ($gid == "") {$err .= "Field <b>'gameid'</b> is unknown.<br>";}
+		 $player = $row["name"];
+		 if ($player == "") {$err .= "Field <b>'name'</b> is empty.<br>";}
+		 $hero = $row["hero"];
+		 if ($hero == "") {$err .= "Field <b>'hero'</b> is empty.<br>";}
+		 $k = $row["kills"]; $d = $row["deaths"];  $a = $row["assists"];
+		 if ($k == "") {$err .= "Field <b>'kills'</b> is empty.<br>";}
+		 if ($d == "") {$err .= "Field <b>'deaths'</b> is empty.<br>";}
+		 if ($a == "") {$err .= "Field <b>'assists'</b> is empty.<br>";}
+		 
+		 $c = $row["creepkills"]; $cd = $row["creepdenies"];  $n = $row["neutralkills"];
+		 $i1 = $row["itemicon1"]; $i2 = $row["itemicon2"]; $i3 = $row["itemicon3"];
+		 $i4 = $row["itemicon4"]; $i5 = $row["itemicon5"]; $i6 = $row["itemicon6"];
+		 if ($i1=="") {$i1 = "empty.gif";} if ($i2=="") {$i2 = "empty.gif";} if ($i3=="") {$i3 = "empty.gif";}
+		 if ($i4=="") {$i4 = "empty.gif";} if ($i5=="") {$i5 = "empty.gif";} if ($i6=="") {$i6 = "empty.gif";}
+		 
+		 $gamename = $row["gn"];
+		 $err2 = "";
+		 if ($gamename=="") {$err2 .= "Field <b>'gamename'</b> is empty.<br>";}
+		 
+		 $class = getColorOf($ncol);
+		 $class2 = getColorOf($col);
+		 
+		 if ($col >6) {$col = $col-1;}
+		 if ($ncol >6) {$ncol = $ncol-1;}
+		 
+		 if ($ncol >5 AND $scourge ==0) {echo "<tr><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tr>";  $scourge = 1;}
+		 
+		 echo "<tr class='row'>
+		 <td align='right' width='24px'><span $class>$ncol</span>-></td>
+		 <td align='center' width='24px'><span $class2>$col</span></td>
+		 <td align='left' width='140px'>$player</td>
+		 <td align='left' width='48px'><img width='24px' height='24px' alt='' src='../img/heroes/$hero.gif'></td>
+		 <td align='left' width='64px'>$k/$d/$a</td>
+		 <td align='left' width='64px'>$c/$cd/$n</td>
+		 <td align='left' width='144px'>
+		 <img width='24px' height='24px' alt='' src='../img/items/$i1'></img>
+		 <img width='24px' height='24px' alt='' src='../img/items/$i2'></img>
+		 <img width='24px' height='24px' alt='' src='../img/items/$i3'></img>
+		 <img width='24px' height='24px' alt='' src='../img/items/$i4'></img>
+		 <img width='24px' height='24px' alt='' src='../img/items/$i5'></img>
+		 <img width='24px' height='24px' alt='' src='../img/items/$i6'></img>
+		 </td>
+		 <td align='left'><span style='background-color:#FAFCEE;color:#950001;'>$err</span></td>
+		 </tr>";
+		 if ($err!="") { $debug= "<tr><td></td><td></td><td><span style='background-color:#FAFCEE;color:#950001;'>$err</span></td><td></td><td></td><td></td><td></td><td></td></tr>";}
+		 $err = "";
+		 }
+		 
+        echo "<tr><td></td>
+		<td></td><td></td><td></td><td></td><td></td><td width='220px'>GameID: $gid</td><td><span style='background-color:#FAFCEE;color:#950001;'>$err2</span> $gamename</td>
+		</tr><table></div>";
+		  }
+	    }
+	  }
+	 
+	 
 	echo '</body><div>
 	 <table><tr>
 	 <td style="padding-right:12px;text-align:right;" align="right">

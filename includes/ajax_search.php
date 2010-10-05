@@ -47,7 +47,7 @@
 	 require_once('../includes/db_connect.php');
 	 
 	 
-	 if (strlen(trim($_GET['searchterm'])) <= 2)
+	 if (strlen(trim(strip_tags($_GET['searchterm']))) <= 2)
 	 
 	  {echo "<div align='center'<span style='color:red'>$lang[err_search] </span></div><br/>";die;}
 

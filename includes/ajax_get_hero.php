@@ -49,6 +49,8 @@
 	$sql2 = getHeroInfo($heroid, $minPlayedRatio, $minPlayedRatio);
 	
 	$result = $db->query($sql);
+	if ($db->num_rows($result)<=0) {echo "";die;}
+	
 	$result2 = $db->query($sql2);
 	
 	$list = $db->fetch_array($result,'assoc');

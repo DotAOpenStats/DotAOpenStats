@@ -47,10 +47,14 @@ $default_language = 'english';
 
 $bans_per_page = '20';
 $games_per_page = '20';
-$heroes_per_page = '20';
+$heroes_per_page = '30';
 $top_players_per_page = '30';
 $news_per_page = '5';
 $search_limit = '50';
+
+//Display fastest and longest game time win on User page
+$FastGameWon = '1';
+$ShowHeroMostUsedItems = '1';
 
 //Show All Time Stats on Top page
 $AllTimeStats = '1';
@@ -144,5 +148,6 @@ $NeutralsMedal = '500'; //Kill 500 neutrals!
 $PlayDurationMedal = '30'; //Play at least 30 hours!
 
 $pageGen = '1'; //Enable/disable info about page generation and total queries on every page
+$_debug = '1'; //Enable error reportings
 
 ?>

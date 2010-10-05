@@ -36,6 +36,10 @@ $lang["left_at"] = "Left at";
 $lang["date"] = "Date";
 $lang["duration"] = "Duration";
 $lang["type"] = "Type";
+$lang["hero_played"] = "Hero Played";
+$lang["game_history"] = "Game History:";
+$lang["fastest_game"] = "Fastest Game Won:";
+$lang["longest_game"] = "Longest Game Won:";
 $lang["creator"] = "Creator";
 $lang["win_perc"] = "Win %";
 $lang["wins"] = "Wins";
@@ -73,6 +77,7 @@ $lang["kd_ratio"] = "Kills/Deaths Ratio";
 $lang["wins_losses"] = "Wins/Losses";
 $lang["win_percent"] = "Win Percent";
 $lang["disc_title"] = "Disconnects";
+$_lang["most_items"] = "Frequently used items";
 
 $lang["download_rep"] = "Download replay";
 

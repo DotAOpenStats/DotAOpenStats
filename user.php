@@ -157,6 +157,7 @@
 
 		//ACHIEVEMENTS MOD
 		
+		//DURATIONS
 		echo "<div align='center'><table class='tableA'>
 		<th class='padLeft'>$lang[max_duration]</th> 
 		<th>$lang[min_duration]</th>
@@ -169,10 +170,76 @@
 		<td width='25%'><div align='left'>$avgDuration</div></td>
 		<td width='25%'><div align='left'>$totalDuration</div></td>
 		</tr></table></div>";
-	
-	$sql = "SELECT COUNT(*) as count FROM( SELECT a.hero
- FROM dotaplayers AS a LEFT JOIN gameplayers AS b ON b.gameid = a.gameid and a.colour = b.colour LEFT JOIN dotagames AS c ON c.gameid = a.gameid 
- LEFT JOIN games AS d ON d.id = a.gameid LEFT JOIN heroes as e ON a.hero = heroid where name= '$username' and description <> 'NULL') as t LIMIT 1";
+	    //DURATIONS
+		
+		if ($FastGameWon == 1)
+        {		
+		//FASTEST AND LONGEST GAME WON
+		echo "<div align='center'><table class='tableA'>
+		<tr class='row'>
+		<th class='padLeft'><b>$lang[fastest_game]</b></td> 
+		<th><b>$lang[duration]:</b></th>
+		<th><div align='center'><b>$lang[kills]</b></div></th>
+		<th><div align='center'><b>$lang[deaths]</b></div></th>
+		<th><div align='center'><b>$lang[assists]</b></div></th>
+		<th><div align='center'><b>$lang[creeps]</b></div></th>
+		<th><div align='center'><b>$lang[denies]</b></div></th>
+		<th><div align='center'><b>$lang[neutrals]</b></div></th>
+		<th></th>
+
+		</tr>
+		<tr class='row'>
+		<td  width='180px'  class='padLeft'><div align='left'>
+		<a href='game.php?gameid=$fastGameWonID'>$fastGameWonName</a></div></td>
+		<td width='120px'><div align='left'>$fastGameWonTime</div></td>
+		<td width='56px'><div align='center'>$fastGameWonKills</div></td>
+		<td width='56px'><div align='center'>$fastGameWonDeaths</div></td>
+		<td width='56px'><div align='center'>$fastGameWonAssists</div></td>
+		<td width='56px'><div align='center'>$fastGameWonCreeps</div></td>
+		<td width='56px'><div align='center'>$fastGameWonDenies</div></td>
+		<td width='56px'><div align='center'>$fastGameWonNeutrals</div></td>
+		<td></td>
+		</tr>
+		
+		<tr>
+		<th class='padLeft' width='180px'><b>$lang[longest_game]</b></th>
+		<th><div align='left'><b>$lang[duration]:</b></th>
+		<th><div align='center'><b>$lang[kills]</b></div></th>
+		<th><div align='center'><b>$lang[deaths]</b></div></th>
+		<th><div align='center'><b>$lang[assists]</b></div></th>
+		<th><div align='center'><b>$lang[creeps]</b></div></th>
+		<th><div align='center'><b>$lang[denies]</b></div></th>
+		<th><div align='center'><b>$lang[neutrals]</b></div></th>
+		<th></th>
+		
+		</tr>
+		<tr class='row'>
+		<td width='180px' class='padLeft' width='180px'><div align='left'>
+		<a href='game.php?gameid=$longestGameWonID'>$longestGameWonName</a></div></td>
+		<td width='120px'><div align='left'>$longestGameWonTime</div></td>
+		<td width='56px'><div align='center'>$longestGameWonKills</div></td>
+		<td width='56px'><div align='center'>$longestGameWonDeaths</div></td>
+		<td width='56px'><div align='center'>$longestGameWonAssists</div></td>
+		<td width='56px'><div align='center'>$longestGameWonCreeps</div></td>
+		<td width='56px'><div align='center'>$longestGameWonDenies</div></td>
+		<td width='56px'><div align='center'>$longestGameWonNeutrals</div></td>
+		<td></td>
+		
+		</tr></table></div>";
+		//FASTEST AND LONGEST GAME WON
+		}
+		
+	    $sql = "SELECT COUNT(*) as count 
+		FROM
+		   (SELECT a.hero
+            FROM dotaplayers AS a 
+			LEFT JOIN gameplayers AS b ON b.gameid = a.gameid 
+			AND a.colour = b.colour 
+			LEFT JOIN dotagames AS c ON c.gameid = a.gameid 
+            LEFT JOIN games AS d ON d.id = a.gameid 
+			LEFT JOIN heroes as e ON a.hero = heroid 
+			WHERE name= '$username' 
+			AND description <> 'NULL') as t LIMIT 1";
  
     $result = $db->query($sql);
 	//$db->close($result);
@@ -199,42 +266,43 @@
   
   $sort = 'desc';
   $sortdb = 'DESC';
-  if (isset($_GET['sort']) AND $_GET['sort'] == 'asc')
-  {$sort = 'desc'; $sortdb = 'ASC';} else {$sort = 'asc'; $sortdb = 'DESC';}
-        echo "<table><tr><td><b>Game History:</b></td></tr></table>";
+       if (isset($_GET['sort']) AND $_GET['sort'] == 'asc')
+       {$sort = 'desc'; $sortdb = 'ASC';} else {$sort = 'asc'; $sortdb = 'DESC';}
+       echo "<table><tr><td><b>$lang[game_history]</b></td></tr></table>";
+		
 	include('pagination.php');
 	
 	$sql = getUserGameHistory($LEAVER,$username,$order,$sortdb,$offset, $rowsperpage,$minPlayedRatio);
  
     $result = $db->query($sql);
 	
-     echo "<table><tr>
+     echo "<div align='center'><table class='tableA'><tr>
 	 <th style='padding-left:12px;width:200px;'>
-	 <div align='left'><a href='{$_SERVER['PHP_SELF']}?u=$username&order=game&sort=$sort'>Game Name</a></div></th>
+<div align='left'><a href='{$_SERVER['PHP_SELF']}?u=$username&order=game&sort=$sort'>$lang[game_name]</a></div></th>
 	 
-	 <th><div align='center'><a href='{$_SERVER['PHP_SELF']}?u=$username&order=type&sort=$sort'>Type</a></div></th>
+    <th><div align='center'><a href='{$_SERVER['PHP_SELF']}?u=$username&order=type&sort=$sort'>$lang[type]</a></div></th>
 	 <th><div align='center'>
-	 <a href='{$_SERVER['PHP_SELF']}?u=$username&order=date&sort=$sort'>Date</a></div></div></th>
+	 <a href='{$_SERVER['PHP_SELF']}?u=$username&order=date&sort=$sort'>$lang[date]</a></div></div></th>
 
 	 <th><div align='left'>
-	 <a href='{$_SERVER['PHP_SELF']}?u=$username&order=hero&sort=$sort'>Hero Played</a></div></th>";
+	 <a href='{$_SERVER['PHP_SELF']}?u=$username&order=hero&sort=$sort'>$lang[hero_played]</a></div></th>";
 	 
 	 echo "<th><div align='center'>
-	 <a href='{$_SERVER['PHP_SELF']}?u=$username&order=kills&sort=$sort'>Kills</a></div></div></th>
+	 <a href='{$_SERVER['PHP_SELF']}?u=$username&order=kills&sort=$sort'>$lang[kills]</a></div></div></th>
 	 
 	 <th><div align='center'>
-	 <a href='{$_SERVER['PHP_SELF']}?u=$username&order=deaths&sort=$sort'>Deaths</a></div></th>
+	 <a href='{$_SERVER['PHP_SELF']}?u=$username&order=deaths&sort=$sort'>$lang[deaths]</a></div></th>
 	 
 	 <th><div align='center'>
-	 <a href='{$_SERVER['PHP_SELF']}?u=$username&order=assists&sort=$sort'>Assists</a></div></th>
+	 <a href='{$_SERVER['PHP_SELF']}?u=$username&order=assists&sort=$sort'>$lang[assists]</a></div></th>
 	 
 	 <th><div align='center'>
-	 <a href='{$_SERVER['PHP_SELF']}?u=$username&order=ratio&sort=$sort'>K/D</a></div></th>
+	 <a href='{$_SERVER['PHP_SELF']}?u=$username&order=ratio&sort=$sort'>$lang[kd]</a></div></th>
 	 
-	 <th><a href='{$_SERVER['PHP_SELF']}?u=$username&order=creeps&sort=$sort'>Creeps</a></th>
-	 <th><a href='{$_SERVER['PHP_SELF']}?u=$username&order=denies&sort=$sort'>Denies</a></th>
-	 <th><a href='{$_SERVER['PHP_SELF']}?u=$username&order=neutral&sort=$sort'>Neutral</a></th>
-	 <th><a href='{$_SERVER['PHP_SELF']}?u=$username&order=result&sort=$sort'>Result</a></th>
+	 <th><a href='{$_SERVER['PHP_SELF']}?u=$username&order=creeps&sort=$sort'>$lang[creeps]</a></th>
+	 <th><a href='{$_SERVER['PHP_SELF']}?u=$username&order=denies&sort=$sort'>$lang[denies]</a></th>
+	 <th><a href='{$_SERVER['PHP_SELF']}?u=$username&order=neutral&sort=$sort'>$lang[neutrals]</a></th>
+	 <th><a href='{$_SERVER['PHP_SELF']}?u=$username&order=result&sort=$sort'>$lang[result]</a></th>
 	 </tr><tr>";
 
 
@@ -291,20 +359,21 @@
 	  <div align='left'>$hero_img $hero</div>
 	  </td>
 	  
-	  <td style='width:40px;'>$kills</td>
-	  <td style='width:40px;'>$death</td>
-	  <td style='width:60px;'>$assists</td>
-	  <td style='width:60px;'>$kdratio:1</td>
-	  <td style='width:60px;'>$creepkills</td>
-	  <td style='width:60px;'>$creepdenies</td>
-	  <td style='width:60px;'>$neutralkills</td>
-	  <td style='width:60px;'><div align='left'>$outcome</div></td>
+	  <td align='center' style='width:40px;'>$kills</td>
+	  <td align='center' style='width:40px;'>$death</td>
+	  <td align='center' style='width:60px;'>$assists</td>
+	  <td align='center' style='width:60px;'>$kdratio:1</td>
+	  <td align='center' style='width:60px;'>$creepkills</td>
+	  <td align='center'style='width:60px;'>$creepdenies</td>
+	  <td align='center' style='width:60px;'>$neutralkills</td>
+	  <td align='center' style='width:60px;'><div align='left'>$outcome</div></td>
 	  </tr>";}
 	  
-    echo "</table><br/>";
+    echo "</table></div><br/>";
 	
 	include('pagination.php');
 	echo "<br/>";
+	
 	include('footer.php');
   ?>
  

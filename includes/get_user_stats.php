@@ -364,7 +364,41 @@
 		//$totscore = ROUND( $ScoreStart+(($wins * 5) - ($losses * 3)) , 2) ; 
 		if ($BANNED !="") {$totscore  = $ScoreStart + ($ScoreDisc*10);}
 		}
-	?>
+		
+		///////////////////////
+		//FASTEST GAME WON ///
+		if ($FastGameWon == 1)
+		{
+		$sql = fastGameWon($username);
+		$result = $db->query($sql);
+		$row = $db->fetch_array($result,'assoc');
+		$fastGameWonID = $row["gameid"];
+		$fastGameWonTime = secondsToTime($row["duration"]);
+		$fastGameWonName = $row["gamename"];
+		$fastGameWonKills = $row["kills"];
+		$fastGameWonDeaths = $row["deaths"];
+		$fastGameWonAssists = $row["assists"];
+		$fastGameWonCreeps = $row["creepkills"];
+		$fastGameWonDenies = $row["creepdenies"];
+		$fastGameWonNeutrals = $row["neutralkills"];
+		
+		///////////////////////
+		//LONGEST GAME WON ///
+		$sql = longGameWon($username);
+		$result = $db->query($sql);
+		$row = $db->fetch_array($result,'assoc');
+		$longestGameWonID = $row["gameid"];
+		$longestGameWonTime = secondsToTime($row["duration"]);
+		$longestGameWonName = $row["gamename"];
+		$longestGameWonKills = $row["kills"];
+		$longestGameWonDeaths = $row["deaths"];
+		$longestGameWonAssists = $row["assists"];
+		$longestGameWonCreeps = $row["creepkills"];
+		$longestGameWonDenies = $row["creepdenies"];
+		$longestGameWonNeutrals = $row["neutralkills"];
+
+		}
+   ?>
 	
 	
 	

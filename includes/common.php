@@ -160,7 +160,10 @@ return $return.$return2.$seconds_left.".".$milliseconds;
   
   return $count;
 	 }
-
+	 
+      //////////////////////////////
+	 //       GET TOPS           //
+    //////////////////////////////
      function getTops($scoreFormula,$minPlayedRatio,$games,$order,$sortdb,$offset,$rowsperpage,$DBScore,$ScoreMethod,$ScoreWins,$ScoreLosses,$ScoreDisc,$ScoreStart,$HideBannedUsersOnTop){
 	 if ($DBScore == 0)
     {//($scoreFormula) as totalscore
@@ -280,8 +283,98 @@ return $return.$return2.$seconds_left.".".$milliseconds;
 	 }
 	 
 	 return $text;
-}
-
+}  
+      ///////////////
+     // GAME INFO //
+    ///////////////
+    function getGameInfo($gid){
+	$sql = "
+	   SELECT winner, dp.gameid, gp.colour, newcolour, original as hero, description, kills, deaths, assists, creepkills, creepdenies, neutralkills, towerkills, gold,  raxkills, courierkills, 
+	   item1, item2, item3, item4, item5, item6, 
+	   it1.icon as itemicon1, 
+	   it2.icon as itemicon2, 
+	   it3.icon as itemicon3, 
+	   it4.icon as itemicon4, 
+	   it5.icon as itemicon5, 
+	   it6.icon as itemicon6, 
+	   it1.name as itemname1, 
+	   it2.name as itemname2, 
+	   it3.name as itemname3, 
+	   it4.name as itemname4, 
+	   it5.name as itemname5, 
+	   it6.name as itemname6, 
+	   leftreason, 
+	   gp.left, 
+	   gp.name as name, 
+	   b.name as banname 
+	   FROM dotaplayers AS dp 
+	   LEFT JOIN gameplayers AS gp ON gp.gameid = dp.gameid and dp.colour = gp.colour 
+	   LEFT JOIN dotagames AS dg ON dg.gameid = dp.gameid 
+	   LEFT JOIN games AS g ON g.id = dp.gameid 
+	   LEFT JOIN bans as b ON gp.name = b.name
+	   LEFT JOIN heroes as f ON hero = heroid
+	   LEFT JOIN items as it1 ON it1.itemid = item1
+	   LEFT JOIN items as it2 ON it2.itemid = item2
+	   LEFT JOIN items as it3 ON it3.itemid = item3
+	   LEFT JOIN items as it4 ON it4.itemid = item4
+	   LEFT JOIN items as it5 ON it5.itemid = item5
+	   LEFT JOIN items as it6 ON it6.itemid = item6
+	   WHERE dp.gameid=$gid 
+	   ORDER BY newcolour";
+	   return $sql;
+	}
+	
+	function GetScoreBefore($scoreFormula,$minPlayedRatio,$gid,$name3,$minGamesPlayed) {
+	$sql = "SELECT *, case when (kills = 0) then 0 when (deaths = 0) then 1000 else ((kills*1.0)/(deaths*1.0)) end as killdeathratio, ($scoreFormula) as totalscore 
+	 FROM ( 
+	 SELECT gp.name as name, bans.name as banname, avg(dp.courierkills) as courierkills, avg(dp.raxkills) as raxkills,
+avg(dp.towerkills) as towerkills, avg(dp.assists) as assists, avg(dp.creepdenies) as creepdenies, avg(dp.creepkills) as creepkills,
+avg(dp.neutralkills) as neutralkills, avg(dp.deaths) as deaths, avg(dp.kills) as kills, count(*) as totgames, 
+case when (kills = 0) then 0 when (deaths = 0) then 1000 else ((kills*1.0)/(deaths*1.0)) end as killdeathratio,
+SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.newcolour > 6)) 
+     AND gp.`left`/ga.duration >= $minPlayedRatio) then 1 else 0 end) as wins, 
+     SUM(case when(((dg.winner = 2 and dp.newcolour < 6) or (dg.winner = 1 and dp.newcolour > 6)) 
+     AND gp.`left`/ga.duration >= $minPlayedRatio) then 1 else 0 end) as losses
+     FROM gameplayers as gp 
+     LEFT JOIN dotagames as dg ON gp.gameid = dg.gameid AND gp.gameid != $gid
+     LEFT JOIN dotaplayers as dp ON dg.gameid = dp.gameid AND dg.gameid != $gid
+	 AND gp.colour = dp.colour 
+	 AND dp.newcolour <> 12 
+	 AND dp.newcolour <> 6
+	 LEFT JOIN games as ga ON dp.gameid = ga.id
+	 LEFT JOIN bans on bans.name = gp.name
+	 WHERE dg.winner <> 0  AND gp.name = '$name3' 
+	 GROUP BY gp.name having totgames >= $minGamesPlayed) as i
+	 ORDER BY totalscore ASC LIMIT 1";
+	 return $sql;
+	}
+	
+	function GetScoreAfter($scoreFormula,$minPlayedRatio,$name3,$minGamesPlayed) {
+	$sql = "SELECT *, case when (kills = 0) then 0 when (deaths = 0) then 1000 else ((kills*1.0)/(deaths*1.0)) end as killdeathratio, ($scoreFormula) as totalscore 
+	 FROM ( 
+	 SELECT gp.name as name, bans.name as banname, avg(dp.courierkills) as courierkills, avg(dp.raxkills) as raxkills,
+avg(dp.towerkills) as towerkills, avg(dp.assists) as assists, avg(dp.creepdenies) as creepdenies, avg(dp.creepkills) as creepkills,
+avg(dp.neutralkills) as neutralkills, avg(dp.deaths) as deaths, avg(dp.kills) as kills, count(*) as totgames, 
+case when (kills = 0) then 0 when (deaths = 0) then 1000 else ((kills*1.0)/(deaths*1.0)) end as killdeathratio,
+SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.newcolour > 6)) 
+     AND gp.`left`/ga.duration >= $minPlayedRatio) then 1 else 0 end) as wins, 
+     SUM(case when(((dg.winner = 2 and dp.newcolour < 6) or (dg.winner = 1 and dp.newcolour > 6)) 
+     AND gp.`left`/ga.duration >= $minPlayedRatio) then 1 else 0 end) as losses
+     FROM gameplayers as gp 
+     LEFT JOIN dotagames as dg ON gp.gameid = dg.gameid 
+     LEFT JOIN dotaplayers as dp ON dg.gameid = dp.gameid 
+	 AND gp.colour = dp.colour 
+	 AND dp.newcolour <> 12 
+	 AND dp.newcolour <> 6
+	 LEFT JOIN games as ga ON dp.gameid = ga.id
+	 LEFT JOIN bans on bans.name = gp.name
+	 WHERE dg.winner <> 0  AND gp.name = '$name3' 
+	 GROUP BY gp.name) as i 
+	 ORDER BY totalscore ASC LIMIT 1";
+	 return $sql;
+	}
+	
+	
     function getMonthName($month,$ljan,$lfeb,$lmar,$lapr,$lmay,$ljun,$ljul,$laug,$lsep,$loct,$lnov,$ldec) {
 	if ($month == 1) $rmonth = $ljan;
 	if ($month == 2) $rmonth = $lfeb;
@@ -354,7 +447,7 @@ return $return.$return2.$seconds_left.".".$milliseconds;
 	LEFT JOIN games as g ON gp.gameid = g.id 
 	WHERE original='$heroid' 
 	GROUP BY original) as y 
-	LEFT JOIN heroes as h ON y.original = h.heroid";
+	LEFT JOIN heroes as h ON y.original = h.heroid LIMIT 1";
 	
 	return $text;
 	}
@@ -374,7 +467,87 @@ return $return.$return2.$seconds_left.".".$milliseconds;
 	return $text;
 	}
 	
-	
+	//HERO MOST USED ITEMS
+	function getHeroItem1($heroid) {
+	$sql = "SELECT count(*) as total, dotaplayers.item1, items.icon , items.name 
+	FROM dotaplayers 
+	LEFT JOIN items ON items.itemid = dotaplayers.item1
+	WHERE hero = '$heroid' 
+	AND dotaplayers.item1 != '\0\0\0\0' 
+    AND dotaplayers.item1 != '' 
+	GROUP BY item1 having count(*) > 1 
+	ORDER BY count(*) DESC LIMIT 2";
+	return $sql;
+	}
+	function getHeroItem2($heroid,$mostItem1,$mostItem11) {
+	$sql = "SELECT count(*) as total, dotaplayers.item2, items.icon , items.name 
+	FROM dotaplayers 
+	LEFT JOIN items ON items.itemid = dotaplayers.item2
+	WHERE hero = '$heroid' 
+	AND dotaplayers.item2 != '\0\0\0\0' 
+    AND dotaplayers.item2 != '' 
+	AND dotaplayers.item2 != '$mostItem1' AND dotaplayers.item2 != '$mostItem11'
+	GROUP BY item2 having count(*) > 1 
+	ORDER BY count(*) DESC LIMIT 2";
+	return $sql;
+	}
+	function getHeroItem3($heroid,$mostItem1,$mostItem11,$mostItem2,$mostItem22) {
+	$sql = "SELECT count(*) as total, dotaplayers.item3, items.icon , items.name 
+	FROM dotaplayers 
+	LEFT JOIN items ON items.itemid = dotaplayers.item3
+	WHERE hero = '$heroid' 
+	AND dotaplayers.item3 != '\0\0\0\0' 
+    AND dotaplayers.item3 != '' 
+	AND dotaplayers.item3 != '$mostItem1' AND dotaplayers.item3 != '$mostItem11'
+	AND dotaplayers.item3 != '$mostItem2' AND dotaplayers.item3 != '$mostItem22'
+	GROUP BY item3 having count(*) > 1 
+	ORDER BY count(*) DESC LIMIT 2";
+	return $sql;
+	}
+	function getHeroItem4($heroid,$mostItem1,$mostItem11,$mostItem2,$mostItem22,$mostItem3,$mostItem33) {
+	$sql = "SELECT count(*) as total, dotaplayers.item4, items.icon , items.name 
+	FROM dotaplayers 
+	LEFT JOIN items ON items.itemid = dotaplayers.item4
+	WHERE hero = '$heroid' 
+	AND dotaplayers.item4 != '\0\0\0\0' 
+    AND dotaplayers.item4 != '' 
+	AND dotaplayers.item4 != '$mostItem1' AND dotaplayers.item4 != '$mostItem11'
+	AND dotaplayers.item4 != '$mostItem2' AND dotaplayers.item4 != '$mostItem22'
+	AND dotaplayers.item4 != '$mostItem3' AND dotaplayers.item4 != '$mostItem33'
+	GROUP BY item4 having count(*) > 1 
+	ORDER BY count(*) DESC LIMIT 2";
+	return $sql;
+	}
+	function getHeroItem5($heroid,$mostItem1,$mostItem11,$mostItem2,$mostItem22,$mostItem3,$mostItem33,$mostItem4,$mostItem44) {
+	$sql = "SELECT count(*) as total, dotaplayers.item5, items.icon , items.name 
+	FROM dotaplayers 
+	LEFT JOIN items ON items.itemid = dotaplayers.item5
+	WHERE hero = '$heroid' 
+	AND dotaplayers.item5 != '\0\0\0\0' 
+    AND dotaplayers.item5 != '' 
+	AND dotaplayers.item5 != '$mostItem1' AND dotaplayers.item5 != '$mostItem11'
+	AND dotaplayers.item5 != '$mostItem2' AND dotaplayers.item5 != '$mostItem22'
+	AND dotaplayers.item5 != '$mostItem3' AND dotaplayers.item5 != '$mostItem33'
+	AND dotaplayers.item5 != '$mostItem4' AND dotaplayers.item5 != '$mostItem44'
+	GROUP BY item5 having count(*) > 1 
+	ORDER BY count(*) DESC LIMIT 2";
+	return $sql;
+	}
+	function getHeroItem6($heroid,$mostItem1,$mostItem11,$mostItem2,$mostItem22,$mostItem3,$mostItem33,$mostItem4,$mostItem44,$mostItem5,$mostItem55) {
+	$sql = "SELECT count(*) as total, dotaplayers.item6, items.icon , items.name 
+	FROM dotaplayers 
+	LEFT JOIN items ON items.itemid = dotaplayers.item6
+	WHERE hero = '$heroid' 
+	AND dotaplayers.item6 != '\0\0\0\0' 
+    AND dotaplayers.item6 != '' 
+	AND dotaplayers.item6 != '$mostItem1' AND dotaplayers.item6 != '$mostItem22'
+	AND dotaplayers.item6 != '$mostItem2' AND dotaplayers.item6 != '$mostItem33'
+	AND dotaplayers.item6 != '$mostItem3' AND dotaplayers.item6 != '$mostItem44'
+	AND dotaplayers.item6 != '$mostItem4' AND dotaplayers.item6 != '$mostItem55'
+	GROUP BY item6 having count(*) > 1 
+	ORDER BY count(*) DESC LIMIT 2";
+	return $sql;
+	}
 	
 	
 	function getHeroHistory($minPlayedRatio,$heroid,$order,$sortdb,$offset, $rowsperpage,$LEAVER) {
@@ -446,6 +619,77 @@ return $return.$return2.$seconds_left.".".$milliseconds;
 	LIMIT $offset, $rowsperpage";
  
 	return $text;
+	}
+	
+	
+	function longGameWon($username) {
+	$sql = "SELECT (dotagames.min * 60 + dotagames.sec) AS longgamewon, 
+	dotagames.gameid,
+	games.gamename, 
+	games.duration, 
+	dotaplayers.kills, 
+	dotaplayers.deaths, 
+	dotaplayers.creepkills, 
+    dotaplayers.creepdenies,	
+	dotaplayers.assists, 
+	dotaplayers.neutralkills 
+			FROM gameplayers
+			LEFT JOIN games ON games.id = gameplayers.gameid 
+			LEFT JOIN dotaplayers ON dotaplayers.gameid = games.id AND dotaplayers.colour = gameplayers.colour 
+			LEFT JOIN dotagames ON games.id = dotagames.gameid 
+			WHERE LOWER(name) = LOWER('$username')
+			AND (
+					(
+						winner = 1 
+						AND dotaplayers.newcolour >= 1
+						AND dotaplayers.newcolour <= 5
+					) 
+					OR
+					(
+						winner = 2 
+						AND dotaplayers.newcolour >= 7 
+						AND dotaplayers.newcolour <= 11
+					)
+				)
+			GROUP BY dotagames.gameid
+			ORDER BY longgamewon DESC
+			LIMIT 1";
+			return $sql;
+	}
+	
+	function fastGameWon($username) {
+	$sql = "SELECT dotagames.min * 60 + dotagames.sec AS fastgamewon, 
+	dotagames.gameid, 
+	games.gamename, 
+	games.duration, 
+	dotaplayers.kills, 
+	dotaplayers.deaths, 
+	dotaplayers.creepkills, 
+    dotaplayers.creepdenies,	
+	dotaplayers.assists, 
+	dotaplayers.neutralkills 
+			FROM gameplayers
+			LEFT JOIN games ON games.id = gameplayers.gameid 
+			LEFT JOIN dotaplayers ON dotaplayers.gameid = games.id AND dotaplayers.colour = gameplayers.colour 
+			LEFT JOIN dotagames ON games.id = dotagames.gameid 
+			WHERE LOWER(name) = LOWER('$username')
+			AND (
+					(
+						winner = 1 
+						AND dotaplayers.newcolour >= 1
+						AND dotaplayers.newcolour <= 5
+					) 
+					OR
+					(
+						winner = 2 
+						AND dotaplayers.newcolour >= 7 
+						AND dotaplayers.newcolour <= 11
+					)
+				)
+			GROUP BY dotagames.gameid
+			ORDER BY fastgamewon ASC
+			LIMIT 1";
+			return $sql;
 	}
 	
 	
