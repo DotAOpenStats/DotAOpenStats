@@ -540,10 +540,11 @@ SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.new
 	WHERE hero = '$heroid' 
 	AND dotaplayers.item6 != '\0\0\0\0' 
     AND dotaplayers.item6 != '' 
-	AND dotaplayers.item6 != '$mostItem1' AND dotaplayers.item6 != '$mostItem22'
-	AND dotaplayers.item6 != '$mostItem2' AND dotaplayers.item6 != '$mostItem33'
-	AND dotaplayers.item6 != '$mostItem3' AND dotaplayers.item6 != '$mostItem44'
-	AND dotaplayers.item6 != '$mostItem4' AND dotaplayers.item6 != '$mostItem55'
+	AND dotaplayers.item6 != '$mostItem1' AND dotaplayers.item6 != '$mostItem11'
+	AND dotaplayers.item6 != '$mostItem2' AND dotaplayers.item6 != '$mostItem22'
+	AND dotaplayers.item6 != '$mostItem3' AND dotaplayers.item6 != '$mostItem33'
+	AND dotaplayers.item6 != '$mostItem4' AND dotaplayers.item6 != '$mostItem44'
+	AND dotaplayers.item6 != '$mostItem5' AND dotaplayers.item6 != '$mostItem55'
 	GROUP BY item6 having count(*) > 1 
 	ORDER BY count(*) DESC LIMIT 2";
 	return $sql;

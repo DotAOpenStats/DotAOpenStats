@@ -36,7 +36,7 @@
 	
 	if ($ShowHeroMostUsedItems==1)
 	{
-	echo "<div align='center'><table class='tableA'><tr><th><div align='center'>Frequently used items</div></th></tr>
+	echo "<div align='center'><table class='tableA'><tr><th><div align='center'>$_lang[most_items]</div></th></tr>
 	<tr><td>";
 	
 	$sql = getHeroItem1($heroid);
@@ -50,7 +50,7 @@
 	{$mostItem1 = $row["item1"]; $c = 1;} 
 	$mostItem11 = $row["item1"];
 	echo "
-	<img width='64' height='64' alt='' title='$mostItemName1' src='./img/items/$mostItemIcon1'>";
+	<img width='$size' height='$size' alt='' title='$mostItemName1' src='./img/items/$mostItemIcon1'>";
 
 	   }
 	$sql = getHeroItem2($heroid,$mostItem1,$mostItem11);
@@ -64,7 +64,7 @@
 	{$mostItem2 = $row["item2"]; $c = 1;} 
 	$mostItem22 = $row["item2"];
 	echo "
-	<img width='64' height='64' alt='' title='$mostItemName2' src='./img/items/$mostItemIcon2'>";
+	<img width='$size' height='$size' alt='' title='$mostItemName2' src='./img/items/$mostItemIcon2'>";
 
 	   }
 	   
@@ -79,7 +79,7 @@
 	{$mostItem3 = $row["item3"]; $c = 1;} 
 	$mostItem33 = $row["item3"];
 	echo "
-	<img width='64' height='64' alt='' title='$mostItemName3' src='./img/items/$mostItemIcon3'>";
+	<img width='$size' height='$size' alt='' title='$mostItemName3' src='./img/items/$mostItemIcon3'>";
 
 	   }
 	   
@@ -94,7 +94,7 @@
 	{$mostItem4 = $row["item4"]; $c = 1;} 
 	$mostItem44= $row["item4"];
 	echo "
-	<img width='64' height='64' alt='' title='$mostItemName4' src='./img/items/$mostItemIcon4'>";
+	<img width='$size' height='$size' alt='' title='$mostItemName4' src='./img/items/$mostItemIcon4'>";
 
 	   }
 	$sql = getHeroItem5($heroid,$mostItem1,$mostItem11,$mostItem2,$mostItem22,$mostItem3,$mostItem33,$mostItem4,$mostItem44);
@@ -108,7 +108,7 @@
 	{$mostItem5 = $row["item5"]; $c = 1;} 
 	$mostItem55= $row["item5"];
 	echo "
-	<img width='64' height='64' alt='' title='$mostItemName5' src='./img/items/$mostItemIcon5'>";
+	<img width='$size' height='$size' alt='' title='$mostItemName5' src='./img/items/$mostItemIcon5'>";
 
 	   }   
 	$sql = getHeroItem6($heroid,$mostItem1,$mostItem11,$mostItem2,$mostItem22,$mostItem3,$mostItem33,$mostItem4,$mostItem44,$mostItem5,$mostItem55);
@@ -119,7 +119,7 @@
 	$mostItemTotal6 = $row["total"];
 	$mostItem6 = $row["item6"];
 	echo "
-	<img width='64' height='64' alt='' title='$mostItemName6' src='./img/items/$mostItemIcon6'>";
+	<img width='$size' height='$size' alt='' title='$mostItemName6' src='./img/items/$mostItemIcon6'>";
 
 	   }      
 	   

@@ -147,7 +147,12 @@
 			  
 	 </td> </table>";
     }
-	
+	if ($ShowHeroMostUsedItems==1) {
+	$size = "48px";
+	echo "<table style='width:75%;'><tr><td align='top'>";
+	require_once("get_hero_items.php");
+	echo "</tr></table>";
+	}
 	
 	
 	

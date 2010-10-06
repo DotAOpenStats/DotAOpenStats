@@ -129,6 +129,7 @@
     echo "<br>";
 	
 	if ($ShowHeroMostUsedItems==1) {
+	$size = "64px";
 	require_once("./includes/get_hero_items.php");
 	}
 	 
