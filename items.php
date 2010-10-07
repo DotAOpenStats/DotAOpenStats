@@ -43,8 +43,8 @@
    $sql = "SELECT itemid 
           FROM items as Items
 		  WHERE item_info !='' AND name != 'Aegis Check' AND name != 'Arcane Ring' 
-		  GROUP BY shortname 
-		  ORDER BY LOWER(name) ASC ";
+		  GROUP BY LOWER(shortname) 
+		  ORDER BY LOWER(shortname) ASC ";
    $result = $db->query($sql);
    //$r = $db->num_rows($result);
    $numrows = $db->num_rows($result);
@@ -55,8 +55,8 @@
    $sql = "SELECT * 
           FROM items as Items
 		  WHERE item_info !='' AND name != 'Aegis Check' AND name != 'Arcane Ring' 
-		  GROUP BY shortname 
-		  ORDER BY LOWER(name) ASC 
+		  GROUP BY LOWER(shortname) 
+		  ORDER BY LOWER(shortname) ASC 
 		  LIMIT $offset, $rowsperpage";
    $result = $db->query($sql);
    

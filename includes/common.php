@@ -376,9 +376,21 @@ SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.new
 	
 	function getMostUsedHeroByItem($heroid, $itemid, $tot, $itemName ) {
 
-	//IMPROVED QUERY
-    //Aghanim's checks - Group all Agha items.
-    if (!strstr($itemName,"Aghanim")){
+	//FIND AND CHECK ALL GROUPED ITEMS
+    
+       if (!strstr($itemName,"Aghanim") 
+	   AND !strstr($itemName,"Black King Bar") 
+	   AND !strstr($itemName,"Dagon Lev")
+	   AND !strstr($itemName,"Diffusal Blade")
+	   AND !strstr($itemName,"Divine Rapier")
+	   AND !strstr($itemName,"Bottle")
+	   AND !strstr($itemName,"Linken")
+	   AND !strstr($itemName,"Power Treads")
+	   AND !strstr($itemName,"Monkey King Bar")
+	   AND !strstr($itemName,"Eye of Skadi")
+	   AND !strstr($itemName,"Orb of Venom")
+	   )
+	{
 	$sql = "SELECT COUNT(*) as total, dp.item1,dp.item2, dp.item3, dp.item4, dp.item5, dp.item6, dp.hero, h.heroid, h.description as heroname 
 	FROM dotaplayers as dp 
 	LEFT JOIN heroes as h ON h.heroid = dp.hero AND h.summary != '-'
@@ -391,7 +403,7 @@ SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.new
 	OR dp.item6 = '$itemid' 
 	GROUP BY dp.hero 
 	ORDER BY count(*) DESC LIMIT $tot";}
-	else
+	if (strstr($itemName,"Aghanim"))
 	{
 	//Now check for that problematic Aghanim's xD
 	$sql = "SELECT COUNT(*) as total, dp.item1,dp.item2, dp.item3, dp.item4, dp.item5, dp.item6, dp.hero, h.heroid, h.description as heroname, it.name, it.itemid
@@ -409,8 +421,193 @@ SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.new
 	GROUP BY dp.hero 
 	ORDER BY count(*) DESC,  dp.hero DESC LIMIT $tot
 	";}
+	if (strstr($itemName,"Black King Bar"))
+	{
+	//Now check for BKB if is selected item
+	$sql = "SELECT COUNT(*) as total, dp.item1,dp.item2, dp.item3, dp.item4, dp.item5, dp.item6, dp.hero, h.heroid, h.description as heroname, it.name, it.itemid
+	FROM dotaplayers as dp 
+	LEFT JOIN heroes as h ON h.heroid = dp.hero AND h.summary != '-'
+	LEFT JOIN items as it ON it.name LIKE ('%Black King%') AND  it.item_info!='' AND (it.itemid = dp.item1)  
+	LEFT JOIN items as it2 ON it2.name LIKE ('%Black King%') AND  it2.item_info!='' AND (it2.itemid = dp.item2) 
+	LEFT JOIN items as it3 ON it3.name LIKE ('%Black King%') AND  it3.item_info!='' AND (it3.itemid = dp.item3) 
+	LEFT JOIN items as it4 ON it4.name LIKE ('%Black King%') AND  it4.item_info!='' AND (it4.itemid = dp.item4) 
+	LEFT JOIN items as it5 ON it5.name LIKE ('%Black King%') AND  it5.item_info!='' AND (it5.itemid = dp.item5) 
+	LEFT JOIN items as it6 ON it6.name LIKE ('%Black King%') AND  it6.item_info!='' AND (it6.itemid = dp.item6) 
+	WHERE dp.hero = '$heroid' AND dp.hero !='' 
+    OR it.name LIKE ('%Black King%') OR it2.name LIKE ('%Black King%') OR it3.name LIKE ('%Black King%') 
+	OR it4.name LIKE ('%Black King%') OR it5.name LIKE ('%Black King%') OR it6.name LIKE ('%Black King%')
+	GROUP BY dp.hero 
+	ORDER BY count(*) DESC,  dp.hero DESC LIMIT $tot
+	";}
+	if (strstr($itemName,"Dagon"))
+	{
+	//Now check for Dagon L 1-2-3-4-5 if is selected item
+	$sql = "SELECT COUNT(*) as total, dp.item1,dp.item2, dp.item3, dp.item4, dp.item5, dp.item6, dp.hero, h.heroid, h.description as heroname, it.name, it.itemid
+	FROM dotaplayers as dp 
+	LEFT JOIN heroes as h ON h.heroid = dp.hero AND h.summary != '-'
+	LEFT JOIN items as it ON it.name LIKE ('%Dagon Lev%') AND  it.item_info!='' AND (it.itemid = dp.item1)  
+	LEFT JOIN items as it2 ON it2.name LIKE ('%Dagon Lev%') AND  it2.item_info!='' AND (it2.itemid = dp.item2) 
+	LEFT JOIN items as it3 ON it3.name LIKE ('%Dagon Lev%') AND  it3.item_info!='' AND (it3.itemid = dp.item3) 
+	LEFT JOIN items as it4 ON it4.name LIKE ('%Dagon Lev%') AND  it4.item_info!='' AND (it4.itemid = dp.item4) 
+	LEFT JOIN items as it5 ON it5.name LIKE ('%Dagon Lev%') AND  it5.item_info!='' AND (it5.itemid = dp.item5) 
+	LEFT JOIN items as it6 ON it6.name LIKE ('%Dagon Lev%') AND  it6.item_info!='' AND (it6.itemid = dp.item6) 
+	WHERE dp.hero = '$heroid' AND dp.hero !='' 
+    OR it.name LIKE ('%Dagon Lev%') OR it2.name LIKE ('%Dagon Lev%') OR it3.name LIKE ('%Dagon Lev%') 
+	OR it4.name LIKE ('%Dagon Lev%') OR it5.name LIKE ('%Dagon Lev%') OR it6.name LIKE ('%Dagon Lev%')
+	GROUP BY dp.hero 
+	ORDER BY count(*) DESC,  dp.hero DESC LIMIT $tot
+	";}
+	if (strstr($itemName,"Diffusal Blade"))
+	{
+	//Now check for Diffusal Blade L 1 - 2 if is selected item
+	$sql = "SELECT COUNT(*) as total, dp.item1,dp.item2, dp.item3, dp.item4, dp.item5, dp.item6, dp.hero, h.heroid, h.description as heroname, it.name, it.itemid
+	FROM dotaplayers as dp 
+	LEFT JOIN heroes as h ON h.heroid = dp.hero AND h.summary != '-'
+	LEFT JOIN items as it ON it.name LIKE ('%Diffusal Blade%') AND  it.item_info!='' AND (it.itemid = dp.item1)  
+	LEFT JOIN items as it2 ON it2.name LIKE ('%Diffusal Blade%') AND  it2.item_info!='' AND (it2.itemid = dp.item2) 
+	LEFT JOIN items as it3 ON it3.name LIKE ('%Diffusal Blade%') AND  it3.item_info!='' AND (it3.itemid = dp.item3) 
+	LEFT JOIN items as it4 ON it4.name LIKE ('%Diffusal Blade%') AND  it4.item_info!='' AND (it4.itemid = dp.item4) 
+	LEFT JOIN items as it5 ON it5.name LIKE ('%Diffusal Blade%') AND  it5.item_info!='' AND (it5.itemid = dp.item5) 
+	LEFT JOIN items as it6 ON it6.name LIKE ('%Diffusal Blade%') AND  it6.item_info!='' AND (it6.itemid = dp.item6) 
+	WHERE dp.hero = '$heroid' AND dp.hero !='' 
+    OR it.name LIKE ('%Diffusal Blade%') OR it2.name LIKE ('%Diffusal Blade%') OR it3.name LIKE ('%Diffusal Diffusal Blade%') 
+	OR it4.name LIKE ('%Dagon%') OR it5.name LIKE ('%Diffusal Blade%') OR it6.name LIKE ('%Diffusal Blade%')
+	GROUP BY dp.hero 
+	ORDER BY count(*) DESC,  dp.hero DESC LIMIT $tot
+	";}
 	
+	if (strstr($itemName,"Divine Rapier"))
+	{
+	//Now check for Divine Rapier if is selected item
+	$sql = "SELECT COUNT(*) as total, dp.item1,dp.item2, dp.item3, dp.item4, dp.item5, dp.item6, dp.hero, h.heroid, h.description as heroname, it.name, it.itemid
+	FROM dotaplayers as dp 
+	LEFT JOIN heroes as h ON h.heroid = dp.hero AND h.summary != '-'
+	LEFT JOIN items as it ON it.name LIKE ('%Divine Rapier%') AND  it.item_info!='' AND (it.itemid = dp.item1)  
+	LEFT JOIN items as it2 ON it2.name LIKE ('%Divine Rapier%') AND  it2.item_info!='' AND (it2.itemid = dp.item2) 
+	LEFT JOIN items as it3 ON it3.name LIKE ('%Divine Rapier%') AND  it3.item_info!='' AND (it3.itemid = dp.item3) 
+	LEFT JOIN items as it4 ON it4.name LIKE ('%Divine Rapier%') AND  it4.item_info!='' AND (it4.itemid = dp.item4) 
+	LEFT JOIN items as it5 ON it5.name LIKE ('%Divine Rapier%') AND  it5.item_info!='' AND (it5.itemid = dp.item5) 
+	LEFT JOIN items as it6 ON it6.name LIKE ('%Divine Rapier%') AND  it6.item_info!='' AND (it6.itemid = dp.item6) 
+	WHERE dp.hero = '$heroid' AND dp.hero !='' 
+    OR it.name LIKE ('%Divine Rapier%') OR it2.name LIKE ('%Divine Rapier%') OR it3.name LIKE ('%Divine Rapier%') 
+	OR it4.name LIKE ('%Divine Rapier%') OR it5.name LIKE ('%Divine Rapier%') OR it6.name LIKE ('%Divine Rapier%')
+	GROUP BY dp.hero 
+	ORDER BY count(*) DESC,  dp.hero DESC LIMIT $tot
+	";}
 	
+	if (strstr($itemName,"Bottle"))
+	{
+	//Now group Bottle (empty, half...inv, haste etc...) if is selected item
+	$sql = "SELECT COUNT(*) as total, dp.item1,dp.item2, dp.item3, dp.item4, dp.item5, dp.item6, dp.hero, h.heroid, h.description as heroname, it.name, it.itemid
+	FROM dotaplayers as dp 
+	LEFT JOIN heroes as h ON h.heroid = dp.hero AND h.summary != '-'
+	LEFT JOIN items as it ON it.name LIKE ('%Bottle%') AND  it.item_info!='' AND (it.itemid = dp.item1)  
+	LEFT JOIN items as it2 ON it2.name LIKE ('%Bottle%') AND  it2.item_info!='' AND (it2.itemid = dp.item2) 
+	LEFT JOIN items as it3 ON it3.name LIKE ('%Bottle%') AND  it3.item_info!='' AND (it3.itemid = dp.item3) 
+	LEFT JOIN items as it4 ON it4.name LIKE ('%Bottle%') AND  it4.item_info!='' AND (it4.itemid = dp.item4) 
+	LEFT JOIN items as it5 ON it5.name LIKE ('%Bottle%') AND  it5.item_info!='' AND (it5.itemid = dp.item5) 
+	LEFT JOIN items as it6 ON it6.name LIKE ('%Bottle%') AND  it6.item_info!='' AND (it6.itemid = dp.item6) 
+	WHERE dp.hero = '$heroid' AND dp.hero !='' 
+    OR it.name LIKE ('%Bottle%') OR it2.name LIKE ('%Bottle%') OR it3.name LIKE ('%Bottle%') 
+	OR it4.name LIKE ('%Bottle%') OR it5.name LIKE ('%Bottle%') OR it6.name LIKE ('%Bottle%')
+	GROUP BY dp.hero 
+	ORDER BY count(*) DESC,  dp.hero DESC LIMIT $tot
+	";}
+	
+	if (strstr($itemName,"Linken"))
+	{
+	//Now group Linken if is selected item
+	$sql = "SELECT COUNT(*) as total, dp.item1,dp.item2, dp.item3, dp.item4, dp.item5, dp.item6, dp.hero, h.heroid, h.description as heroname, it.name, it.itemid
+	FROM dotaplayers as dp 
+	LEFT JOIN heroes as h ON h.heroid = dp.hero AND h.summary != '-'
+	LEFT JOIN items as it ON it.name LIKE ('%Linken%') AND  it.item_info!='' AND (it.itemid = dp.item1)  
+	LEFT JOIN items as it2 ON it2.name LIKE ('%Linken%') AND  it2.item_info!='' AND (it2.itemid = dp.item2) 
+	LEFT JOIN items as it3 ON it3.name LIKE ('%Linken%') AND  it3.item_info!='' AND (it3.itemid = dp.item3) 
+	LEFT JOIN items as it4 ON it4.name LIKE ('%Linken%') AND  it4.item_info!='' AND (it4.itemid = dp.item4) 
+	LEFT JOIN items as it5 ON it5.name LIKE ('%Linken%') AND  it5.item_info!='' AND (it5.itemid = dp.item5) 
+	LEFT JOIN items as it6 ON it6.name LIKE ('%Linken%') AND  it6.item_info!='' AND (it6.itemid = dp.item6) 
+	WHERE dp.hero = '$heroid' AND dp.hero !='' 
+    OR it.name LIKE ('%Linken%') OR it2.name LIKE ('%Linken%') OR it3.name LIKE ('%Linken%') 
+	OR it4.name LIKE ('%Linken%') OR it5.name LIKE ('%Linken%') OR it6.name LIKE ('%Linken%')
+	GROUP BY dp.hero 
+	ORDER BY count(*) DESC,  dp.hero DESC LIMIT $tot
+	";}
+	
+	if (strstr($itemName,"Power Treads"))
+	{
+	//Now group Power Treads (int, agi, str) if is selected item
+	$sql = "SELECT COUNT(*) as total, dp.item1,dp.item2, dp.item3, dp.item4, dp.item5, dp.item6, dp.hero, h.heroid, h.description as heroname, it.name, it.itemid
+	FROM dotaplayers as dp 
+	LEFT JOIN heroes as h ON h.heroid = dp.hero AND h.summary != '-'
+	LEFT JOIN items as it ON it.name LIKE ('%Power Treads%') AND  it.item_info!='' AND (it.itemid = dp.item1)  
+	LEFT JOIN items as it2 ON it2.name LIKE ('%Power Treads%') AND  it2.item_info!='' AND (it2.itemid = dp.item2) 
+	LEFT JOIN items as it3 ON it3.name LIKE ('%Power Treads%') AND  it3.item_info!='' AND (it3.itemid = dp.item3) 
+	LEFT JOIN items as it4 ON it4.name LIKE ('%Power Treads%') AND  it4.item_info!='' AND (it4.itemid = dp.item4) 
+	LEFT JOIN items as it5 ON it5.name LIKE ('%Power Treads%') AND  it5.item_info!='' AND (it5.itemid = dp.item5) 
+	LEFT JOIN items as it6 ON it6.name LIKE ('%Power Treads%') AND  it6.item_info!='' AND (it6.itemid = dp.item6) 
+	WHERE dp.hero = '$heroid' AND dp.hero !='' 
+    OR it.name LIKE ('%Power Treads%') OR it2.name LIKE ('%Power Treads%') OR it3.name LIKE ('%Power Treads%') 
+	OR it4.name LIKE ('%Power Treads%') OR it5.name LIKE ('%Power Treads%') OR it6.name LIKE ('%Power Treads%')
+	GROUP BY dp.hero 
+	ORDER BY count(*) DESC,  dp.hero DESC LIMIT $tot
+	";}
+	
+	if (strstr($itemName,"Monkey King Bar"))
+	{
+	//Now group Monkey King Bar if is selected item
+	$sql = "SELECT COUNT(*) as total, dp.item1,dp.item2, dp.item3, dp.item4, dp.item5, dp.item6, dp.hero, h.heroid, h.description as heroname, it.name, it.itemid
+	FROM dotaplayers as dp 
+	LEFT JOIN heroes as h ON h.heroid = dp.hero AND h.summary != '-'
+	LEFT JOIN items as it ON it.name LIKE ('%Monkey King Bar%') AND  it.item_info!='' AND (it.itemid = dp.item1)  
+	LEFT JOIN items as it2 ON it2.name LIKE ('%Monkey King Bar%') AND  it2.item_info!='' AND (it2.itemid = dp.item2) 
+	LEFT JOIN items as it3 ON it3.name LIKE ('%Monkey King Bar%') AND  it3.item_info!='' AND (it3.itemid = dp.item3) 
+	LEFT JOIN items as it4 ON it4.name LIKE ('%Monkey King Bar%') AND  it4.item_info!='' AND (it4.itemid = dp.item4) 
+	LEFT JOIN items as it5 ON it5.name LIKE ('%Monkey King Bar%') AND  it5.item_info!='' AND (it5.itemid = dp.item5) 
+	LEFT JOIN items as it6 ON it6.name LIKE ('%Monkey King Bar%') AND  it6.item_info!='' AND (it6.itemid = dp.item6) 
+	WHERE dp.hero = '$heroid' AND dp.hero !='' 
+    OR it.name LIKE ('%Monkey King Bar%') OR it2.name LIKE ('%Monkey King Bar%') OR it3.name LIKE ('%Monkey King Bar%') 
+	OR it4.name LIKE ('%Monkey King Bar%') OR it5.name LIKE ('%Monkey King Bar%') OR it6.name LIKE ('%Monkey King Bar%')
+	GROUP BY dp.hero 
+	ORDER BY count(*) DESC,  dp.hero DESC LIMIT $tot
+	";}
+	
+	if (strstr($itemName,"Eye of Skadi"))
+	{
+	//Now group Eye of Skadi if is selected item
+	$sql = "SELECT COUNT(*) as total, dp.item1,dp.item2, dp.item3, dp.item4, dp.item5, dp.item6, dp.hero, h.heroid, h.description as heroname, it.name, it.itemid
+	FROM dotaplayers as dp 
+	LEFT JOIN heroes as h ON h.heroid = dp.hero AND h.summary != '-'
+	LEFT JOIN items as it ON it.name LIKE ('%Eye of Skadi%') AND  it.item_info!='' AND (it.itemid = dp.item1)  
+	LEFT JOIN items as it2 ON it2.name LIKE ('%Eye of Skadi%') AND  it2.item_info!='' AND (it2.itemid = dp.item2) 
+	LEFT JOIN items as it3 ON it3.name LIKE ('%Eye of Skadi%') AND  it3.item_info!='' AND (it3.itemid = dp.item3) 
+	LEFT JOIN items as it4 ON it4.name LIKE ('%Eye of Skadi%') AND  it4.item_info!='' AND (it4.itemid = dp.item4) 
+	LEFT JOIN items as it5 ON it5.name LIKE ('%Eye of Skadi%') AND  it5.item_info!='' AND (it5.itemid = dp.item5) 
+	LEFT JOIN items as it6 ON it6.name LIKE ('%Eye of Skadi%') AND  it6.item_info!='' AND (it6.itemid = dp.item6) 
+	WHERE dp.hero = '$heroid' AND dp.hero !='' 
+    OR it.name LIKE ('%Eye of Skadi%') OR it2.name LIKE ('%Eye of Skadi%') OR it3.name LIKE ('%Eye of Skadi%') 
+	OR it4.name LIKE ('%Eye of Skadi%') OR it5.name LIKE ('%Eye of Skadi%') OR it6.name LIKE ('%Eye of Skadi%')
+	GROUP BY dp.hero 
+	ORDER BY count(*) DESC,  dp.hero DESC LIMIT $tot
+	";}
+	
+	if (strstr($itemName,"Orb of Venom"))
+	{
+	//Now group Orb of Venom if is selected item
+	$sql = "SELECT COUNT(*) as total, dp.item1,dp.item2, dp.item3, dp.item4, dp.item5, dp.item6, dp.hero, h.heroid, h.description as heroname, it.name, it.itemid
+	FROM dotaplayers as dp 
+	LEFT JOIN heroes as h ON h.heroid = dp.hero AND h.summary != '-'
+	LEFT JOIN items as it ON it.name LIKE ('%Orb of Venom%') AND  it.item_info!='' AND (it.itemid = dp.item1)  
+	LEFT JOIN items as it2 ON it2.name LIKE ('%Orb of Venom%') AND  it2.item_info!='' AND (it2.itemid = dp.item2) 
+	LEFT JOIN items as it3 ON it3.name LIKE ('%Orb of Venom%') AND  it3.item_info!='' AND (it3.itemid = dp.item3) 
+	LEFT JOIN items as it4 ON it4.name LIKE ('%Orb of Venom%') AND  it4.item_info!='' AND (it4.itemid = dp.item4) 
+	LEFT JOIN items as it5 ON it5.name LIKE ('%Orb of Venom%') AND  it5.item_info!='' AND (it5.itemid = dp.item5) 
+	LEFT JOIN items as it6 ON it6.name LIKE ('%Orb of Venom%') AND  it6.item_info!='' AND (it6.itemid = dp.item6) 
+	WHERE dp.hero = '$heroid' AND dp.hero !='' 
+    OR it.name LIKE ('%Orb of Venom%') OR it2.name LIKE ('%Orb of Venom%') OR it3.name LIKE ('%Orb of Venom%') 
+	OR it4.name LIKE ('%Orb of Venom%') OR it5.name LIKE ('%Orb of Venom%') OR it6.name LIKE ('%Orb of Venom%')
+	GROUP BY dp.hero 
+	ORDER BY count(*) DESC,  dp.hero DESC LIMIT $tot
+	";}
 	
 	return $sql;
 	}

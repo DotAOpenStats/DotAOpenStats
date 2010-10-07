@@ -6,7 +6,7 @@
 
 		
 	define("MAX_SIZE", 20); //20 KB max
-	define("VERSION", "1.1.8");
+	define("VERSION", "1.1.9");
 	
 	
 	echo '
@@ -1011,9 +1011,11 @@ function confirmDelete(delUrl) {
 	$name = EscapeStr($_POST['name']);
 	$shortname = EscapeStr($_POST['short']);
 	$icon = EscapeStr($_POST['icon']);
-	$item_info = convEnt2($item_info);
-	$item_info = BBCode(EscapeStr(trim($_POST['reply']))); 
+	$item_info =$_POST['reply'];
+	$item_info = convEnt2(trim($item_info));
 	$item_info = my_nl2br($item_info);
+	$item_info = BBCode($item_info); 
+	//$item_info = convEnt2($item_info);
 	
 	if (!file_exists("../img/items/$icon")) {echo "Missing image: /img/items/<b>$icon</b><br/>";}
 

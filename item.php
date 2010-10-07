@@ -45,6 +45,7 @@
   if ($db->num_rows($result) >= 1) {
       $list = $db->fetch_array($result, 'assoc');
       $itemid = $list["itemid"];
+
       $itemName = $list["name"];
 	  $itemName2 = $list["shortname"];
       $itemInfo = $list["item_info"];
@@ -70,9 +71,9 @@
       $pageContents = ob_get_contents();
       ob_end_clean();
       echo str_replace('<!--TITLE-->', $pageTitle, $pageContents);
-      
+
       if ($ShowItemsMostUsedByHero == 1) {
-          $sql = getMostUsedHeroByItem($heroid, $itemid, 8,$itemName );
+          $sql = getMostUsedHeroByItem("", $itemid, 8,$itemName );
           
           $result = $db->query($sql);
           if ($db->num_rows($result) >= 1) {
