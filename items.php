@@ -40,9 +40,18 @@
    ob_end_clean();
    echo str_replace('<!--TITLE-->', $pageTitle, $pageContents);
    
+   if (isset($_GET["l"]) AND ctype_alnum($_GET["l"]))  
+	{$letter = " AND LOWER(shortname) LIKE '".safeEscape($_GET["l"])."%'";} else {$letter = "";}
+	
+	if (isset($_GET["l"]) AND $_GET["l"] == "all") 
+	{$letter = "";}
+	
+	//Prevent any sql inject (Allow only letters and numbers)
+	if (isset($_GET["l"]) AND !ctype_alnum($_GET["l"])) {$letter = "";}
+   
    $sql = "SELECT itemid 
           FROM items as Items
-		  WHERE item_info !='' AND name != 'Aegis Check' AND name != 'Arcane Ring' 
+		  WHERE item_info !='' AND name != 'Aegis Check' AND name != 'Arcane Ring' $letter
 		  GROUP BY LOWER(shortname) 
 		  ORDER BY LOWER(shortname) ASC ";
    $result = $db->query($sql);
@@ -52,9 +61,26 @@
    
    include('pagination.php');
    
+   $alph = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	$countAlph = strlen($alph);
+	$letters = "";
+	for ($i = 0; $i <= $countAlph; $i++) {
+	$abc = substr($alph,$i,1);
+	if ($i!=0 AND $i !=$countAlph) {$sufix = " , ";} else {$sufix = "";}
+	if ((isset($_GET["l"]) AND $_GET["l"] != "$abc") OR !isset($_GET["l"])) 
+	{$letters .= "$sufix<a href='items.php?l=$abc'>".strtoupper($abc)."</a> ";}
+	else { $letters .="$sufix".strtoupper($abc);}
+	}
+	
+	echo "<div align='center'>
+	<table><tr>
+	<td style='text-align:center;font-weight: bold;'>
+	<a href='items.php'>All</a> 
+	| $letters</td></tr></table></div>";
+   
    $sql = "SELECT * 
           FROM items as Items
-		  WHERE item_info !='' AND name != 'Aegis Check' AND name != 'Arcane Ring' 
+		  WHERE item_info !='' AND name != 'Aegis Check' AND name != 'Arcane Ring' $letter
 		  GROUP BY LOWER(shortname) 
 		  ORDER BY LOWER(shortname) ASC 
 		  LIMIT $offset, $rowsperpage";
