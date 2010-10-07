@@ -397,6 +397,20 @@ SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.new
 	OR dp.item6 = '$itemid'
 	GROUP BY dp.hero having count(*) > 1 
 	ORDER BY count(*) DESC LIMIT $tot";
+	//IMPROVED QUERY
+	$sql = "SELECT COUNT(*) as total, dp.item1,dp.item2, dp.item3, dp.item4, dp.item5, dp.item6, dp.hero, h.heroid 
+	FROM dotaplayers as dp 
+	LEFT JOIN heroes as h ON h.heroid = dp.hero
+	WHERE dp.hero = '$heroid' and hero !='' 
+	OR dp.item1 = '$itemid' 
+	OR dp.item2 = '$itemid'  
+	OR dp.item3 = '$itemid'
+	OR dp.item4 = '$itemid'
+	OR dp.item5 = '$itemid'
+	OR dp.item6 = '$itemid' 
+	GROUP BY dp.hero 
+	ORDER BY count(*) DESC LIMIT $tot
+	";
 	return $sql;
 	}
 	
