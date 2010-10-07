@@ -82,11 +82,23 @@ padding-bottom:1pt;
 padding-left:4pt;
 }
 
+.tableItem {
+margin:8px;
+width:500px;
+}
 
-.tableHeroPageTop {width:95%;}
-.tableHeroPage {margin-top:4px;width:96%;border: 0px solid #000;}
+.ItemInfo {
+width:95%;
+padding-top:8pt;
+padding-bottom:8pt;
+padding-left:8pt;
+}
+
+
+.tableHeroPageTop {width:690px;}
+.tableHeroPage {margin-top:1px;width:96%;border: 0px solid #000;}
 .tableHeroPageTopCell {text-align:left;padding:12px;}
-.tableHeroPage {margin-top:4px;width:96%;border: 0px solid #000;}
+.tableHeroPage {margin-top:28px;width:96%;border: 0px solid #000;}
 
 
 .tableUserRow { margin-top:4px; margin-bottom:4px; margin-left:4px; }

@@ -1,4 +1,6 @@
-	   function handleHttpResponse() {  
+//<!--
+	   function handleHttpResponse() { 
+	   
        document.getElementById("divActivities").innerHTML = "<table style='width:80%;margin-left:22px;'><tr><td height='180'><div align='center'><img style='vertical-align: middle;' src='img/loader.gif'> Loading...</div></td></tr></table>";	
 
 		if (http.readyState == 4) {
@@ -130,9 +132,23 @@ function toggle2(layer_ref) {
  var hza = document.getElementById(layer_ref);
  if (hza && hza.style){
   if (!hza.set){ hza.set=true;  Ary.push(hza); }
-  hza.style.display = (hza.style.display == '')? 'none':'';
+  hza.style.display = (hza.style.display == '')? 'show':'';
  }
 }
+
+
+
+    function showhide(id){
+if (document.getElementById){
+obj = document.getElementById(id);
+if (obj.style.display == "none"){
+obj.style.display = "";
+} else {
+obj.style.display = "none";
+}
+}
+} 
+//--> 
 
 
 ///////////////////// TOOLTiP //////////////////

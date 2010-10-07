@@ -356,7 +356,7 @@
 		if ($kills >0)
 	    {$KillsPercent = ROUND($kills/($kills+$death), 4)*100; } else {$KillsPercent = 0;}
 		
-		if ($assists >0)
+		if ($totgames >0)
 		{$AssistsPerGame = ROUND($assists/$totgames,2);} else {$AssistsPerGame = 0;}
 		
 		if ($ScoreMethod == 2 AND $DBScore == 0)

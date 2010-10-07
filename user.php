@@ -41,7 +41,7 @@
   $pageContents = ob_get_contents();
   ob_end_clean();
   echo str_replace('<!--TITLE-->', $pageTitle, $pageContents);
-		
+	
 	//User row
 	   $tags = array(
    '{ALL_TIME_STATS}', 
@@ -116,7 +116,7 @@
    
    $lang["wins"],
    $lang["losses"],
-   $lang["played"],
+   $lang["favorite"],
    
    $kills,
    $assists,
@@ -147,7 +147,7 @@
 		if ($UserAchievements == 1)
 		{echo '<div align="center"><table class="tableA"><tr><th class="padLeft">
 		<img style="vertical-align: middle;" alt="" width="16px" height="16px" src="./img/achievements/play.gif">
-		<a href="#info" name="info" class="poplink" onclick="toggle2(\'div1\');return false;" id="link">Show '.$realname .' Achievements</a>
+		<a href="#info" name="info" class="poplink" onclick="showhide(\'div1\');return false;" id="link">Show '.$realname .' Achievements</a>
 		</th></tr></table></div>
 		<div id="div1" style="display: none;">';
 

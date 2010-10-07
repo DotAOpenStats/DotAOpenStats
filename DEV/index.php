@@ -780,13 +780,27 @@ function confirmDelete(delUrl) {
 	
 	     if (isset($_GET["l"]) AND $_GET["l"] == "all") 
 	     {$letter = "";}
-	
-	$sql = "SELECT COUNT(itemid) FROM items $letter LIMIT 1";
-	
+		 
+	if (isset($_GET["l"]) AND $_GET["l"] != "group") 
+	{$sql = "SELECT COUNT(itemid) FROM items $letter LIMIT 1";
 	$result = $db->query($sql);
 	$r = $db->fetch_row($result);
 	$numrows = $r[0];
-	$rowsperpage = 50;
+	$rowsperpage = 50;}
+	
+	else
+	{
+	$sql = "SELECT itemid 
+          FROM items as Items
+		  WHERE item_info !='' AND name != 'Aegis Check' 
+		  GROUP BY shortname 
+		  ORDER BY LOWER(name) ASC ";
+   $result = $db->query($sql);
+   $numrows = $db->num_rows($result);
+   $rowsperpage = 50;
+	$letter = "";
+	}
+	
 	
 	include('pagination.php');
 	
@@ -802,10 +816,20 @@ function confirmDelete(delUrl) {
 	echo "<div align='center'>
 	<table><tr>
 	<td style='text-align:center;font-weight: bold;'>
-	<a href='index.php?items&l=all'>All</a> 
+	<a href='index.php?items&l=group'>Group</a>
+	| <a href='index.php?items&l=all'>All</a> 
 	| $letters</td></tr></table></div>";
 	
-	$sql = "SELECT * FROM items $letter ORDER BY LOWER(name) ASC LIMIT $offset, $rowsperpage";
+	if (isset($_GET["l"]) AND $_GET["l"] != "group") 
+	{$sql = "SELECT * FROM items $letter ORDER BY LOWER(name) ASC LIMIT $offset, $rowsperpage";}
+	else
+	{$sql = "SELECT * 
+          FROM items as Items
+		  WHERE item_info !='' AND name != 'Aegis Check' 
+		  GROUP BY shortname 
+		  ORDER BY LOWER(name) ASC 
+		  LIMIT $offset, $rowsperpage";}
+		  
 	$result = $db->query($sql);
 	
 	 echo "<br/><div style='text-align:right;padding-right:3%;'><a href='index.php?additem'><b><img  alt='' style='vertical-align: middle;' width='22px' height='22px' src='../img/items/BTNAbility_Rogue_Sprint.gif' border=0/>[+] Add item</b></a></div>
@@ -830,7 +854,7 @@ function confirmDelete(delUrl) {
 			 $description = convEnt($row['item_info']);
 			 $icon = convEnt($row['icon']);
 			 
-			 $description = substr($description,0,300)."...";
+			 $description = BBDecode(substr($description,0,100))."...";
 			 
 			 //echo "<tr>$hid - $original - $description - $summ - $stats - $skills<br/>";
 			 
@@ -882,6 +906,17 @@ function confirmDelete(delUrl) {
 	$shortname = $row["shortname"];
 	$icon = $row["icon"];
 	$icon2 = $row["icon"];
+	$item_info = BBDecode($row["item_info"]);
+	$item_info = my_nl2br($item_info);
+	$Preview_item = ($row["item_info"]); $Preview_item = str_replace("\n","<br>",$Preview_item);
+	
+	//Prepare template for empty items info
+	if ($item_info == "") {$item_info = "[size=18][color=#FF9900][b]Item Summary[/b][/color][/size]\n[b]Cost:[/b] \n\n[color=#FF6600][b]Bought From:[/b][/color]\n\n\n[color=#FF6600][b]Bonus:[/b][/color]\n\n\n[color=#FF6600][b]Additional Information:[/b][/color]\n\n";
+	$Preview_item = BBCode($item_info); $Preview_item = str_replace("\n","<br>",$Preview_item);
+	
+	}
+
+	
 	$button = "Edit $shortname";
 	$del_button = '<p class="alignright"><a href="javascript:confirmDelete(\'index.php?removeItem='.$item.'\')">[X] Remove '.$item.'</a></p>';
 	$form = '';
@@ -906,7 +941,7 @@ function confirmDelete(delUrl) {
 	<img alt="" width="64px" height="64px" style="vertical-align: middle;" src="../img/items/'.$icon2.'"/>
 	<br>'.$name.'<br>
 	'.$form_image.'
-	<table style="width:55%"><tr><th>Edit items</th><th></th></tr>
+	<table class="tableA"><tr><th>Edit items</th><th></th></tr>
 	<tr>
 	<td width="96px">ItemID</td><td><input size="6" maxlength="6" value="'.$item.'" name="itemid"></td></tr>
 	
@@ -920,13 +955,51 @@ function confirmDelete(delUrl) {
 	<td width="96px">Icon</td><td><input '.$dis.' size="60" maxlength="60" value="'.$icon.'" name="icon">
      <img alt="" width="26px" height="26px" style="vertical-align: middle;" src="../img/items/'.$icon.'"/>
 	</td></tr>
+	
+	<tr>
+	<td valign="top" width="120px">Summary</td><td>
+	<div class="richeditor">
+		<div class="editbar">		
+			<button title="bold" onclick="AddTag(\'b\');" type="button" style="background-image:url(\'img/editor/text_bold.gif\');"></button>
+			<button title="italic" onclick="AddTag(\'i\');" type="button" style="background-image:url(\'img/editor/text_italic.gif\');"></button>
+			<button title="underline" onclick="AddTag(\'u\');" type="button" style="background-image:url(\'img/editor/text_underline.gif\');"></button>
+			<button title="strikethrough" onclick="AddTag(\'s\');" type="button" style="background-image:url(\'img/editor/strikethrough.gif\');"></button>
+			<img alt="" src="./img/editor/separator.gif" style=\'vertical-align: middle;\' />
+			<button title="hyperlink" onclick="doLink();" type="button" style="background-image:url(\'img/editor/url.gif\');"></button>
+			<button title="image" onclick="doImage();" type="button" style="background-image:url(\'img/editor/img.gif\');"></button>
+			<img alt="" src="./img/editor/separator.gif" style=\'vertical-align: middle;\' />
+			<button title="big font" onclick="doSize(\'size=18\',\'size\');" type="button" style="background-image:url(\'img/editor/font_plus.gif\');"></button>
+			<button title="small font" onclick="doSize(\'size=9\',\'size\');" type="button" style="background-image:url(\'img/editor/font_minus.gif\');"></button>
+			<img alt="" src="./img/editor/separator.gif" style=\'vertical-align: middle;\' />
+			<button title="list" onclick="AddTag(\'li\');" type="button" style="background-image:url(\'img/editor/icon_list.gif\');"></button>
+			<button title="align left" onclick="AddTag(\'left\');" type="button" style="background-image:url(\'img/editor/text_align_left.gif\');"></button>
+			<button title="align center" onclick="AddTag(\'center\');" type="button" style="background-image:url(\'img/editor/text_align_center.gif\');"></button>
+			<button title="align right" onclick="AddTag(\'right\');" type="button" style="background-image:url(\'img/editor/text_align_right.gif\');"></button>
+			<button title="justify" onclick="AddTag(\'justify\');" type="button" style="background-image:url(\'img/editor/text_align_justify.gif\');"></button>
+			<img alt="" src="./img/editor/separator.gif" style=\'vertical-align: middle;\' />
+			
+			<button title="spoiler" onclick="AddTag(\'spoiler\');" type="button" style="background-image:url(\'img/editor/spoiler.gif\');"></button>
+
+			<button title="color" onclick="showColorGrid2(\'none\')" type="button" style="background-image:url(\'img/editor/colors.gif\');"></button><span id="colorpicker201" class="colorpicker201"></span>
+
+			<button title="youtube" onclick="InsertYoutube();" type="button" style="background-image:url(\'img/editor/icon_youtube.gif\');"></button>
+			
+			<!--<input name="html" value="html" title="Enable HTML. This will disable BBCode" type="checkbox"/>
+			<span style="color:#000;"><b>HTML</b></span>-->
+	</div>
+	
+	<textarea class="reply" id="reply" name="reply" style="padding-top:4px;height:260px;width:564px;">'.$item_info.'</textarea></div>
+	</td></tr>
 
 	<tr><td></td><td>
 		<input type="submit" class="inputButton" value="'.$button .'" />
 		'.$del_button.'
 		</td>
 			</tr></table>
-        </div></form><br/><br/>';
+        </div></form>
+		<div align="center"><table class="tableA"><tr>
+		<th>Preview</th></tr><tr>
+		<td style="padding:8px;" align="left">'.$Preview_item.'</td></tr></table></div>';
 	
 	}
 	
@@ -938,6 +1011,9 @@ function confirmDelete(delUrl) {
 	$name = EscapeStr($_POST['name']);
 	$shortname = EscapeStr($_POST['short']);
 	$icon = EscapeStr($_POST['icon']);
+	$item_info = convEnt2($item_info);
+	$item_info = BBCode(EscapeStr(trim($_POST['reply']))); 
+	$item_info = my_nl2br($item_info);
 	
 	if (!file_exists("../img/items/$icon")) {echo "Missing image: /img/items/<b>$icon</b><br/>";}
 
@@ -946,7 +1022,7 @@ function confirmDelete(delUrl) {
 	if (!isset($_GET['additem']))
 	{
 	$sql = "UPDATE items 
-	SET itemid = '$item', name = '$name', shortname = '$shortname', icon = '$icon' 
+	SET itemid = '$item', name = '$name', shortname = '$shortname', icon = '$icon', item_info = '$item_info'
 	WHERE itemid = '$item' LIMIT 1";}
 	
 	else
@@ -981,14 +1057,14 @@ function confirmDelete(delUrl) {
               }
 			  
 	$icon = $image_name;
-	$sql = "INSERT INTO items(itemid,name,shortname,icon) 
-	VALUES('$item','$name','$shortname','$icon') ";
+	$sql = "INSERT INTO items(itemid,name,shortname,icon, item_info) 
+	VALUES('$item','$name','$shortname','$icon','$item_info') ";
 	
 	}
 	
 	$result = $db->query($sql);
 	
-	if ($result)  {echo "<br/><b>Item $item updated successfully.</b><br/><br/><a href='index.php?items&edit=$item'>Back to previous page</a>";}
+	if ($result)  {echo "<div align='center'><table style='margin-top:32px;width:400px;'><tr><th><b>Item $item updated successfully.</b></th></tr><tr><td><a href='index.php?items&edit=$item'>Back to previous page</a></td></tr></table></div><br>";}
 	
 	} else {echo "<br/>Some fields are empty or have too few characters!<br/><br/><a href='javascript: history.go(-1);'>Back to previous page</a>";}
 	
@@ -1410,8 +1486,7 @@ function confirmDelete(delUrl) {
 	  	  
 	  if ($AccuratePointsCalculation == "1") {$apcy = "checked";$apcn = "";} else {
           $apcy = "";
-          $apcn = "checked";}
-		  
+          $apcn = "checked";}		  
 		  
 	  $HideBannedUsersOnTop = get_value_of('$HideBannedUsersOnTop');
       $HideBannedUsersOnTop = trim($HideBannedUsersOnTop);
@@ -1431,7 +1506,22 @@ function confirmDelete(delUrl) {
       $_debug = trim($_debug); 
       if ($_debug == "1") {$dbgy = "checked";$dbgn = "";} else {
           $dbgy = "";
-          $dbgn = "checked";}		  
+          $dbgn = "checked";}	
+
+   
+      $ShowHeroMostUsedItems = get_value_of('$ShowHeroMostUsedItems');
+      $ShowHeroMostUsedItems = trim($ShowHeroMostUsedItems); 
+      if ($ShowHeroMostUsedItems == "1") {$fuiy = "checked";$fuin = "";} else {
+          $fuiy = "";
+          $fuin = "checked";}	
+
+
+	  $ShowItemsMostUsedByHero = get_value_of('$ShowItemsMostUsedByHero');
+      $ShowItemsMostUsedByHero = trim($ShowItemsMostUsedByHero);
+	  	  
+	  if ($ShowItemsMostUsedByHero == "1") {$imuhy = "checked";$imuhn = "";} else {
+          $imuhy = "";
+          $imuhn = "checked";}		  
 		  
 	  
 	  $head_admin = get_value_of('$head_admin');
@@ -1480,6 +1570,22 @@ function confirmDelete(delUrl) {
 	  <input type="radio" name="fgw" '.$fgwy.' value="1" /> Yes
 	  <input type="radio" name="fgw" '.$fgwn.' value="0" /> No 
 	  | (Display fastest and longest game on User page)</td></tr>
+	  
+	  
+	  <tr>
+	  <td width="160px">Show frequently used hero items</td>
+	  <td>
+	  <input type="radio" name="fui" '.$fuiy.' value="1" /> Yes
+	  <input type="radio" name="fui" '.$fuin.' value="0" /> No 
+	  | (Show frequently used items for every hero. 2 for each slot)</td></tr>
+	  
+	  
+	  <tr>
+	  <td width="160px">Show most used heroes for every items </td>
+	  <td>
+	  <input type="radio" name="muh" '.$imuhy.' value="1" /> Yes
+	  <input type="radio" name="muh" '.$imuhn.' value="0" /> No 
+	  | (Show most used heroes for every item.) <br><b>Note:</b> <span style="color:red">This can take up much more resources. Care with huge database</span></td></tr>
 	  
 	  <tr>
 	  <td width="160px">Enable debug</td>
@@ -1689,6 +1795,8 @@ function confirmDelete(delUrl) {
 	  write_value_of('$games_per_page', "$games_per_page", $_POST['games']);
 	  write_value_of('$heroes_per_page', "$heroes_per_page", $_POST['heroes']);
 	  write_value_of('$FastGameWon', "$FastGameWon", $_POST['fgw']);
+	  write_value_of('$ShowHeroMostUsedItems', "$ShowHeroMostUsedItems", $_POST['fui']);
+	  write_value_of('$ShowItemsMostUsedByHero', "$ShowItemsMostUsedByHero", $_POST['muh']);
 	  
 	  write_value_of('$top_players_per_page', "$top_players_per_page", $_POST['topplayers']);
 	  write_value_of('$news_per_page', "$news_per_page", $_POST['news']);
@@ -1790,7 +1898,7 @@ function confirmDelete(delUrl) {
        if (file_exists("./backup/".$_GET['delete_backup'])){
        $res = unlink("./backup/".$_GET['delete_backup']);}
 	          if (isset($res)) {echo "<br><br>File '".$_GET['delete_backup']."' successfully deleted.<br><br>
-			  <a href='index.php?backup'>Back to previous page</a>";} 
+			  <a href='index.php?backup'>Back to previous page</a><br><br>";} 
 			  else {$res=""; echo "File not exists";}
        }
 	   

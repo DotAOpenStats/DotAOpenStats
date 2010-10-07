@@ -78,6 +78,18 @@ padding-bottom:1pt;
 padding-left:4pt;
 }
 
+.tableItem {
+margin:8px;
+width:500px;
+}
+
+.ItemInfo {
+width:95%;
+padding-top:8pt;
+padding-bottom:8pt;
+padding-left:8pt;
+}
+
 .tableHeroPageTop {width:95%;}
 .tableHeroPage {margin-top:4px;width:96%;border: 0px solid #000;}
 .tableHeroPageTopCell {text-align:left;padding:12px;}
@@ -288,98 +300,28 @@ height: 24px;
 
 .GamesSentinel {color:#CF0002;}
 .GamesScourge {color:#00CF1D;}
-.GamesDraw {color:#707070;}
+.GamesDraw {color:#E7BE00;}
 
-/* Colors */
-.sentinel
-{
-	color:#e56879;
-	text-align: left;
-}
-.scourge
-{
-	text-align: right;
-	color:#86E573;
+/* Replay Colors */
+.sentinel {text-align: left; color:#8D2323;}
+.scourge   {text-align: left; color:#04C500;}
 
-}
-.all
-{
-	text-align:left;
-	color:#7B7B7B;
-}
+.all  {text-align:left; color:#939393;}
 
-
-.red {
-  color: #DD0000;
-}
-
-.blue {
-  color: #3333FF;
-}
-
-.teal {
-  color: #00EEEE;
-}
-
-.purple {
-  color: #7711AA;
-}
-
-.yellow {
-  color: #FFFF00;
-}
-
-.orange{
-  color: #FF9900 ;
-}
-
-.dark-green {
-  color: #24573d;
-}
-
-.pink {
-  color: #FF66CC;
-}
-
-.gray {
-  color: #888888;
-}
-
-.light-blue {
-  color: #55BBEE;
-}
-
-.darkgreen {
-  color: #006F3F;
-}
-
-.brown {
-  color: #6F3F00;
-}
-
-.observer {
-  color: #FFFFFF;
-}
-
-.GameSystem {
-  color: #7B7B7B;
-  text-align: center;
-}
-.ddd {
- color: #ddd;
-}
-a.banned{
- color: #e56879;
-}
-.won{
- color: #86E573;
-}
-.lost{
- color: #e56879;
-}
-.draw{
- color: #ebeb7d;
-}
+.red       {color: #DD0000;}
+.blue     {color: #004EFF;}
+.teal     {color: #00EEEE;}
+.purple  {color: #7711AA;}
+.yellow  {color: #F0C600;}
+.orange  {color: #FF9900;}
+.dark-green  {color: #00751E;}
+.pink     {color: #FF66CC;}
+.gray {color: #888888;}
+.light-blue  {color: #55BBEE;}
+.darkgreen  {color: #006F3F;}
+.brown  {color: #6F3F00;}
+.observer  {color: #FFFFFF;}
+.GameSystem {color: #900101; text-align: left;}
 
 img.alpha {
 filter: alpha(opacity=10);

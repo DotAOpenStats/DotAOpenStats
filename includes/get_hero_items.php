@@ -36,35 +36,37 @@
 	
 	if ($ShowHeroMostUsedItems==1)
 	{
-	echo "<div align='center'><table class='tableA'><tr><th><div align='center'>$_lang[most_items]</div></th></tr>
-	<tr><td>";
+	echo "<div align='center'><table class='tableHeroPageTop'><tr><th><div align='center'>$_lang[most_items]</div></th></tr>
+	<tr><td align='center'>";
 	
 	$sql = getHeroItem1($heroid);
 	$result = $db->query($sql);
     $c = 0;
 	while ($row = $db->fetch_array($result,'assoc')){
-	$mostItemName1 = $row["name"];
+	$mostItemID1 = $row["itemid"];
+	$mostItemName1 = convEnt2($row["name"]); 
 	$mostItemIcon1 = $row["icon"];
 	$mostItemTotal1 = $row["total"];
 	if ($c==0)
 	{$mostItem1 = $row["item1"]; $c = 1;} 
 	$mostItem11 = $row["item1"];
 	echo "
-	<img width='$size' height='$size' alt='' title='$mostItemName1' src='./img/items/$mostItemIcon1'>";
+	<a onMouseout='hidetooltip()' onMouseover='tooltip(\"$mostItemName1\",130)' href='item.php?item=$mostItemID1'><img border = 0 width='$size' height='$size' alt='' src='./img/items/$mostItemIcon1'></a>";
 
 	   }
 	$sql = getHeroItem2($heroid,$mostItem1,$mostItem11);
 	$result = $db->query($sql);
 	$c = 0;
 	while ($row = $db->fetch_array($result,'assoc')){
-	$mostItemName2 = $row["name"];
+	$mostItemID2 = $row["itemid"];
+	$mostItemName2 = convEnt2($row["name"]);
 	$mostItemIcon2 = $row["icon"];
 	$mostItemTotal2 = $row["total"];
 	if ($c==0)
 	{$mostItem2 = $row["item2"]; $c = 1;} 
 	$mostItem22 = $row["item2"];
 	echo "
-	<img width='$size' height='$size' alt='' title='$mostItemName2' src='./img/items/$mostItemIcon2'>";
+	<a onMouseout='hidetooltip()' onMouseover='tooltip(\"$mostItemName2\",130)'  href='item.php?item=$mostItemID2'><img border = 0 width='$size' height='$size' alt='' src='./img/items/$mostItemIcon2'></a>";
 
 	   }
 	   
@@ -72,14 +74,15 @@
 	$result = $db->query($sql);
 	$c = 0;
 	while ($row = $db->fetch_array($result,'assoc')){
-	$mostItemName3 = $row["name"];
+	$mostItemID3 = $row["itemid"];
+	$mostItemName3 = convEnt2($row["name"]);
 	$mostItemIcon3 = $row["icon"];
 	$mostItemTotal3 = $row["total"];
 	if ($c==0)
 	{$mostItem3 = $row["item3"]; $c = 1;} 
 	$mostItem33 = $row["item3"];
 	echo "
-	<img width='$size' height='$size' alt='' title='$mostItemName3' src='./img/items/$mostItemIcon3'>";
+	<a onMouseout='hidetooltip()' onMouseover='tooltip(\"$mostItemName3\",130)' href='item.php?item=$mostItemID3'><img border = 0 width='$size' height='$size' alt='' src='./img/items/$mostItemIcon3'></a>";
 
 	   }
 	   
@@ -87,46 +90,44 @@
 	$result = $db->query($sql);
 	$c = 0;
 	while ($row = $db->fetch_array($result,'assoc')){
-	$mostItemName4 = $row["name"];
+	$mostItemID4 = $row["itemid"];
+	$mostItemName4 = convEnt2($row["name"]);
 	$mostItemIcon4 = $row["icon"];
 	$mostItemTotal4 = $row["total"];
 	if ($c==0)
 	{$mostItem4 = $row["item4"]; $c = 1;} 
 	$mostItem44= $row["item4"];
 	echo "
-	<img width='$size' height='$size' alt='' title='$mostItemName4' src='./img/items/$mostItemIcon4'>";
+	<a onMouseout='hidetooltip()' onMouseover='tooltip(\"$mostItemName4\",130)' href='item.php?item=$mostItemID4'><img border = 0 width='$size' height='$size' alt='' src='./img/items/$mostItemIcon4'></a>";
 
 	   }
 	$sql = getHeroItem5($heroid,$mostItem1,$mostItem11,$mostItem2,$mostItem22,$mostItem3,$mostItem33,$mostItem4,$mostItem44);
 	$result = $db->query($sql);
 	$c = 0;
 	while ($row = $db->fetch_array($result,'assoc')){
-	$mostItemName5 = $row["name"];
+	$mostItemID5 = $row["itemid"];
+	$mostItemName5 = convEnt2($row["name"]);
 	$mostItemIcon5 = $row["icon"];
 	$mostItemTotal5 = $row["total"];
 	if ($c==0)
 	{$mostItem5 = $row["item5"]; $c = 1;} 
 	$mostItem55= $row["item5"];
 	echo "
-	<img width='$size' height='$size' alt='' title='$mostItemName5' src='./img/items/$mostItemIcon5'>";
+	<a onMouseout='hidetooltip()' onMouseover='tooltip(\"$mostItemName5\",130)' href='item.php?item=$mostItemID5'><img border = 0 width='$size' height='$size' alt='' src='./img/items/$mostItemIcon5'></a>";
 
 	   }   
 	$sql = getHeroItem6($heroid,$mostItem1,$mostItem11,$mostItem2,$mostItem22,$mostItem3,$mostItem33,$mostItem4,$mostItem44,$mostItem5,$mostItem55);
 	$result = $db->query($sql);
 	while ($row = $db->fetch_array($result,'assoc')){
-	$mostItemName6 = $row["name"];
+	$mostItemID6 = $row["itemid"];
+	$mostItemName6 = convEnt2($row["name"]);
 	$mostItemIcon6 = $row["icon"];
 	$mostItemTotal6 = $row["total"];
 	$mostItem6 = $row["item6"];
 	echo "
-	<img width='$size' height='$size' alt='' title='$mostItemName6' src='./img/items/$mostItemIcon6'>";
-
-	   }      
-	   
-	 
-	   
+	<a onMouseout='hidetooltip()' onMouseover='tooltip(\"$mostItemName6\",130)' href='item.php?item=$mostItemID6'><img border = 0 width='$size' height='$size' alt='' src='./img/items/$mostItemIcon6'></a>";
+       }       
 	}
-	
 	
 	echo "</tr><table></div>";
 	

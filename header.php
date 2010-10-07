@@ -47,7 +47,7 @@
    require_once('./includes/get_style.php');
    
 
-   
+   if ($enableItemsPage == 1) {$itemButton = "<a class='menuButtons' href='items.php'>$lang[items]</a>";} else {$itemButton = "";}
    //HEADER
    $data = array($default_style,"<img alt='' style='vertical-align: middle;' src='style/$default_style/img/logo.png'/>",
    $lang["site_name"],
@@ -61,7 +61,8 @@
    $lang["dota_games"],
    $lang["admins"],
    $minGamesPlayed,
-   $lang["heroes"]);
+   $lang["heroes"],
+   $itemButton);
    
    $tags = array('{STYLE}', 
    '{LOGO}',
@@ -76,7 +77,8 @@
    '{GAMES}',
    '{ADMINS}',
    '{MINGAMES}',
-   '{HEROES}');
+   '{HEROES}',
+   '{ITEMS}');
    
    echo str_replace($tags, $data, file_get_contents("./style/$default_style/header.html"));
    

@@ -53,6 +53,7 @@
    		$creatorname=$list["creatorname"];
 		$duration=secondsToTime($list["duration"]);
 		$gametime=date($date_format,strtotime($list["datetime"]));
+		$gmtime = $list["datetime"];
 		$replayDate = $list["datetime"];
 		$gamename=$list["gamename"];
 		$win=$list["winner"];
@@ -126,6 +127,13 @@
 		$itemicon5=$list["itemicon5"];
 		$itemicon6=$list["itemicon6"];
 		
+		$itemID1=$list["item1"];
+		$itemID2=$list["item2"];
+		$itemID3=$list["item3"];
+		$itemID4=$list["item4"];
+		$itemID5=$list["item5"];
+		$itemID6=$list["item6"];
+		
 		if ($itemicon1=="") {$itemicon1 = "empty.gif";}
 		if ($itemicon2=="") {$itemicon2 = "empty.gif";}
 		if ($itemicon3=="") {$itemicon3 = "empty.gif";}
@@ -184,13 +192,13 @@
 		{
 		    if ($AccuratePointsCalculation == 1 AND $ScoreMethod == 1) //Calculate points from database
 		    {
-		    $getSql = GetScoreBefore($scoreFormula,$minPlayedRatio,$gid,$name3,$minGamesPlayed);
+		    $getSql = GetScoreBefore($scoreFormula,$minPlayedRatio,$gid,$name3,$minGamesPlayed,$gmtime);
 	 
 		    $result2 = $db->query($getSql);
 		    $scoreBefore = $db->fetch_array($result2,'assoc');
 	 
 	 
-		    $getSql = GetScoreAfter($scoreFormula,$minPlayedRatio,$name3,$minGamesPlayed);
+		    $getSql = GetScoreAfter($scoreFormula,$minPlayedRatio,$name3,$minGamesPlayed,$gmtime);
 		    $result2 = $db->query($getSql);
 		    $scoreAfter = $db->fetch_array($result2,'assoc');
 		    $CalPoints = $scoreAfter["totalscore"] - $scoreBefore["totalscore"];
@@ -206,7 +214,9 @@
 		   {$CalPoints = $CalPoints - (($deaths*.7) + ($kills*.5))+($assists*.2)+($courierkills+$creepdenies)*0.1+$towerkills*0.3+$raxkills*0.1;}	
 		   }
 		   $class = "DrawGame";
-		   
+		   if (trim(strtolower($banname)) == strtolower($name3)) 
+				   {$CalPoints = $ScoreDisc; $class = 'DisconnectPoints';} 
+				   
 		   		   if ($ScoreMethod == 2 AND $DBScore == 0) 
 				   {
 				   if ($win==1 AND $newcolour>5) {$CalPoints = $ScoreLosses; $class = 'NegativePoints';}
@@ -283,12 +293,12 @@
 			</tr>";
 			}
 			
-			$a1 = convEnt2($list["itemname1"])."<br><img src=img/items/$itemicon1>";
-			$a2 = convEnt2($list["itemname2"])."<br><img src=img/items/$itemicon2>";
-			$a3 = convEnt2($list["itemname3"])."<br><img src=img/items/$itemicon3>";
-			$a4 = convEnt2($list["itemname4"])."<br><img src=img/items/$itemicon4>";
-			$a5 = convEnt2($list["itemname5"])."<br><img src=img/items/$itemicon5>";
-			$a6 = convEnt2($list["itemname6"])."<br><img src=img/items/$itemicon6>";
+	$a1 = convEnt2($list["itemname1"])."<br><img src=img/items/$itemicon1></a>";
+	$a2 = convEnt2($list["itemname2"])."<br><img src=img/items/$itemicon2>";
+	$a3 = convEnt2($list["itemname3"])."<br><img src=img/items/$itemicon3>";
+	$a4 = convEnt2($list["itemname4"])."<br><img src=img/items/$itemicon4>";
+	$a5 = convEnt2($list["itemname5"])."<br><img src=img/items/$itemicon5>";
+	$a6 = convEnt2($list["itemname6"])."<br><img src=img/items/$itemicon6>";
 			
 		if ($list["itemname1"]!="") 
 		{$ic1 = "onMouseout='hidetooltip()' onMouseover='tooltip(\"".$a1."\",130)'";} else {$ic1 = "";}
@@ -321,12 +331,12 @@
 			  <td><div align='center'>$gold</div></td>
 			  
 			  <td><div align='left'>
-			  <img $ic1 title=\"\" alt='' width='28px' src='./img/items/$itemicon1'>
-			  <img $ic2 title=\"\" alt='' width='28px' src='./img/items/$itemicon2'>
-			  <img $ic3 title=\"\" alt='' width='28px' src='./img/items/$itemicon3'>
-			  <img $ic4 title=\"\" alt='' width='28px' src='./img/items/$itemicon4'>
-			  <img $ic5 title=\"\" alt='' width='28px' src='./img/items/$itemicon5'>
-			  <img $ic6  title=\"\" alt='' width='28px' src='./img/items/$itemicon6'>
+			  <a href='item.php?item=$itemID1'><img $ic1 border=0 title=\"\" alt='' width='28px' src='./img/items/$itemicon1'></a>
+			  <a href='item.php?item=$itemID2'><img $ic2 border=0  title=\"\" alt='' width='28px' src='./img/items/$itemicon2'></a>
+			  <a href='item.php?item=$itemID3'><img $ic3 border=0  title=\"\" alt='' width='28px' src='./img/items/$itemicon3'></a>
+			  <a href='item.php?item=$itemID4'><img $ic4 border=0  title=\"\" alt='' width='28px' src='./img/items/$itemicon4'></a>
+			  <a href='item.php?item=$itemID5'><img $ic5 border=0  title=\"\" alt='' width='28px' src='./img/items/$itemicon5'></a>
+			  <a href='item.php?item=$itemID6'><img $ic6 border=0  title=\"\" alt='' width='28px' src='./img/items/$itemicon6'></a>
 			  
 			  </div>
 			  </td>

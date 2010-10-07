@@ -36,11 +36,6 @@
 
     include('header.php');
 	
-	$pageTitle = "$lang[site_name] | $lang[heroes]";
-	$pageContents = ob_get_contents();
-    ob_end_clean();
-    echo str_replace('<!--TITLE-->', $pageTitle, $pageContents);
-	
 	$heroid=safeEscape($_GET["hero"]);
 	
 	$sql = getHero($heroid);
@@ -70,12 +65,17 @@
 		$stats=$row["stats"];
 		$skills=$row["skills"];
 	
-	
 	    $hero=convEnt($list["description"]);
 		$hid=convEnt($list["original"]);
 		$summ=convEnt($list["summary"]);
 		$stats=convEnt($list["stats"]);
 		$skills=convEnt($list["skills"]);
+		
+			
+	$pageTitle = "$lang[site_name] | $hero";
+	$pageContents = ob_get_contents();
+    ob_end_clean();
+    echo str_replace('<!--TITLE-->', $pageTitle, $pageContents);
 		
 		$summ = str_replace("’","&rsquo;",$summ );
 		$summ = str_replace("…","&hellip;",$summ );
@@ -129,7 +129,7 @@
     echo "<br>";
 	
 	if ($ShowHeroMostUsedItems==1) {
-	$size = "64px";
+	$size = "48px";
 	require_once("./includes/get_hero_items.php");
 	}
 	 

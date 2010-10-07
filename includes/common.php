@@ -324,7 +324,7 @@ return $return.$return2.$seconds_left.".".$milliseconds;
 	   return $sql;
 	}
 	
-	function GetScoreBefore($scoreFormula,$minPlayedRatio,$gid,$name3,$minGamesPlayed) {
+	function GetScoreBefore($scoreFormula,$minPlayedRatio,$gid,$name3,$minGamesPlayed,$gmtime) {
 	$sql = "SELECT *, case when (kills = 0) then 0 when (deaths = 0) then 1000 else ((kills*1.0)/(deaths*1.0)) end as killdeathratio, ($scoreFormula) as totalscore 
 	 FROM ( 
 	 SELECT gp.name as name, bans.name as banname, avg(dp.courierkills) as courierkills, avg(dp.raxkills) as raxkills,
@@ -343,13 +343,13 @@ SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.new
 	 AND dp.newcolour <> 6
 	 LEFT JOIN games as ga ON dp.gameid = ga.id
 	 LEFT JOIN bans on bans.name = gp.name
-	 WHERE dg.winner <> 0  AND gp.name = '$name3' 
-	 GROUP BY gp.name having totgames >= $minGamesPlayed) as i
+	 WHERE dg.winner <> 0  AND gp.name = '$name3' AND ga.datetime<='$gmtime'
+	 GROUP BY gp.name) as i
 	 ORDER BY totalscore ASC LIMIT 1";
 	 return $sql;
 	}
 	
-	function GetScoreAfter($scoreFormula,$minPlayedRatio,$name3,$minGamesPlayed) {
+	function GetScoreAfter($scoreFormula,$minPlayedRatio,$name3,$minGamesPlayed,$gmtime) {
 	$sql = "SELECT *, case when (kills = 0) then 0 when (deaths = 0) then 1000 else ((kills*1.0)/(deaths*1.0)) end as killdeathratio, ($scoreFormula) as totalscore 
 	 FROM ( 
 	 SELECT gp.name as name, bans.name as banname, avg(dp.courierkills) as courierkills, avg(dp.raxkills) as raxkills,
@@ -368,10 +368,36 @@ SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.new
 	 AND dp.newcolour <> 6
 	 LEFT JOIN games as ga ON dp.gameid = ga.id
 	 LEFT JOIN bans on bans.name = gp.name
-	 WHERE dg.winner <> 0  AND gp.name = '$name3' 
-	 GROUP BY gp.name) as i 
+	 WHERE dg.winner <> 0  AND gp.name = '$name3' AND ga.datetime<='$gmtime'
+	 GROUP BY gp.name having totgames >= $minGamesPlayed) as i 
 	 ORDER BY totalscore ASC LIMIT 1";
 	 return $sql;
+	}
+	
+	function getMostUsedHeroByItem($heroid, $itemid, $tot) {
+	$sql = "SELECT count(*) as total, 
+	   dp.hero, 
+	   dp.item1 , dp.item2 ,dp.item3 ,dp.item4 ,dp.item5 ,dp.item6, 
+	   heroes.description as heroname
+	FROM dotaplayers as dp
+	LEFT JOIN items ON items.itemid = dp.item1 AND items.itemid = dp.item2 AND items.itemid = dp.item3 AND items.itemid = dp.item4 AND items.itemid = dp.item5 AND items.itemid = dp.item6
+	LEFT JOIN heroes ON heroes.heroid = dp.hero 
+	OR items.itemid = dp.item1 
+	OR items.itemid = dp.item2 
+	OR items.itemid = dp.item3
+	OR items.itemid = dp.item4
+	OR items.itemid = dp.item5
+	OR items.itemid = dp.item6
+	WHERE hero = '$heroid' AND hero != ''
+	OR dp.item1 = '$itemid' 
+	OR dp.item2 = '$itemid'  
+	OR dp.item3 = '$itemid'
+	OR dp.item4 = '$itemid'
+	OR dp.item5 = '$itemid'
+	OR dp.item6 = '$itemid'
+	GROUP BY dp.hero having count(*) > 1 
+	ORDER BY count(*) DESC LIMIT $tot";
+	return $sql;
 	}
 	
 	
@@ -469,7 +495,7 @@ SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.new
 	
 	//HERO MOST USED ITEMS
 	function getHeroItem1($heroid) {
-	$sql = "SELECT count(*) as total, dotaplayers.item1, items.icon , items.name 
+	$sql = "SELECT count(*) as total, dotaplayers.item1, items.icon , items.name , items.itemid 
 	FROM dotaplayers 
 	LEFT JOIN items ON items.itemid = dotaplayers.item1
 	WHERE hero = '$heroid' 
@@ -480,7 +506,7 @@ SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.new
 	return $sql;
 	}
 	function getHeroItem2($heroid,$mostItem1,$mostItem11) {
-	$sql = "SELECT count(*) as total, dotaplayers.item2, items.icon , items.name 
+	$sql = "SELECT count(*) as total, dotaplayers.item2, items.icon , items.name , items.itemid
 	FROM dotaplayers 
 	LEFT JOIN items ON items.itemid = dotaplayers.item2
 	WHERE hero = '$heroid' 
@@ -492,7 +518,7 @@ SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.new
 	return $sql;
 	}
 	function getHeroItem3($heroid,$mostItem1,$mostItem11,$mostItem2,$mostItem22) {
-	$sql = "SELECT count(*) as total, dotaplayers.item3, items.icon , items.name 
+	$sql = "SELECT count(*) as total, dotaplayers.item3, items.icon , items.name , items.itemid
 	FROM dotaplayers 
 	LEFT JOIN items ON items.itemid = dotaplayers.item3
 	WHERE hero = '$heroid' 
@@ -505,7 +531,7 @@ SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.new
 	return $sql;
 	}
 	function getHeroItem4($heroid,$mostItem1,$mostItem11,$mostItem2,$mostItem22,$mostItem3,$mostItem33) {
-	$sql = "SELECT count(*) as total, dotaplayers.item4, items.icon , items.name 
+	$sql = "SELECT count(*) as total, dotaplayers.item4, items.icon , items.name , items.itemid
 	FROM dotaplayers 
 	LEFT JOIN items ON items.itemid = dotaplayers.item4
 	WHERE hero = '$heroid' 
@@ -519,7 +545,7 @@ SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.new
 	return $sql;
 	}
 	function getHeroItem5($heroid,$mostItem1,$mostItem11,$mostItem2,$mostItem22,$mostItem3,$mostItem33,$mostItem4,$mostItem44) {
-	$sql = "SELECT count(*) as total, dotaplayers.item5, items.icon , items.name 
+	$sql = "SELECT count(*) as total, dotaplayers.item5, items.icon , items.name , items.itemid
 	FROM dotaplayers 
 	LEFT JOIN items ON items.itemid = dotaplayers.item5
 	WHERE hero = '$heroid' 
@@ -534,7 +560,7 @@ SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.new
 	return $sql;
 	}
 	function getHeroItem6($heroid,$mostItem1,$mostItem11,$mostItem2,$mostItem22,$mostItem3,$mostItem33,$mostItem4,$mostItem44,$mostItem5,$mostItem55) {
-	$sql = "SELECT count(*) as total, dotaplayers.item6, items.icon , items.name 
+	$sql = "SELECT count(*) as total, dotaplayers.item6, items.icon , items.name , items.itemid
 	FROM dotaplayers 
 	LEFT JOIN items ON items.itemid = dotaplayers.item6
 	WHERE hero = '$heroid' 

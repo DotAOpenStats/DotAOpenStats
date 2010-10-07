@@ -54,7 +54,12 @@ $search_limit = '50';
 
 //Display fastest and longest game time win on User page
 $FastGameWon = '1';
+//Show frequently used items for every hero (2 for each slot)
 $ShowHeroMostUsedItems = '1';
+//Show most used heroes for every item. (Note: this can take up much more resources. Care with huge database)
+$ShowItemsMostUsedByHero = '1';
+//Show Items button on Menu buttons
+$enableItemsPage = '1';
 
 //Show All Time Stats on Top page
 $AllTimeStats = '1';
@@ -129,8 +134,8 @@ $bot_name = 'Ghost bot';
 
 $LEAVER = 'LEAVER';
 
-// Achievents plugin
- //Enable/disable User Achievents
+// Achievements plugin
+ //Enable/disable User Achievements
 $UserAchievements = '1';
 // Configuration
 
@@ -148,6 +153,6 @@ $NeutralsMedal = '500'; //Kill 500 neutrals!
 $PlayDurationMedal = '30'; //Play at least 30 hours!
 
 $pageGen = '1'; //Enable/disable info about page generation and total queries on every page
-$_debug = '1'; //Enable error reportings
+$_debug = '0'; //Enable error reportings
 
 ?>

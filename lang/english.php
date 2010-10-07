@@ -28,6 +28,7 @@ $lang["games"] = "Games";
 $lang["hero"] = "Hero";
 $lang["player"] = "Player";
 $lang["played"] = "Played";
+$lang["favorite"] = "Favorite";
 $lang["game_name"] = "Game Name";
 $lang["towers"] = "Towers";
 $lang["gold"] = "Gold";
@@ -77,9 +78,11 @@ $lang["kd_ratio"] = "Kills/Deaths Ratio";
 $lang["wins_losses"] = "Wins/Losses";
 $lang["win_percent"] = "Win Percent";
 $lang["disc_title"] = "Disconnects";
-$_lang["most_items"] = "Frequently used items";
+$_lang["most_items"] = "Favorite items";
+$_lang["most_used"] = "Most used by:";
 
 $lang["download_rep"] = "Download replay";
+$lang["more_info"] = "More info...";
 
 $lang["Sentinel"] = "Sentinel";
 $lang["Scourge"] = "Scourge";
@@ -138,7 +141,7 @@ $lang["no_maches"] = "No maches for:";
 $lang["search_found"] = "Search found:";
 $lang["search_term_used"] = "Search term used:";
 $lang["search_users"] = "users";
-$lang["err_user"] = "User does not exists.";
+$lang["err_user"] = "User does not exist.";
 
 $lang["head_admin"] = "Head Administrator:";
 $lang["tot_admin"] = "Total Administrators:";
