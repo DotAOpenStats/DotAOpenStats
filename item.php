@@ -72,7 +72,7 @@
       echo str_replace('<!--TITLE-->', $pageTitle, $pageContents);
       
       if ($ShowItemsMostUsedByHero == 1) {
-          $sql = getMostUsedHeroByItem($heroid, $itemid, 8);
+          $sql = getMostUsedHeroByItem($heroid, $itemid, 8,$itemName );
           
           $result = $db->query($sql);
           if ($db->num_rows($result) >= 1) {
@@ -83,9 +83,11 @@
                   $hero = strtoupper($row["hero"]);
                   $heroName = convEnt2($row["heroname"]);
                   $itemName = convEnt2($itemName);
+				  $itemName2 = convEnt2($itemName2);
                   $totals = $row["total"];
-                  
-                  echo "<a onMouseout='hidetooltip()' onMouseover='tooltip(\"<b>$heroName</b> used <br>$itemName<br><b>$totals x</b>\",130)' href='hero.php?hero=$hero'>
+          //if (!file_exists("./img/heroes/$hero.gif")) {$hero = ""; $heroName.=convEnt2(" ($row[heroid].gif)");}
+				  
+                  echo "<a onMouseout='hidetooltip()' onMouseover='tooltip(\"<b>$heroName</b> used <br>$itemName2<br><b>$totals x</b>\",130)' href='hero.php?hero=$hero'>
         <img width='48px' height='48px' border='0' 
       src='./img/heroes/$hero.gif'></a>";
               }

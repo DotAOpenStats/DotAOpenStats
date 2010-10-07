@@ -374,34 +374,15 @@ SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.new
 	 return $sql;
 	}
 	
-	function getMostUsedHeroByItem($heroid, $itemid, $tot) {
-	$sql = "SELECT count(*) as total, 
-	   dp.hero, 
-	   dp.item1 , dp.item2 ,dp.item3 ,dp.item4 ,dp.item5 ,dp.item6, 
-	   heroes.description as heroname
-	FROM dotaplayers as dp
-	LEFT JOIN items ON items.itemid = dp.item1 AND items.itemid = dp.item2 AND items.itemid = dp.item3 AND items.itemid = dp.item4 AND items.itemid = dp.item5 AND items.itemid = dp.item6
-	LEFT JOIN heroes ON heroes.heroid = dp.hero 
-	OR items.itemid = dp.item1 
-	OR items.itemid = dp.item2 
-	OR items.itemid = dp.item3
-	OR items.itemid = dp.item4
-	OR items.itemid = dp.item5
-	OR items.itemid = dp.item6
-	WHERE hero = '$heroid' AND hero != ''
-	OR dp.item1 = '$itemid' 
-	OR dp.item2 = '$itemid'  
-	OR dp.item3 = '$itemid'
-	OR dp.item4 = '$itemid'
-	OR dp.item5 = '$itemid'
-	OR dp.item6 = '$itemid'
-	GROUP BY dp.hero having count(*) > 1 
-	ORDER BY count(*) DESC LIMIT $tot";
+	function getMostUsedHeroByItem($heroid, $itemid, $tot, $itemName ) {
+
 	//IMPROVED QUERY
-	$sql = "SELECT COUNT(*) as total, dp.item1,dp.item2, dp.item3, dp.item4, dp.item5, dp.item6, dp.hero, h.heroid 
+    //Aghanim's checks - Group all Agha items.
+    if (!strstr($itemName,"Aghanim")){
+	$sql = "SELECT COUNT(*) as total, dp.item1,dp.item2, dp.item3, dp.item4, dp.item5, dp.item6, dp.hero, h.heroid, h.description as heroname 
 	FROM dotaplayers as dp 
-	LEFT JOIN heroes as h ON h.heroid = dp.hero
-	WHERE dp.hero = '$heroid' and hero !='' 
+	LEFT JOIN heroes as h ON h.heroid = dp.hero AND h.summary != '-'
+	WHERE dp.hero = '$heroid' AND dp.hero !=''
 	OR dp.item1 = '$itemid' 
 	OR dp.item2 = '$itemid'  
 	OR dp.item3 = '$itemid'
@@ -409,8 +390,28 @@ SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.new
 	OR dp.item5 = '$itemid'
 	OR dp.item6 = '$itemid' 
 	GROUP BY dp.hero 
-	ORDER BY count(*) DESC LIMIT $tot
-	";
+	ORDER BY count(*) DESC LIMIT $tot";}
+	else
+	{
+	//Now check for that problematic Aghanim's xD
+	$sql = "SELECT COUNT(*) as total, dp.item1,dp.item2, dp.item3, dp.item4, dp.item5, dp.item6, dp.hero, h.heroid, h.description as heroname, it.name, it.itemid
+	FROM dotaplayers as dp 
+	LEFT JOIN heroes as h ON h.heroid = dp.hero AND h.summary != '-'
+	LEFT JOIN items as it ON it.name LIKE ('%Aghanim%') AND  it.item_info!='' AND (it.itemid = dp.item1)  
+	LEFT JOIN items as it2 ON it2.name LIKE ('%Aghanim%') AND  it2.item_info!='' AND (it2.itemid = dp.item2) 
+	LEFT JOIN items as it3 ON it3.name LIKE ('%Aghanim%') AND  it3.item_info!='' AND (it3.itemid = dp.item3) 
+	LEFT JOIN items as it4 ON it4.name LIKE ('%Aghanim%') AND  it4.item_info!='' AND (it4.itemid = dp.item4) 
+	LEFT JOIN items as it5 ON it5.name LIKE ('%Aghanim%') AND  it5.item_info!='' AND (it5.itemid = dp.item5) 
+	LEFT JOIN items as it6 ON it6.name LIKE ('%Aghanim%') AND  it6.item_info!='' AND (it6.itemid = dp.item6) 
+	WHERE dp.hero = '$heroid' AND dp.hero !='' 
+    OR it.name LIKE ('%Aghanim%') OR it2.name LIKE ('%Aghanim%') OR it3.name LIKE ('%Aghanim%') 
+	OR it4.name LIKE ('%Aghanim%') OR it5.name LIKE ('%Aghanim%') OR it6.name LIKE ('%Aghanim%')
+	GROUP BY dp.hero 
+	ORDER BY count(*) DESC,  dp.hero DESC LIMIT $tot
+	";}
+	
+	
+	
 	return $sql;
 	}
 	
