@@ -36,9 +36,11 @@
 
   function safeEscape($text)
   {
-  $text = str_replace ("'","",$text);
+   if (is_numeric($text)) $text=floor($text);
+  //$text = strip_tags($text);
+  $text = mysql_real_escape_string($text);
   $text = str_replace ('"','',$text);
-  $text = strip_tags(mysql_real_escape_string($text));
+  $text = str_replace(array("%20", "\"", "'", "\\", "=", ";", ":"), "", $text);
   return $text;
   }
   
@@ -46,6 +48,7 @@
   function EscapeStr($text)
   {
   $text = mysql_real_escape_string($text);
+  $text = str_replace(array("%20", "\"", "'", "\\", "=", ";", ":"), "", $text);
   return $text;
   }
   
@@ -375,6 +378,19 @@ SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.new
 	 ORDER BY totalscore ASC LIMIT 1";
 	 return $sql;
 	}
+	
+	function getSentScourWon(){
+	$sql = "SELECT COUNT(*) as total, 
+          SUM(case when(dg.winner = 1) then 1 else 0 end) as sentinelWon,
+		  SUM(case when(dg.winner = 2) then 1 else 0 end) as scourgeWon,
+		  SUM(case when(dg.winner = 0) then 1 else 0 end) as draw 
+		  FROM dotagames as dg 
+		  WHERE dg.winner = 1 OR dg.winner = 2 OR dg.winner = 0
+		  LIMIT 1";
+		  
+		  return $sql;
+	}
+	
 	  /////////////////////////////////////////////////////////////////
 	 //                          ITEMS                              //
 	/////////////////////////////////////////////////////////////////

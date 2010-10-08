@@ -81,14 +81,48 @@
 </div></div>';}
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-	 
 	 $un = $_POST["user_name"];
 	 $pw = $_POST["user_pass"];
-	 //echo "$_POST[user_name] $_POST[user_pass]";
-	     if ($admin == $un AND sha1($password) == sha1($pw) AND !$_GET)
+	 
+	 //CHECK ADMINISTRATORS
+	  if ( in_array($_POST["user_pass"], $ADMINISTRATORS) 
+	  AND $ADMINISTRATORS[$un] == $_POST["user_pass"] 
+	  AND array_key_exists($un,$ADMINISTRATORS) AND $un!="" AND $pw!="")
+	  {
+	  $_SESSION['user_name'] = $un;
+	  $_SESSION['user_pass'] = $pw;
+	  $_SESSION["user_level"] = 1;  
+	  $_SESSION["logged"] = 1;  
+	  }
+	  
+	  // CHECK MODERATORS
+	  if ( in_array($_POST["user_pass"], $MODERATORS) 
+	  AND $MODERATORS[$un] == $_POST["user_pass"] AND array_key_exists($un,$MODERATORS) AND $un!="" AND $pw!="")
+	  {
+	  $_SESSION['user_name'] = $un;
+	  $_SESSION['user_pass'] = $pw;
+	  $_SESSION["user_level"] = 2; 
+	  $_SESSION["logged"] = 1;  
+	  }
+	  
+	  // CHECK PUBLISHERS
+	  if ( in_array($_POST["user_pass"], $PUBLISHERS) 
+	  AND $PUBLISHERS[$un] == $_POST["user_pass"] AND array_key_exists($un,$PUBLISHERS) AND $un!="" AND $pw!="")
+	  {
+	  $_SESSION['user_name'] = $un;
+	  $_SESSION['user_pass'] = $pw;
+	  $_SESSION["user_level"] = 3; 
+      $_SESSION["logged"] = 1;
+	  }
+	     if (isset($_SESSION["logged"]) AND $_SESSION["logged"] == 1)
 	 	 {
-	 	 $_SESSION['user_name'] = $_POST['user_name'];
-	 	 $_SESSION['user_password'] = sha1($_POST['user_pass']);
+		 if ($_SESSION['user_name'] == "admin" OR $_SESSION['user_pass'] == "admin")
+		 {
+		 echo "<br><br><br><br>Please change your admin username/password";
+		 unset($_SESSION['user_name']);unset($_SESSION['user_pass']);
+		 unset($_SESSION['user_level']);unset($_SESSION['logged']);
+		 echo "<br><br><a href='index.php'>Back to previous page</a>"; die;
+		 }
 		 
 		 echo "<div style='float:left;margin-left:2px;margin-top:2px;' align='center'><table style='width:400px;'><tr><th><div align='center'>You have been successfully logged in.</div></th></tr></table></div>";
 		 
@@ -104,22 +138,27 @@
 		 else
 		    {
 			 echo "<div align='center'><br>Wrong username or password!<br><br><a href='index.php'>Back to previous page</a></div>";
-			if (isset($_SESSION['user_name'])) {unset($_SESSION['user_name']);}
-			if (isset($_SESSION['user_password'])) {unset($_SESSION['user_password']);}
+			if (isset($_SESSION['user_name']))     {unset($_SESSION['user_name']);}
+			if (isset($_SESSION['user_pass']))     {unset($_SESSION['user_pass']);}
+			if (isset($_SESSION['user_level']))    {unset($_SESSION['user_level']);}
+			if (isset($_SESSION['logged']))        {unset($_SESSION['logged']);}
 			}
-	}
+	   }
 
     }
 	
-	if (isset($_GET['logout']) AND isset($_SESSION['user_name']))
+	if (isset($_GET['logout']))
 	{
 	unset($_SESSION['user_name']);
-	unset($_SESSION['user_password']);
+	unset($_SESSION['user_pass']);
+	unset($_SESSION['user_level']);
+	unset($_SESSION['logged']);
+	
 	echo "<div align='center'><table style='width:320px;margin-top:100px;'><tr><th><div align='center'>You have been successfully logged out.</div></th></tr><tr><td><a href='index.php'>Back to previous page</a></td></tr></table></div>";
 	}
 	
 	//LOGIN SUCCESSFULLY
-	if (isset($_SESSION['user_name'])  AND isset($_SESSION['user_password']) AND $_SESSION['user_password'] == sha1($password) AND $_SESSION['user_name'] == $admin)	
+	if (isset($_SESSION["logged"]))
 	{
     //BUILD ACP
 	echo "<div style='padding-top:4px;padding-bottom:4px;'>Welcome, <b>$_SESSION[user_name]</b> <a href='index.php?logout'>(Logout)</a>
@@ -129,25 +168,54 @@
 	include("../includes/class.database.php");
 	include("../includes/db_connect.php");
 	
+
+	if ($_SESSION["user_level"]==1)
+	{
+	$dashboard = "Dashboard";
 	$manage_bans = "Manage Bans";
 	$edit_h = "Edit Heroes";
 	$edit_i = "Manage Items";
+	$gameid_check = "Manage Games";
 	$add_news = "News";
 	$os_configuration = "Configuration";
-	$dashboard = "Dashboard";
 	$back_up = "Backup";
-	$gameid_check = "Manage Games";
+	}
 	
-	if (isset($_GET['bans'])) {$manage_bans = "<b>Manage Bans</b>";}
-	if (isset($_GET['addban'])) {$manage_bans = "<b>Manage Bans</b>";}
-	if (isset($_GET['heroes'])) {$edit_h = "<b>Edit Heroes</b>";}
-	if (isset($_GET['games'])) {$gameid_check = "<b>Manage Games</b>";}
-	if (isset($_GET['addhero'])) {$edit_h = "<b>Edit Heroes</b>";}
-	if (isset($_GET['items'])) {$edit_i = "<b>Manage Items</b>";}
-	if (isset($_GET['additem'])) {$edit_i = "<b>Manage Items</b>";}
-	if (isset($_GET['addnews'])) {$add_news = "<b>News</b>";}
-	if (isset($_GET['conf'])) {$os_configuration = "<b>Configuration</b>";}
-	if (isset($_GET['backup'])) {$back_up = "<b>Backup</b>";}
+	if ($_SESSION["user_level"]==2)
+	{
+	$dashboard = "Dashboard";
+	$manage_bans = "Manage Bans";
+	$edit_h = "";
+	$edit_i = "";
+	$gameid_check = "";
+	$add_news = "News";
+	$os_configuration = "";
+	$back_up = "";
+	}
+	
+	if ($_SESSION["user_level"] == 3)
+	{
+	$dashboard = "Dashboard";
+	$manage_bans = "";
+	$edit_h = "";
+	$edit_i = "";
+	$gameid_check = "";
+	$add_news = "News";
+	$os_configuration = "";
+	$back_up = "";
+	}
+
+
+	if (isset($_GET['bans'])    AND $_SESSION["user_level"] <=2)   {$manage_bans = "<b>Manage Bans</b>";}
+	if (isset($_GET['addban'])  AND $_SESSION["user_level"] <=2) {$manage_bans = "<b>Manage Bans</b>";}
+	if (isset($_GET['heroes'])  AND $_SESSION["user_level"] <=1) {$edit_h = "<b>Edit Heroes</b>";}
+	if (isset($_GET['games'])   AND $_SESSION["user_level"] <=1) {$gameid_check = "<b>Manage Games</b>";}
+	if (isset($_GET['addhero']) AND $_SESSION["user_level"] <=1) {$edit_h = "<b>Edit Heroes</b>";}
+	if (isset($_GET['items'])   AND $_SESSION["user_level"] <=1) {$edit_i = "<b>Manage Items</b>";}
+	if (isset($_GET['additem']) AND $_SESSION["user_level"] <=1) {$edit_i = "<b>Manage Items</b>";}
+	if (isset($_GET['addnews']) AND $_SESSION["user_level"] <=3) {$add_news = "<b>News</b>";}
+	if (isset($_GET['conf'])    AND $_SESSION["user_level"] <=1) {$os_configuration = "<b>Configuration</b>";}
+	if (isset($_GET['backup'])  AND $_SESSION["user_level"] <=1) {$back_up = "<b>Backup</b>";}
 	
 	$sel1 = ""; $sel2 = "";
 	
@@ -155,16 +223,33 @@
 	if ($admin_style == "style.css") {$sel1 = "selected";}
 	
 	echo "<table style='margin:4px;'><tr><td align='left'>
-	<a href='index.php'>$dashboard</a>
-	| <a href='index.php?bans'>$manage_bans</a>
-	| <a href='index.php?heroes'>$edit_h</a>
-	| <a href='index.php?items'>$edit_i</a>
-	| <a href='index.php?games&check'>$gameid_check</a>
-	| <a href='index.php?addnews'>$add_news</a>
-	| <a href='index.php?conf'>$os_configuration</a>
-	| <a href='index.php?backup'>$back_up</a>
-	| <a href='../index.php'>(Go to DotA OS)</a>
-	</td>
+	<a href='index.php'>$dashboard</a>";
+	
+	if ($_SESSION["user_level"] <=2)
+	{echo "| <a href='index.php?bans'>$manage_bans</a>";}
+	
+	if ($_SESSION["user_level"] <=1)
+	{echo "| <a href='index.php?heroes'>$edit_h</a>";}
+	
+	if ($_SESSION["user_level"] <=1)
+	{echo "| <a href='index.php?items'>$edit_i</a>";}
+	
+	if ($_SESSION["user_level"] <=1)
+	{echo "| <a href='index.php?games&check'>$gameid_check</a>";}
+	
+	if ($_SESSION["user_level"] <=3)
+	{echo "| <a href='index.php?addnews'>$add_news</a>";}
+	
+	if ($_SESSION["user_level"] <=1)
+	{echo "| <a href='index.php?conf'>$os_configuration</a>";}
+	
+	if ($_SESSION["user_level"] <=1)
+	{echo "| <a href='index.php?backup'>$back_up</a>";}
+	
+	if ($_SESSION["user_level"] <=3)
+	{echo "| <a href='../index.php'>(Go to DotA OS)</a>";}
+	
+	echo "</td>
 	<td width='160px'>Admin style: <select onchange='location = this.options[this.selectedIndex].value;' name='admin_style'>
 	<option $sel1 value='index.php?style=default'>default</option>
 	<option $sel2 value='index.php?style=dota'>dota</option>
@@ -217,7 +302,7 @@
 	
 	////////////////////////////////
 	//HEROES
-	if (isset($_GET['heroes']) AND !isset($_GET['edit']))
+	if (isset($_GET['heroes']) AND !isset($_GET['edit']) AND $_SESSION['user_level'] <=1)
 	{		
 	if (isset($_GET["l"]) AND ctype_alnum($_GET["l"])) 
 	{$letter = " AND LOWER(description) LIKE '".safeEscape($_GET["l"])."%'";} else {$letter = "";}
@@ -310,7 +395,7 @@
 	//EDIT HERO
 	////////////////////////////////
 	
-	if (isset($_GET['heroes']) AND isset($_GET['edit']) AND $_SERVER['REQUEST_METHOD'] != 'POST')
+	if (isset($_GET['heroes']) AND isset($_GET['edit']) AND $_SESSION['user_level'] <=1 AND $_SERVER['REQUEST_METHOD'] != 'POST')
 	{
 	$heroid = EscapeStr($_GET['edit']);
 	$sql = "SELECT * FROM heroes WHERE heroid = '$heroid' LIMIT 1";
@@ -383,7 +468,7 @@ function confirmDelete(delUrl) {
 //////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////
 
-	if (isset($_GET['heroes']) AND isset($_GET['edit']) AND isset($_SESSION['user_name'])  AND isset($_SESSION['user_password']) AND $_SERVER['REQUEST_METHOD'] == 'POST')	
+	if (isset($_GET['heroes']) AND isset($_GET['edit']) AND isset($_SESSION['user_name'])  AND isset($_SESSION['user_password']) AND $_SERVER['REQUEST_METHOD'] == 'POST' AND $_SESSION['user_level'] <=1)	
 	{
 	include("../config.php");
 	         $heroid = strtoupper(convEnt2($_POST['heroid']));
@@ -464,7 +549,8 @@ function confirmDelete(delUrl) {
 	////////////////////////////////////////////
 	//BANS
 	////////////////////////////////////////////
-	if (isset($_GET['bans']) AND !isset($_GET['delete']) AND $_SERVER['REQUEST_METHOD'] != 'POST'){
+	if (isset($_GET['bans']) AND !isset($_GET['delete']) AND $_SESSION['user_level'] <=2 
+	AND $_SERVER['REQUEST_METHOD'] != 'POST'){
 
 	$sql = "SELECT COUNT(*) FROM bans ORDER BY id DESC LIMIT 1";
 	$result = $db->query($sql);
@@ -522,7 +608,8 @@ function confirmDelete(delUrl) {
 	include('pagination.php');
 	}
 	
-	if (isset($_GET['bans']) AND !isset($_GET['delete']) AND $_SERVER['REQUEST_METHOD'] == 'POST'){
+	if (isset($_GET['bans']) AND !isset($_GET['delete']) 
+	AND $_SERVER['REQUEST_METHOD'] == 'POST' AND $_SESSION['user_level'] <=2){
 	include("../config.php");
 	$searchName = $_POST['name'];
 	
@@ -574,7 +661,8 @@ function confirmDelete(delUrl) {
   echo "</table></div>$res<br/><br/><a href='index.php?bans'>Back to previous page</a>";
    }
 
-	if (isset($_GET['bans']) AND isset($_GET['delete']) AND $_SERVER['REQUEST_METHOD'] != 'POST'){
+	if (isset($_GET['bans']) AND isset($_GET['delete']) 
+	AND $_SERVER['REQUEST_METHOD'] != 'POST' AND $_SESSION['user_level'] <=2){
 	$banid = $_GET["delete"];
 	
 	$sql = "DELETE FROM bans WHERE id = $banid LIMIT 1";
@@ -588,7 +676,7 @@ function confirmDelete(delUrl) {
 	///////////////////////////////////////
 	//ADD BAN
 	////////////////////////////////////////
-	if (isset($_GET['addban']) AND $_SERVER['REQUEST_METHOD'] != 'POST'){
+	if (isset($_GET['addban']) AND $_SERVER['REQUEST_METHOD'] != 'POST' AND $_SESSION['user_level'] <=2){
 	echo '<br>
 	<div align="center">
 	<form method="post"  action=""> 
@@ -617,7 +705,7 @@ function confirmDelete(delUrl) {
 	<br/><br/>';
 	}
 	
-	if (isset($_GET['addban']) AND $_SERVER['REQUEST_METHOD'] == 'POST'){
+	if (isset($_GET['addban']) AND $_SERVER['REQUEST_METHOD'] == 'POST' AND $_SESSION['user_level'] <=2){
 	$banname = EscapeStr($_POST["banname"]);
 	$bangame = EscapeStr($_POST["bangame"]);
 	$banby = EscapeStr($_POST["banby"]);
@@ -634,7 +722,7 @@ function confirmDelete(delUrl) {
 	
 	}
 	
-	if (isset($_GET['remove_dupbans']) AND $_SERVER['REQUEST_METHOD'] != 'POST'){
+	if (isset($_GET['remove_dupbans']) AND $_SERVER['REQUEST_METHOD'] != 'POST' AND $_SESSION['user_level'] <=2){
 	$sql = "SELECT count(*), name FROM bans GROUP BY name having count(*) > 1 ORDER BY name DESC";
 	
     $result = $db->query($sql);
@@ -657,7 +745,7 @@ function confirmDelete(delUrl) {
 	//////////////////////////////////////////////////
 	//ADD HERO
 	//////////////////////////////////////////////////
-	if (isset($_GET['addhero']) AND $_SERVER['REQUEST_METHOD'] != 'POST')
+	if (isset($_GET['addhero']) AND $_SERVER['REQUEST_METHOD'] != 'POST' AND $_SESSION['user_level'] <=1)
 	{
 	$upload = "../img/heroes";
 	
@@ -693,7 +781,8 @@ function confirmDelete(delUrl) {
 	
 	
 	}
-	if (isset($_GET['addhero']) AND $_SERVER['REQUEST_METHOD'] == 'POST' AND isset($_POST['Submit'])) {
+	if (isset($_GET['addhero']) AND $_SERVER['REQUEST_METHOD'] == 'POST' 
+	AND isset($_POST['Submit']) AND $_SESSION['user_level'] <=1) {
 
 	if ($_POST['heroid'] == "" OR $_POST['orig'] == "" OR $_POST['desc'] == "" OR $_POST['summ'] == "" OR $_POST['stats'] == "" OR $_POST['skills'] == "")
 	{echo "<br/><br/>Some fileds are empty!<br/><br/><a href='index.php?addhero'><b>Back to previous page</b></a>"; die;}
@@ -770,7 +859,7 @@ function confirmDelete(delUrl) {
 	 else {echo "An error occured!";}
 
 	}
-	if (isset($_GET['removeHero'])) {
+	if (isset($_GET['removeHero']) AND $_SESSION['user_level'] <=1) {
 	$rHero = EscapeStr($_GET['removeHero']);
 	$sql = "DELETE FROM heroes WHERE heroid = '$rHero' LIMIT 1";
 	$result = $db->query($sql);
@@ -783,7 +872,8 @@ function confirmDelete(delUrl) {
 	//////////////////////////////////////////////////////
 	///////////  ITEMS  /////////
 	
-	if (isset($_GET['items']) and !isset($_GET['edit']) AND $_SERVER['REQUEST_METHOD'] != 'POST') {
+	if (isset($_GET['items']) and !isset($_GET['edit']) AND $_SESSION['user_level'] <=1 
+	AND $_SERVER['REQUEST_METHOD'] != 'POST') {
 	
 	     if (isset($_GET["l"])) 
 	     {$letter = "WHERE LOWER(name) LIKE '".safeEscape($_GET["l"])."%'";} else {$letter = "";}
@@ -892,7 +982,8 @@ function confirmDelete(delUrl) {
 	
 	
 	
-	if (isset($_GET['additem']) OR isset($_GET['items']) and isset($_GET['edit']) AND $_SERVER['REQUEST_METHOD'] != 'POST') {
+	if (isset($_GET['additem']) OR isset($_GET['items']) and isset($_GET['edit']) 
+	AND $_SERVER['REQUEST_METHOD'] != 'POST' AND $_SESSION['user_level'] <=1) {
 	if (isset($_GET['edit']))
 	{$item = safeEscape($_GET['edit']);} 	else {$item = "";}
 
@@ -1018,7 +1109,8 @@ function confirmDelete(delUrl) {
 	}
 	
 	
-	if (isset($_GET['additem']) OR isset($_GET['items']) and isset($_GET['edit'])) {
+	if (isset($_GET['additem']) OR isset($_GET['items']) 
+	and isset($_GET['edit']) AND $_SESSION['user_level'] <=1) {
 	//$item = $_GET['edit'];
 	if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$item = EscapeStr($_POST['itemid']);
@@ -1087,7 +1179,7 @@ function confirmDelete(delUrl) {
 	 }
 	}
 	
-	if (isset($_GET['removeItem']) AND $_SERVER['REQUEST_METHOD'] != 'POST')
+	if (isset($_GET['removeItem']) AND $_SERVER['REQUEST_METHOD'] != 'POST' AND $_SESSION['user_level'] <=1)
 	{
     $item = EscapeStr($_GET['removeItem']);
 	
@@ -1101,7 +1193,8 @@ function confirmDelete(delUrl) {
 	//                     NEWS
 	//////////////////////////////////////////////////
 	
-	if (isset($_GET['addnews'])  AND $_SERVER['REQUEST_METHOD'] != 'POST' AND !isset($_GET['delete_news'])) {
+	if (isset($_GET['addnews'])  AND $_SERVER['REQUEST_METHOD'] != 'POST' 
+	AND !isset($_GET['delete_news']) AND $_SESSION['user_level'] <=3) {
 	$button = "Publish news";
 	if (isset($_GET['edit_news']))
 	{$edit_id = safeEscape($_GET['edit_news']);
@@ -1233,7 +1326,8 @@ function confirmDelete(delUrl) {
      //////////////////////////////////////////////////
 	//                    POST NEWS
 	//////////////////////////////////////////////////
-	if (isset($_GET['addnews'])  AND $_SERVER['REQUEST_METHOD'] == 'POST' AND !isset($_GET['delete_news'])) {
+	if (isset($_GET['addnews'])  AND $_SERVER['REQUEST_METHOD'] == 'POST' 
+	AND !isset($_GET['delete_news']) AND $_SESSION['user_level'] <=3) {
 	//ADD NEWS
 	if (!isset($_GET['edit_news']))
 	{
@@ -1316,7 +1410,8 @@ function confirmDelete(delUrl) {
 	}
 
 	////////////////////////////// DELETE NEWS ///////////////////////////////
-	if (isset($_GET['delete_news'])  AND $_SERVER['REQUEST_METHOD'] != 'POST') {
+	if (isset($_GET['delete_news'])  AND $_SERVER['REQUEST_METHOD'] != 'POST'
+	AND $_SESSION['user_level'] <=3) {
 	$del_news = safeEscape($_GET['delete_news']);
 	$sql = "DELETE FROM news WHERE news_id = $del_news LIMIT 1";
 	
@@ -1333,7 +1428,7 @@ function confirmDelete(delUrl) {
    //                  CONFIGURATION                      //
   /////////////////////////////////////////////////////////
   
-    if (isset($_GET['conf']))
+    if (isset($_GET['conf']) AND $_SESSION['user_level'] <=1)
 	   {
 	   if (!file_exists("../config.php")) {echo "Missing config.php"; die;}
 	   if (!is_writable("../config.php")) {echo "config.php is not writable"; die;}
@@ -1543,7 +1638,14 @@ function confirmDelete(delUrl) {
 	  	  
 	  if ($ShowItemsMostUsedByHero == "1") {$imuhy = "checked";$imuhn = "";} else {
           $imuhy = "";
-          $imuhn = "checked";}		  
+          $imuhn = "checked";}	
+
+     
+      $ShowSentinelScourgeWon = get_value_of('$ShowSentinelScourgeWon');
+      $ShowSentinelScourgeWon = trim($ShowSentinelScourgeWon); 
+      if ($ShowSentinelScourgeWon == "1") {$ssswy = "checked";$ssswn = "";} else {
+          $ssswy = "";
+          $ssswn = "checked";}		 
 		  
 	  
 	  $head_admin = get_value_of('$head_admin');
@@ -1622,6 +1724,13 @@ function confirmDelete(delUrl) {
 	  <input type="radio" name="smrp" '.$smpy.' value="1" /> Yes
 	  <input type="radio" name="smrp" '.$smpn.' value="0" /> No 
 	  | (Save replay into HTML. No need to parse same replay twice)</td></tr>
+	  
+	  <tr>
+	  <td width="160px">Show total wons</td>
+	  <td>
+	  <input type="radio" name="sssw" '.$ssswy.' value="1" /> Yes
+	  <input type="radio" name="sssw" '.$ssswn.' value="0" /> No 
+	  | (Show total sentinel and scourge won on games page)</td></tr>
 	  
 	  
 	  <tr><th>Top page</th><th></th></tr>
@@ -1829,6 +1938,7 @@ function confirmDelete(delUrl) {
 	  write_value_of('$ShowItemsMostUsedByHero', "$ShowItemsMostUsedByHero", $_POST['muh']);
 	  write_value_of('$_debug', "$_debug", $_POST['dbg']);
 	  write_value_of('$SmartParsing', "$SmartParsing", $_POST['smrp']);
+	  write_value_of('$ShowSentinelScourgeWon', "$ShowSentinelScourgeWon", $_POST['sssw']);
 	  
 	  write_value_of('$top_players_per_page', "$top_players_per_page", $_POST['topplayers']);
 	  write_value_of('$news_per_page', "$news_per_page", $_POST['news']);
@@ -1878,7 +1988,7 @@ function confirmDelete(delUrl) {
 	   ///////////////////////////////////////////////////////////////////////////////
 	   //// BACKUP ///
 	   ///////////////////////////////////////////////////////////////////////////////
-	   if (isset($_GET['backup']) AND !isset($_GET['doit'])){
+	   if (isset($_GET['backup']) AND !isset($_GET['doit']) AND $_SESSION['user_level'] <=1){
 	   $database_size = $db->database_size($database);
        echo "<div align='center'><table style='width:400px;margin-top:20px;'><tr><th>Backup database ($database_size)<p class='alignright'><a href='index.php?show_tables'>Show tables</a></p></th></tr>
 	   <tr>
@@ -1918,14 +2028,15 @@ function confirmDelete(delUrl) {
 	    } else {echo "Directory <b>backup</b> not exists. Please create backup directory in your ACP folder";}
 	   }
 
-	   if (isset($_GET['backup']) AND isset($_GET['doit'])){
+	   if (isset($_GET['backup']) AND isset($_GET['doit']) AND $_SESSION['user_level'] <=1){
        include("backup_func.php");
 	       if (file_exists("./backup"))
 	       {backup_tables($server,$username,$password,$database,'*');}
 	       else {"Directory <b>backup</b> not exists. Please create backup directory in your ACP folder";}
 	       }
 		   
-	   if (isset($_GET['delete_backup']) AND !isset($_GET['backup']) AND !isset($_GET['doit'])){
+	   if (isset($_GET['delete_backup']) AND !isset($_GET['backup']) 
+	   AND !isset($_GET['doit']) AND $_SESSION['user_level'] <=1){
 	   
        if (file_exists("./backup/".$_GET['delete_backup'])){
        $res = unlink("./backup/".$_GET['delete_backup']);}
@@ -1934,7 +2045,8 @@ function confirmDelete(delUrl) {
 			  else {$res=""; echo "File not exists";}
        }
 	   
-	   if (isset($_GET['show_tables']) AND !isset($_GET['backup']) AND !isset($_GET['doit'])){
+	   if (isset($_GET['show_tables']) AND !isset($_GET['backup']) 
+	   AND !isset($_GET['doit']) AND $_SESSION['user_level'] <=1){
 	   $table_admins = $db->table_size("admins",$database);
 	   $table_bans = $db->table_size("bans",$database);
 	   $table_dotagames = $db->table_size("dotagames",$database);
@@ -1963,7 +2075,8 @@ function confirmDelete(delUrl) {
 	   </tr></table><br><br><a href='index.php?backup'>Back to previous page</a>";
 	   }
 	   
-	   if (isset($_GET['optimize']) AND !isset($_GET['backup']) AND !isset($_GET['doit']))
+	   if (isset($_GET['optimize']) AND !isset($_GET['backup']) 
+	   AND !isset($_GET['doit']) AND $_SESSION['user_level'] <=1)
 	   {
 	$sql = " 
 	 OPTIMIZE TABLE 
@@ -2032,7 +2145,7 @@ function confirmDelete(delUrl) {
 	  ////////////////////////////////////////////////////////////////////////
      //                              MANAGE GAMES                          //
 	////////////////////////////////////////////////////////////////////////
-	 if (isset($_GET['games']) AND isset($_GET['check']))
+	 if (isset($_GET['games']) AND isset($_GET['check']) AND $_SESSION['user_level'] <=1)
 	 {
 	 echo "<script type='text/javascript'>
           function confirmDeleteGame(delUrl) {
@@ -2302,7 +2415,7 @@ function confirmDelete(delUrl) {
 		   </tr>";
 		   } echo "</table>"; include('pagination.php'); echo "<br>";
 	  }
-	  if (isset($_GET["delete_game"]) AND is_numeric($_GET["delete_game"]) 
+	  if (isset($_GET["delete_game"]) AND is_numeric($_GET["delete_game"] AND $_SESSION['user_level'] <=1) 
 	  AND $_GET["delete_game"] !="")
 	  {
 	  $gameID = safeEscape($_GET["delete_game"]);

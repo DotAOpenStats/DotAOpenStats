@@ -41,9 +41,13 @@
     $pageContents = ob_get_contents();
     ob_end_clean();
     echo str_replace('<!--TITLE-->', $pageTitle, $pageContents);
-
+   
+   if (!isset($_GET["u"])) {$showStatsFor = $lang["hero_stats_all"];} 
+   else {
+   
+   $showStatsFor = "$lang[hero_stats] <a href='user.php?u=".safeEscape($_GET["u"])."'><b>$_GET[u]</b></a>";}
   
-    echo "<TABLE><TR><TD class='tableB'> $lang[hero_stats_all]</TD></TR></TABLE><br/>";
+    echo "<TABLE><TR><TD class='tableB'> $showStatsFor</TD></TR></TABLE><br/>";
 	
 	$sql = "SELECT * FROM heroes WHERE summary!= '-' ORDER BY LOWER(description) ASC";
 	

@@ -81,7 +81,7 @@
       {$sort = 'asc'; $sortdb = 'DESC';} else {$sort = 'desc'; $sortdb = 'ASC';}
 	  
 	  if (isset($_GET['u'])) 
-	  {$player = "AND d.name = '".safeEscape($_GET['u'])."'";
+	  {$player = "AND LOWER(d.name) = '".safeEscape(strtolower($_GET['u']))."'";
 	  $pref = "u=".safeEscape($_GET['u'])."&";
 	  }
 	  else {$player = ""; $pref = "";}

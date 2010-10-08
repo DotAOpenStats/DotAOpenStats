@@ -61,6 +61,10 @@ $ShowItemsMostUsedByHero = '1';
 //Show Items button on Menu buttons
 $enableItemsPage = '1';
 
+//Show total sentinel and scourge won on games page
+$ShowSentinelScourgeWon = '1';
+
+
 //Show All Time Stats on Top page
 $AllTimeStats = '1';
 //All time stats. How many results to show for All time stats on Top page.
@@ -158,6 +162,6 @@ $NeutralsMedal = '500'; //Kill 500 neutrals!
 $PlayDurationMedal = '30'; //Play at least 30 hours!
 
 $pageGen = '1'; //Enable/disable info about page generation and total queries on every page
-$_debug = '0'; //Enable error reportings
+$_debug = '1'; //Enable error reportings
 
 ?>

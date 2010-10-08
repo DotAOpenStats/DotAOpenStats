@@ -80,6 +80,9 @@ $lang["win_percent"] = "Win Percent";
 $lang["disc_title"] = "Disconnects";
 $_lang["most_items"] = "Favorite items";
 $_lang["most_used"] = "Most used by:";
+$_lang["sent_won"] = "Sentinel won:";
+$_lang["scourge_won"] = "Scourge won:";
+$_lang["draw_game"] = "Draw Game:";
 
 $lang["download_rep"] = "Download replay";
 $lang["more_info"] = "More info...";
@@ -153,6 +156,7 @@ $lang["hero_sel"] = "Select hero";
 $lang["info"] = "Information";
 $lang["hero_player_history"] = "Player History for";
 $lang["show_hero_stats"] = "Show Hero Stats for:";
+$lang["hero_stats"] = "Hero Statistics for:";
 
 $lang["show_stats_user"] = "User Statistics for:";
 $lang["all_time_stats"] = "All Time Stats:";

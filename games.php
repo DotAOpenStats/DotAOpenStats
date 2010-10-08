@@ -63,6 +63,35 @@
   {$sort = 'desc'; $sortdb = 'ASC';} else {$sort = 'asc'; $sortdb = 'DESC';}
 
   include('pagination.php');
+  
+  //Show sentinel and scourge won
+  if ($ShowSentinelScourgeWon == 1)
+    {$sql = getSentScourWon();
+    $result = $db->query($sql);
+    $row = $db->fetch_array($result,'assoc');
+	
+    $_totals = $row["sentinelWon"]+$row["scourgeWon"]+$row["draw"];
+    $_sentWon = $row["sentinelWon"];
+    $_scourWon = $row["scourgeWon"];
+    $_draw = $row["draw"];
+  
+    $_sentPerc = ROUND(($_sentWon/$_totals)*100,1);
+    $_scourPerc = ROUND(($_scourWon/$_totals)*100,1);
+    $_drawPerc = ROUND(($_draw/$_totals)*100,1);
+  
+  echo "<div align='center'><table class='tableA'><tr>
+     <th width='40%' class='padLeft'>$_lang[sent_won]</th>
+	 <th width='40%' class='padLeft'>$_lang[scourge_won]</th>
+	 <th width='20%' class='padLeft'>$_lang[draw_game]</th>
+	 </tr>
+	 <td class='padLeft'>$_sentWon ($_sentPerc%)</td>
+	 <td class='padLeft'>$_scourWon ($_scourPerc%)</td>
+	 <td class='padLeft'>$_draw ($_drawPerc%)</td>
+	 </tr>
+	 
+	 </table></div>";}
+  
+  
 
   $sql = "SELECT 
           g.id, map, datetime, gamename, ownername, duration, creatorname, dg.winner, 

@@ -264,7 +264,8 @@
 	echo "<table>
 	<tr>
 	<td style='width:36%;padding-left:8px; height:24px;'>
-	<div align='left'><a href='heroes.php?u=$username'>$lang[show_hero_stats] <span $COLOR>$realname</span></a></div>
+	<div align='left'><a href='heroes.php?u=$realname'>$lang[show_hero_stats] 
+	<span $COLOR><b>$realname</b></span></a></div>
 	</td>
 	<td><div align='left'>$lang[show_stats_user] <b>$realname <span $COLOR>$BANNED</span></b></div></td>
 	</tr>
