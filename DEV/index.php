@@ -6,7 +6,7 @@
 
 		
 	define("MAX_SIZE", 20); //20 KB max
-	define("VERSION", "1.1.9");
+	define("VERSION", "1.2.0");
 	
 	
 	echo '
@@ -219,8 +219,10 @@
 	//HEROES
 	if (isset($_GET['heroes']) AND !isset($_GET['edit']))
 	{		
-	if (isset($_GET["l"])) 
+	if (isset($_GET["l"]) AND ctype_alnum($_GET["l"])) 
 	{$letter = " AND LOWER(description) LIKE '".safeEscape($_GET["l"])."%'";} else {$letter = "";}
+	
+	if (isset($_GET["l"]) AND !ctype_alnum($_GET["l"])) {$letter = "";}
 	
 	if (isset($_GET["l"]) AND $_GET["l"] == "all") 
 	{$letter = "";}
@@ -890,7 +892,8 @@ function confirmDelete(delUrl) {
 	$shortname = "";
 	$icon = "";
 	$icon2 = "";
-	
+	$item_info = "";
+	$Preview_item = "";
 	$button = "Add new item";
 	$del_button = '';
 	$form = 'enctype="multipart/form-data"';
@@ -915,7 +918,6 @@ function confirmDelete(delUrl) {
 	$Preview_item = BBCode($item_info); $Preview_item = str_replace("\n","<br>",$Preview_item);
 	
 	}
-
 	
 	$button = "Edit $shortname";
 	$del_button = '<p class="alignright"><a href="javascript:confirmDelete(\'index.php?removeItem='.$item.'\')">[X] Remove '.$item.'</a></p>';
@@ -926,6 +928,10 @@ function confirmDelete(delUrl) {
 	
 	if (!file_exists("../img/items/$icon")) {echo "<br/><span style='color:#D60000'>Missing image: /img/items/<b>$icon</b></span><br/>"; $icon2 = "empty.gif";}
 	}
+	
+	if (isset($_GET['additem'])) {$dis_image = ""; $small_image = "";} else
+	{$dis_image = '<img alt="" width="64px" height="64px" style="vertical-align: middle;" src="../img/items/'.$icon2.'"/>';  
+	$small_image = '<img alt="" width="26px" height="26px" style="vertical-align: middle;" src="../img/items/'.$icon.'"/>';}
 	
 	echo "<script type='text/javascript'>
 function confirmDelete(delUrl) {
@@ -938,7 +944,7 @@ function confirmDelete(delUrl) {
 	echo '<form method="post" action="" '.$form.'>
 	
 	<div align="center">
-	<img alt="" width="64px" height="64px" style="vertical-align: middle;" src="../img/items/'.$icon2.'"/>
+	'.$dis_image.'
 	<br>'.$name.'<br>
 	'.$form_image.'
 	<table class="tableA"><tr><th>Edit items</th><th></th></tr>
@@ -953,7 +959,7 @@ function confirmDelete(delUrl) {
 	
 	<tr>
 	<td width="96px">Icon</td><td><input '.$dis.' size="60" maxlength="60" value="'.$icon.'" name="icon">
-     <img alt="" width="26px" height="26px" style="vertical-align: middle;" src="../img/items/'.$icon.'"/>
+     '.$small_image.'
 	</td></tr>
 	
 	<tr>
@@ -1509,6 +1515,12 @@ function confirmDelete(delUrl) {
       if ($_debug == "1") {$dbgy = "checked";$dbgn = "";} else {
           $dbgy = "";
           $dbgn = "checked";}	
+		  
+	  $SmartParsing = get_value_of('$SmartParsing');
+      $SmartParsing = trim($SmartParsing); 
+      if ($SmartParsing == "1") {$smpy = "checked";$smpn = "";} else {
+          $smpy = "";
+          $smpn = "checked";}	
 
    
       $ShowHeroMostUsedItems = get_value_of('$ShowHeroMostUsedItems');
@@ -1595,6 +1607,14 @@ function confirmDelete(delUrl) {
 	  <input type="radio" name="dbg" '.$dbgy.' value="1" /> Yes
 	  <input type="radio" name="dbg" '.$dbgn.' value="0" /> No 
 	  | (<b>Not recommended</b>. Enable error reportings.)</td></tr>
+	  
+	  <tr>
+	  <td width="160px">Smart Parsing Replays</td>
+	  <td>
+	  <input type="radio" name="smrp" '.$smpy.' value="1" /> Yes
+	  <input type="radio" name="smrp" '.$smpn.' value="0" /> No 
+	  | (Save replay into HTML. No need to parse same replay twice)</td></tr>
+	  
 	  
 	  <tr><th>Top page</th><th></th></tr>
 
@@ -1799,6 +1819,8 @@ function confirmDelete(delUrl) {
 	  write_value_of('$FastGameWon', "$FastGameWon", $_POST['fgw']);
 	  write_value_of('$ShowHeroMostUsedItems', "$ShowHeroMostUsedItems", $_POST['fui']);
 	  write_value_of('$ShowItemsMostUsedByHero', "$ShowItemsMostUsedByHero", $_POST['muh']);
+	  write_value_of('$_debug', "$_debug", $_POST['dbg']);
+	  write_value_of('$SmartParsing', "$SmartParsing", $_POST['smrp']);
 	  
 	  write_value_of('$top_players_per_page', "$top_players_per_page", $_POST['topplayers']);
 	  write_value_of('$news_per_page', "$news_per_page", $_POST['news']);
@@ -1999,7 +2021,9 @@ function confirmDelete(delUrl) {
 	  echo "</table></div><br><br>";
 
 	 }
-     //Manage Games
+	  ////////////////////////////////////////////////////////////////////////
+     //                              MANAGE GAMES                          //
+	////////////////////////////////////////////////////////////////////////
 	 if (isset($_GET['games']) AND isset($_GET['check']))
 	 {
 	     if (isset($_GET['check']))
@@ -2026,18 +2050,19 @@ function confirmDelete(delUrl) {
 		</tr>
 		</table></div></form>";
   
-  if ($_SERVER['REQUEST_METHOD'] == 'POST')
+  if ($_SERVER['REQUEST_METHOD'] == 'POST' OR isset($_GET['id']))
   {
     if (isset($_GET['gameid'])) 
 	{
 	$gid = safeEscape($_GET['gameid']);
 	}
 	
+	if (isset($_GET["id"])) {$gid = safeEscape(trim($_GET['id']));}
 	if (isset($_POST["gid"])) {$gid = safeEscape(trim($_POST['gid']));}
   
   if (!is_numeric($gid)) {echo "Try again!"; die;}
   
-  $sql = "SELECT winner, dp.gameid, gp.colour, newcolour, original as hero, description, kills, deaths, assists, creepkills, creepdenies, neutralkills, towerkills, gold,  raxkills, courierkills, 
+  $sql = "SELECT winner, dp.gameid, gp.colour, newcolour, original as hero, description, kills, deaths, assists, creepkills, creepdenies, neutralkills, towerkills, gold,  raxkills, courierkills, duration, datetime, 
 	   item1, item2, item3, item4, item5, item6, g.gamename as gn,
 	   it1.icon as itemicon1, 
 	   it2.icon as itemicon2, 
@@ -2069,7 +2094,22 @@ function confirmDelete(delUrl) {
 	   LEFT JOIN items as it6 ON it6.itemid = item6
 	   WHERE dp.gameid=$gid 
 	   ORDER BY newcolour";
-		 
+	   
+          echo "<script type='text/javascript'>
+          function confirmDeleteGame(delUrl) {
+          if (confirm('Are you sure you want to delete this game? ($gid)')) {
+          document.location = delUrl;
+            }
+          }
+          </script>";
+		  echo "<table><tr>
+		  <td align='right' style='padding-right:22px;'>
+		  <img alt='' style='vertical-align:middle;' border=0 width='18px' height='18px;'
+		  src='../img/items/BTNCancel.gif'>
+		  <a onclick='javascript:confirmDeleteGame(\"index.php?delete_game=$gid\");' href='javascript:;'>Delete game</a>
+		  </td>
+		  
+		  </tr></table>";
 		 $result = $db->query($sql);
 		 echo "<div align='center'><table class='tableA'><tr>
 		 <th><div align='center'>slot</div></th>
@@ -2084,6 +2124,7 @@ function confirmDelete(delUrl) {
 		 if ($db->num_rows($result)<=0) 
 		 {echo "Game with given ID doesn't exists. Check your <b>games</b> table</table>"; die;}
 		 $err = "";$scourge = 0;
+
 		 while ($row = $db->fetch_array($result,'assoc')) {
 		 $ncol = $row["newcolour"];
 		 if ($ncol == "") {$err .= "Field <b>'newcolour'</b> is empty.  Check <b>dotaplayers</b> table<br>";}
@@ -2103,20 +2144,37 @@ function confirmDelete(delUrl) {
 		 $c = $row["creepkills"]; $cd = $row["creepdenies"];  $n = $row["neutralkills"];
 		 $i1 = $row["itemicon1"]; $i2 = $row["itemicon2"]; $i3 = $row["itemicon3"];
 		 $i4 = $row["itemicon4"]; $i5 = $row["itemicon5"]; $i6 = $row["itemicon6"];
-		 if ($i1=="") {$i1 = "empty.gif";} if ($i2=="") {$i2 = "empty.gif";} if ($i3=="") {$i3 = "empty.gif";}
-		 if ($i4=="") {$i4 = "empty.gif";} if ($i5=="") {$i5 = "empty.gif";} if ($i6=="") {$i6 = "empty.gif";}
+		 
+		 if ($i1=="") {$i1 = "empty.gif";} 
+		 if ($i2=="") {$i2 = "empty.gif";} 
+		 if ($i3=="") {$i3 = "empty.gif";}
+		 if ($i4=="") {$i4 = "empty.gif";} 
+		 if ($i5=="") {$i5 = "empty.gif";} 
+		 if ($i6=="") {$i6 = "empty.gif";}
 		 
 		 $gamename = $row["gn"];
 		 $err2 = "";
 		 if ($gamename=="") {$err2 .= "Field <b>'gamename'</b> is empty.<br>";}
-		 
+
 		 $class = getColorOf($ncol);
 		 $class2 = getColorOf($col);
 		 
 		 if ($col >6) {$col = $col-1;}
 		 if ($ncol >6) {$ncol = $ncol-1;}
 		 
-		 if ($ncol >5 AND $scourge ==0) {echo "<tr><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tr>";  $scourge = 1;}
+		 if ($ncol >5 AND $scourge ==0) {echo "
+		 <tr> 
+		 <th></th> <th></th>
+		 <th></th> <th></th>
+		 <th></th> <th></th>
+		 <th></th> <th></th>
+		 </tr>";  
+		 $scourge = 1;}
+		 
+		   $replayDate = $row["datetime"];
+		   $gdate=date($date_format,strtotime($row["datetime"]));
+		   $duration=secondsToTime($row["duration"]);
+	   	   $gametimenew = substr(str_ireplace(":","-",date("Y-m-d H:i",strtotime($replayDate))),0,16);
 		 
 		 echo "<tr class='row'>
 		 <td align='right' width='24px'><span $class>$ncol</span>-></td>
@@ -2142,16 +2200,93 @@ function confirmDelete(delUrl) {
         echo "<tr><td></td>
 		<td></td><td></td><td></td><td></td><td></td><td width='220px'>GameID: $gid</td><td><span style='background-color:#FAFCEE;color:#950001;'>$err2</span> $gamename</td>
 		</tr><table></div>";
+		
+		       if (isset($_GET["id"])) {
+               require_once('../includes/get_replay.php');
+			   if(file_exists("../".$replayloc)) 
+			   {$rep = "<span style='color:yellow'>Replay <b>available</b></span>";} 
+			   else {$rep = "<span style='color:red'>Replay <b>NOT</b> available</span>";}
+		       echo "<table><tr><td class='padLeft'>
+			   Replay location: <input size='90' value='$replayloc'> $rep</td></tr></table><br>";}
 		  }
 	    }
+		$sql = "SELECT COUNT(*) FROM games LIMIT 1";
+  
+		$result = $db->query($sql);
+		$r = $db->fetch_row($result);
+		$numrows = $r[0];
+		$rowsperpage = 50;
+		include('pagination.php');
+		
+		$sql = "SELECT 
+          g.id, map, datetime, gamename, ownername, duration, creatorname, dg.winner, 
+		  CASE WHEN(gamestate = '17') THEN 'PRIV' ELSE 'PUB' end AS type 
+		  FROM games as g 
+		  LEFT JOIN dotagames as dg ON g.id = dg.gameid 
+		  WHERE map LIKE '%dota%' 
+		  ORDER BY id DESC 
+		  LIMIT $offset, $rowsperpage";
+  
+          $result = $db->query($sql);
+		  echo "<table class='tableA'><tr>
+		  <th class='padLeft'>ID</th>
+		  <th>Game Name</th>
+		  <th>Duration</th>
+		  <th>Date</th>
+		  <th>Creator</th><th></th></tr>";
+		    while ($row = $db->fetch_array($result,'assoc')) {
+		   $gn=$row["gamename"];
+		   $gcreator=$row["creatorname"];
+		   $replayDate = $row["datetime"];
+		   $gdate=date($date_format,strtotime($row["datetime"]));
+		   $duration=secondsToTime($row["duration"]);
+		   if ($row["winner"] == 1) {$gn = "<span style='color:red'>$gn</span>";}
+		   if ($row["winner"] == 2) {$gn = "<span style='color:green'>$gn</span>";}
+		   
+		   if (isset($_GET["id"]) AND $row["id"] == $_GET["id"] AND $_SERVER['REQUEST_METHOD'] != 'POST') 
+		   {$gn = "<span style='background-color:yellow;'>$gn</span>";}
+		   
+		   echo "<tr>
+		   <td align='left' class='padLeft' width='64px'>
+		   <a href='index.php?games&check&id=$row[id]'>$row[id]</a></td>
+		   <td align='left' width='250px'><a href='index.php?games&check&id=$row[id]'>$gn</a></td>
+		   <td align='left' width='120px'>$duration</td>
+		   <td align='left' width='170px'>$gdate</td>
+		   <td align='left'><a href='../user.php?u=$gcreator'>$gcreator</a></td>
+		   <td></td>
+		   </tr>";
+		   } echo "</table>"; include('pagination.php'); echo "<br>";
 	  }
-	 
+	  if (isset($_GET["delete_game"]))
+	  {
+	  $gameID = safeEscape($_GET["delete_game"]);
+	  $sql_1 = "DELETE FROM games WHERE id = $gameID LIMIT 1";
+	  $sql_2 = "DELETE FROM gameplayers WHERE gameid = $gameID";
+	  $sql_3 = "DELETE FROM dotaplayers WHERE gameid = $gameID";
+	  $sql_4 = "DELETE FROM dotagames WHERE gameid = $gameID";
+	  
+	  $result_1 = $db->query($sql_1);
+	  $result_2 = $db->query($sql_2);
+	  $result_3 = $db->query($sql_3);
+	  $result_4 = $db->query($sql_4);
+	  
+	  if ($result_1 AND $result_2 AND $result_3 AND $result_4)
+	  {echo "<table class='tableA'><tr>
+	  <td align='center'>Game: $gameID successfully deleted!</td></tr><tr>
+	  <td align='center'><a href='index.php?games&check'>Back to previous page</a></td>
+	  </tr></table>";}
+	  
+	  }
+	  
+	  
+	 if ($pageGen==1) {
+	 echo "<table><tr><td align='center'>Total queries: ".$db->get_query_cout()."</td></tr></table><br>";}
 	 
 	echo '</body><div>
 	 <table><tr>
 	 <td style="padding-right:12px;text-align:right;" align="right">
 	 &copy; '.date("Y").' <a href=\'http://openstats.iz.rs\'><b>DotA OpenStats</b></a></td>
-	 </tr></table></div>';
+	 </tr></table></div>'; 
 
 	} //IS LOOGED
 	?>

@@ -21,5 +21,6 @@
     $replayurl = $replayLocation.'/'.str_ireplace("#","%23", str_ireplace("\\","_",str_ireplace("/","_",str_ireplace(" ","%20",$replayloc))));
 	
     $replayloc = $replayLocation.'/'.str_ireplace("\\","_",str_ireplace("/","_",$replayloc));
-
+	
+    $txtReplay = substr($replayloc,0,-4).".html";
 ?>

@@ -354,8 +354,16 @@
 	  echo "<input type='button' class='inputButton' value='$lang[gamelog]' onclick='javascript:toggle();' />
 	  <a class='inputButton' href='javascript:toggle();' id='displayText' name='info'>show</a>
 	  <div id='toggleText' style='display: none'>";
-     require('./includes/get_chat.php');
-	 echo "</div>";
+	  
+	  if (!file_exists($txtReplay) OR $SmartParsing == "0" OR !is_writable($txtReplay))
+	  {require('./includes/get_chat.php');}
+	    else 
+	  {
+	     if (file_exists($txtReplay) AND is_writable($txtReplay))
+	     {echo file_get_contents($txtReplay);} else {require('./includes/get_chat.php');}
+	  }
+	  
+	  echo "</div>";
 
 	 /*$replayloc = str_replace("+","%2B",$replayloc);
 	 $replayloc = str_replace(" ","%20",$replayloc);

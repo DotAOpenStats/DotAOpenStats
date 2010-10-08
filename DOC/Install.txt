@@ -46,7 +46,7 @@
 		$password - Your DB password
 		$database Your DB table
 
-5) Add tables into your MySQL or SQLite database (OpenStats)
+5) Add tables into your MySQL(OpenStats)
         Navigate to PHPMyAdmin (by default at http://localhost/phpmyadmin)
 		Create a GHost database if you haven't already
 		Select your GHost database on the left
@@ -69,5 +69,3 @@
   news_date datetime NOT NULL,
   PRIMARY KEY  (news_id)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
-         ALTER TABLE  items ADD item_info VARCHAR(900) NOT NULL;

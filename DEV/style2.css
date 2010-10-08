@@ -19,7 +19,7 @@ body {
 	background-color: #000;
 	width: 100%;
 	height: 700px;
-	background-image: url('./img/bg.jpg');	
+	background-image: url('../style/dota/img/bg.jpg');
 	background-repeat: none;
 }
 
@@ -123,7 +123,7 @@ th {
 	text-align: left;
 	font-size: 12px;
 	height: 28px;
-    background-image: url('./img/caption_top.gif');	
+    background-image: url('../style/dota/img/caption_top.gif');	
 }
 
 /* NOTE:  CSS3  (sorry, no IE support) */

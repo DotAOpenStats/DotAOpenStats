@@ -68,14 +68,14 @@
 	$abc = substr($alph,$i,1);
 	if ($i!=0 AND $i !=$countAlph) {$sufix = " , ";} else {$sufix = "";}
 	if ((isset($_GET["l"]) AND $_GET["l"] != "$abc") OR !isset($_GET["l"])) 
-	{$letters .= "$sufix<a href='items.php?l=$abc'>".strtoupper($abc)."</a> ";}
-	else { $letters .="$sufix".strtoupper($abc);}
+	{$letters .= "$sufix<a href='items.php?l=$abc'><b>".strtoupper($abc)."</b></a> ";}
+	else { $letters .="$sufix<b>".strtoupper($abc)."</b>";}
 	}
 	
 	echo "<div align='center'>
 	<table><tr>
-	<td style='text-align:center;font-weight: bold;'>
-	<a href='items.php'>All</a> 
+	<td align='center'>
+	<a href='items.php'><b>All</b></a> 
 	| $letters</td></tr></table></div>";
    
    $sql = "SELECT * 

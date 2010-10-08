@@ -74,6 +74,11 @@ $displayUsersDisconnects = '1';
 //Replay Location:
 $replayLocation = 'replays';
 
+//If Smart Parsing enabled replay will be saved into HTML output after first parsing. 
+//There is no need to parse same replay anymore.
+//If you disable this option replays will parse always
+$SmartParsing = '1';
+
 //Max. page links before and after current page
 $max_pagination_link = '5';
 

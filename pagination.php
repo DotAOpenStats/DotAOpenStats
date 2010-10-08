@@ -57,6 +57,9 @@
    if (isset($_GET['news']) )
    {$news = 'news'.safeEscape($_GET['news']).'&';}
    
+   if (isset($_GET['l']) )
+   {$lett = 'l='.safeEscape($_GET['l']).'&';} else {$lett = "";}
+   
    
               $rowsperpage = $result_per_page;
               $totalpages = ceil($numrows / $rowsperpage);
@@ -93,23 +96,23 @@
 			  
               echo '<table><tr><td style="padding-right:24px;" align="right" class="pagination"> <b>'.$lang["page"].' ' . $current_page . ' '.$lang["of"].' ' . $totalpages . '</b> [' . $numrows . ' '.$lang["maches"].']  &nbsp; &nbsp;';
               if ($currentpage > 1) {
-                  echo " <a title= '$lang[firstpage]' href='{$_SERVER['PHP_SELF']}?".$news.$herois.$gplay.$un.$ord.$sorted."page=1'><<</a> ";
+                  echo " <a title= '$lang[firstpage]' href='{$_SERVER['PHP_SELF']}?".$news.$herois.$gplay.$un.$ord.$sorted.$lett."page=1'><<</a> ";
                   $prevpage = $currentpage - 1;
-                  echo " <a title='$lang[prevpage]' href='{$_SERVER['PHP_SELF']}?".$news.$herois.$gplay.$un.$ord.$sorted."page=$prevpage'><</a> ";
+                  echo " <a title='$lang[prevpage]' href='{$_SERVER['PHP_SELF']}?".$news.$herois.$gplay.$un.$ord.$sorted.$lett."page=$prevpage'><</a> ";
               }
               for ($x = ($currentpage - $range); $x < (($currentpage + $range) + 1); $x++) {
                   if (($x > 0) && ($x <= $totalpages)) {
                       if ($x == $currentpage) {
                           echo " [<b>$x</b>] ";
                       } else {
-                          echo " <a title='$lang[gotopage] " . $x . "' href='{$_SERVER['PHP_SELF']}?".$news.$herois.$gplay.$un.$ord.$sorted."page=$x'>$x</a> ";
+                          echo " <a title='$lang[gotopage] " . $x . "' href='{$_SERVER['PHP_SELF']}?".$news.$herois.$gplay.$un.$ord.$sorted.$lett."page=$x'>$x</a> ";
                       }
                   }
               }
               if ($currentpage != $totalpages) {
                   $nextpage = $currentpage + 1;
-                  echo " <a title='$lang[nextpage] ' href='{$_SERVER['PHP_SELF']}?".$news.$herois.$gplay.$un.$ord.$sorted."page=$nextpage'>></a> ";
-                  echo " <a title='$lang[gotolastpage]' href='{$_SERVER['PHP_SELF']}?".$news.$herois.$gplay.$un.$ord.$sorted."page=$totalpages'>>></a> ";
+                  echo " <a title='$lang[nextpage] ' href='{$_SERVER['PHP_SELF']}?".$news.$herois.$gplay.$un.$ord.$sorted.$lett."page=$nextpage'>></a> ";
+                  echo " <a title='$lang[gotolastpage]' href='{$_SERVER['PHP_SELF']}?".$news.$herois.$gplay.$un.$ord.$sorted.$lett."page=$totalpages'>>></a> ";
               }
               echo '</td></tr></table>';
 			  

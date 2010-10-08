@@ -373,12 +373,15 @@ SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.new
 	 ORDER BY totalscore ASC LIMIT 1";
 	 return $sql;
 	}
-	
+	  /////////////////////////////////////////////////////////////////
+	 //                          ITEMS                              //
+	/////////////////////////////////////////////////////////////////
 	function getMostUsedHeroByItem($heroid, $itemid, $tot, $itemName ) {
 
-	//FIND AND CHECK ALL GROUPED ITEMS
+	//FIND AND CHECK ALL GROUPED ITEMS 
     
-       if (!strstr($itemName,"Aghanim") 
+       if (
+	       !strstr($itemName,"Aghanim") 
 	   AND !strstr($itemName,"Black King Bar") 
 	   AND !strstr($itemName,"Dagon Lev")
 	   AND !strstr($itemName,"Diffusal Blade")
@@ -411,7 +414,7 @@ SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.new
 	$sql = "SELECT COUNT(*) as total, dp.item1,dp.item2, dp.item3, dp.item4, dp.item5, dp.item6, dp.hero, h.heroid, h.description as heroname, it.name, it.itemid
 	FROM dotaplayers as dp 
 	LEFT JOIN heroes as h ON h.heroid = dp.hero AND h.summary != '-'
-	LEFT JOIN items as it ON it.name LIKE ('%Aghanim%') AND  it.item_info!='' AND (it.itemid = dp.item1)  
+	LEFT JOIN items as it  ON it.name  LIKE ('%Aghanim%') AND  it.item_info!=''  AND (it.itemid = dp.item1)  
 	LEFT JOIN items as it2 ON it2.name LIKE ('%Aghanim%') AND  it2.item_info!='' AND (it2.itemid = dp.item2) 
 	LEFT JOIN items as it3 ON it3.name LIKE ('%Aghanim%') AND  it3.item_info!='' AND (it3.itemid = dp.item3) 
 	LEFT JOIN items as it4 ON it4.name LIKE ('%Aghanim%') AND  it4.item_info!='' AND (it4.itemid = dp.item4) 
