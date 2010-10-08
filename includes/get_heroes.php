@@ -80,41 +80,62 @@
       if (isset($_GET['sort']) AND $_GET['sort'] == 'desc')
       {$sort = 'asc'; $sortdb = 'DESC';} else {$sort = 'desc'; $sortdb = 'ASC';}
 	  
+	  if (isset($_GET['u'])) 
+	  {$player = "AND d.name = '".safeEscape($_GET['u'])."'";
+	  $pref = "u=".safeEscape($_GET['u'])."&";
+	  }
+	  else {$player = ""; $pref = "";}
+	  
 	 //echo "Gsort=".$_GET['sort']." order=".$_GET['order']."  page = ".$_GET['page']. " offset = ".$_GET['offset'];
 	 //echo "<br/> sort=".$sort." order=".$order."  page = ".$_GET['page']. " offset = ".$offset;
 	 
-  $sql = "Select *, case when (wins = 0) then 0 when (losses = 0) then 1000 else ((wins*1.0)/(losses*1.0)) end as winratio,
-	case when (kills = 0) then 0 when (deaths = 0) then 1000 else ((kills*1.0)/(deaths*1.0)) end as kdratio from 
-	(SELECT original, description, count(*) as totgames, 
-	SUM(case when(((c.winner = 1 and a.newcolour < 6) or (c.winner = 2 and a.newcolour > 6)) AND d.`left`/e.duration >= $minPlayedRatio) then 1 else 0 end) as wins, 
-	SUM(case when(((c.winner = 2 and a.newcolour < 6) or (c.winner = 1 and a.newcolour > 6)) AND d.`left`/e.duration >= $minPlayedRatio) then 1 else 0 end) as losses, 
-	AVG(kills) as kills, AVG(deaths) as deaths, AVG(assists) as assists, AVG(creepkills) as creepkills, AVG(creepdenies) as creepdenies, AVG(neutralkills) as neutralkills
-	FROM dotaplayers AS a LEFT JOIN heroes as b ON hero = heroid LEFT JOIN dotagames as c ON c.gameid = a.gameid 
-	LEFT JOIN gameplayers as d ON d.gameid = a.gameid and a.colour = d.colour LEFT JOIN games as e ON d.gameid = e.id
-	WHERE original <> 'NULL' AND c.winner <> 0  AND summary!= '-'
-	GROUP BY original) as y where y.totgames > 0 
-	ORDER BY $order $sortdb LIMIT $offset, $rowsperpage";
+  $sql = "SELECT *, 
+    case when (wins = 0) then 0 when (losses = 0) then 1000 else ((wins*1.0)/(losses*1.0)) end as winratio,
+	case when (kills = 0) then 0 when (deaths = 0) then 1000 else ((kills*1.0)/(deaths*1.0)) end as kdratio 
+	FROM 
+	   (
+	   SELECT original, description, count(*) as totgames, 
+	   SUM(case when(((c.winner = 1 AND a.newcolour < 6) 
+	   OR (c.winner = 2 and a.newcolour > 6)) 
+	   AND d.`left`/e.duration >= $minPlayedRatio) then 1 else 0 end) as wins, 
+	   SUM(case when(((c.winner = 2 and a.newcolour < 6) 
+	   OR (c.winner = 1 and a.newcolour > 6)) 
+	   AND d.`left`/e.duration >= $minPlayedRatio) then 1 else 0 end) as losses, 
+	   AVG(kills) as kills, AVG(deaths) as deaths, AVG(assists) as assists, 
+	   AVG(creepkills) as creepkills, AVG(creepdenies) as creepdenies, AVG(neutralkills) as neutralkills
+	   FROM dotaplayers AS a 
+	   LEFT JOIN heroes as b ON hero = heroid 
+	   LEFT JOIN dotagames as c ON c.gameid = a.gameid 
+	   LEFT JOIN gameplayers as d ON d.gameid = a.gameid 
+	   AND a.colour = d.colour 
+	   LEFT JOIN games as e ON d.gameid = e.id
+	   WHERE original <> 'NULL' AND c.winner <> 0  AND summary!= '-'  
+	   $player
+	   GROUP BY original
+	   ) as y 
+	   WHERE y.totgames > 0 
+	   ORDER BY $order $sortdb LIMIT $offset, $rowsperpage";
 	
 	$result = $db->query($sql);
 	
 	echo "
 	<div align='center'>
 	<TABLE style='width:95%;margin:8px;'><TR>
-	<TH style='padding-left:4px;'><a href='{$_SERVER['PHP_SELF']}?order=hero&sort=$sort'>$lang[hero]</a></TH>
+	<TH style='padding-left:4px;'><a href='{$_SERVER['PHP_SELF']}?".$pref."order=hero&sort=$sort'>$lang[hero]</a></TH>
 	<TH></TH>
-	<TH><div align='center'><a href='{$_SERVER['PHP_SELF']}?order=games&sort=$sort'>$lang[played]</a></div></TH>
+	<TH><div align='center'><a href='{$_SERVER['PHP_SELF']}?".$pref."order=games&sort=$sort'>$lang[played]</a></div></TH>
 	
-	<TH><div align='center'><a href='{$_SERVER['PHP_SELF']}?order=wins&sort=$sort'>$lang[wins]</a></div></TH>
+	<TH><div align='center'><a href='{$_SERVER['PHP_SELF']}?".$pref."order=wins&sort=$sort'>$lang[wins]</a></div></TH>
 	
-	<TH><div align='center'><a href='{$_SERVER['PHP_SELF']}?order=losses&sort=$sort'>$lang[losses]</a></div></TH>
-	<TH><div align='center'><a href='{$_SERVER['PHP_SELF']}?order=winratio&sort=$sort'>$lang[w_l]</a></div></TH>
-	<TH><div align='center'><a href='{$_SERVER['PHP_SELF']}?order=kills&sort=$sort'>$lang[kills]</a></div></TH>
-	<TH><div align='center'><a href='{$_SERVER['PHP_SELF']}?order=deaths&sort=$sort'>$lang[deaths]</a></div></TH>
-	<TH><div align='center'><a href='{$_SERVER['PHP_SELF']}?order=assists&sort=$sort'>$lang[assists]</a></div></TH>
-	<TH><div align='center'><a href='{$_SERVER['PHP_SELF']}?order=kd&sort=$sort'>$lang[kd]</a></div></TH>
-	<TH><div align='center'><a href='{$_SERVER['PHP_SELF']}?order=creeps&sort=$sort'>$lang[creeps]</a></div></TH>
-	<TH><div align='center'><a href='{$_SERVER['PHP_SELF']}?order=denies&sort=$sort'>$lang[denies]</a></div></TH>
-	<TH><div align='center'><a href='{$_SERVER['PHP_SELF']}?order=neutrals&sort=$sort'>$lang[neutrals]</a></div></TH>
+	<TH><div align='center'><a href='{$_SERVER['PHP_SELF']}?".$pref."order=losses&sort=$sort'>$lang[losses]</a></div></TH>
+	<TH><div align='center'><a href='{$_SERVER['PHP_SELF']}?".$pref."order=winratio&sort=$sort'>$lang[w_l]</a></div></TH>
+	<TH><div align='center'><a href='{$_SERVER['PHP_SELF']}?".$pref."order=kills&sort=$sort'>$lang[kills]</a></div></TH>
+	<TH><div align='center'><a href='{$_SERVER['PHP_SELF']}?".$pref."order=deaths&sort=$sort'>$lang[deaths]</a></div></TH>
+	<TH><div align='center'><a href='{$_SERVER['PHP_SELF']}?".$pref."order=assists&sort=$sort'>$lang[assists]</a></div></TH>
+	<TH><div align='center'><a href='{$_SERVER['PHP_SELF']}?".$pref."order=kd&sort=$sort'>$lang[kd]</a></div></TH>
+	<TH><div align='center'><a href='{$_SERVER['PHP_SELF']}?".$pref."order=creeps&sort=$sort'>$lang[creeps]</a></div></TH>
+	<TH><div align='center'><a href='{$_SERVER['PHP_SELF']}?".$pref."order=denies&sort=$sort'>$lang[denies]</a></div></TH>
+	<TH><div align='center'><a href='{$_SERVER['PHP_SELF']}?".$pref."order=neutrals&sort=$sort'>$lang[neutrals]</a></div></TH>
 	</TR>";
 	
 	while ($list = $db->fetch_array($result,'assoc')) {

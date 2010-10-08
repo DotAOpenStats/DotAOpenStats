@@ -234,6 +234,7 @@
 	 OR (gp.`leftreason` LIKE ('%was dropped%')) 
 	 OR (gp.`leftreason` LIKE ('%Lagged out%')) 
 	 OR (gp.`leftreason` LIKE ('%Dropped due to%'))
+	 OR (gp.`leftreason` LIKE ('%Lost the connection%'))
 	 ) as disc 
    FROM gameplayers as gp 
    LEFT JOIN games ON games.id=gp.gameid 
@@ -252,6 +253,7 @@
 	OR `leftreason` LIKE('%was dropped%') 
 	OR `leftreason` LIKE('%Lagged out%') 
 	OR `leftreason` LIKE('%Dropped due to%')
+	OR (gp.`leftreason` LIKE ('%Lost the connection%'))
 	) 
 	AND name= '$username' LIMIT 1";
 	
@@ -261,7 +263,9 @@
 	
 	echo "<table>
 	<tr>
-	<td style='width:36%;padding-left:8px; height:24px;'><div align='left'>$lang[show_hero_stats] <span $COLOR>$realname</span></div></td>
+	<td style='width:36%;padding-left:8px; height:24px;'>
+	<div align='left'><a href='heroes.php?u=$username'>$lang[show_hero_stats] <span $COLOR>$realname</span></a></div>
+	</td>
 	<td><div align='left'>$lang[show_stats_user] <b>$realname <span $COLOR>$BANNED</span></b></div></td>
 	</tr>
 	</table>";

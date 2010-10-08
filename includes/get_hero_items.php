@@ -36,6 +36,12 @@
 	
 	if ($ShowHeroMostUsedItems==1)
 	{
+	$mostItem1 = ""; $mostItem11 = "";
+	$mostItem2 = ""; $mostItem22 = "";
+	$mostItem3 = ""; $mostItem33 = "";
+	$mostItem4 = ""; $mostItem44 = "";
+	$mostItem5 = ""; $mostItem55 = "";
+	$mostItem6 = ""; $mostItem66 = "";
 	echo "<div align='center'><table class='tableHeroPageTop'><tr><th><div align='center'>$_lang[most_items]</div></th></tr>
 	<tr><td align='center'>";
 	

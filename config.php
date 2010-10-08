@@ -86,7 +86,7 @@ $max_pagination_link = '5';
 //Score Method 2. This method use league system to calculate user score. Eg. wins*5 - losses*3 - disconnects*10 
 //On game page winner will receive 5 points, loosers will loose 3 points by default.
 $ScoreMethod = '2';
-//Here you can setup how many points user receive when he win, loose or disconnect.
+//Here you can setup how many points user receive when he win, lose or disconnect.
 $ScoreStart = '1000';
 $ScoreWins = '5';
 $ScoreLosses = '-3';

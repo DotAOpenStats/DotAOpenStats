@@ -229,7 +229,8 @@
 				   if (strstr($leftreason,"has lost the connection") 
 				   OR strstr($leftreason,"was dropped")
 				   OR strstr($leftreason,"Lagged out")
-				   OR strstr($leftreason,"Dropped due to")) 
+				   OR strstr($leftreason,"Dropped due to") 
+				   OR strstr($leftreason,"Lost the connection") )
 				   {$CalPoints = $ScoreDisc; $class = 'DisconnectPoints';} 
 		
 				   if (trim(strtolower($banname)) == strtolower($name3)) 

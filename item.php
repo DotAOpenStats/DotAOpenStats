@@ -35,13 +35,12 @@
    **********************************************/
   
   include('header.php');
-  
+
   $itemid = safeEscape($_GET["item"]);
   
-  $sql = "SELECT * FROM items WHERE itemid = '$itemid' LIMIT 1";
+  $sql = "SELECT * FROM items WHERE LOWER(itemid) = LOWER('$itemid') LIMIT 1";
   
   $result = $db->query($sql);
-  
   if ($db->num_rows($result) >= 1) {
       $list = $db->fetch_array($result, 'assoc');
       $itemid = $list["itemid"];
@@ -65,11 +64,10 @@
      </td>
      </tr></table></div>
      ";
-      
+
       $pageTitle = "$lang[site_name] | $itemName2";
-      
-      $pageContents = ob_get_contents();
-      ob_end_clean();
+      $pageContents = ob_get_contents(); 
+	  ob_end_clean();
       echo str_replace('<!--TITLE-->', $pageTitle, $pageContents);
 
       if ($ShowItemsMostUsedByHero == 1) {
@@ -95,7 +93,8 @@
               echo "</td></tr></table></div>";
           }
       }
-  }
+  } 
+
   
   include('footer.php');
 ?>

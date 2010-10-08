@@ -95,69 +95,26 @@
 		$summ = str_replace("’","&rsquo;",$summ );
 		$skills = str_replace("’","&rsquo;",$skills );
 		
-		echo "<TABLE><TR><TD style='height:24px;'>  <B>$hero</B> $lang[info]</TD></TR></TABLE><br/>";
+		//echo "<TABLE><TR><TD style='height:24px;'>  <B>$hero</B> $lang[info]</TD></TR></TABLE><br/>";
 		
 		
-		echo "<div align='center'>
-		<table style='width:75%;'><tr>
-
-		<td width='70%' valign='top' style='text-align:left;padding:12px;'>
-
-		<br/><a href='hero.php?hero=$hid'><img style='vertical-align: middle;' width='64px' height='64px' alt='' src='./img/heroes/$hid.gif' border=0/></a> <b>$hero</b><br/><div align='justify'>$summ</div>
-		<br/>$stats</br><br/><br/>$skills
-		</td>
-
-		<td valign='top'>
+		$data = array($hid,$hero,$lang["info"],$summ,$stats,$skills,$lang["wins"],$wins,$lang["games"],$totgames,$lang["losses"],$losses,$lang["w_l"],$winratio,$lang["kills"],$kills,$lang["assists"],$assists,$lang["deaths"],$deaths,$lang["kd"],$kdratio,$lang["creeps"],$creepkills,$lang["neutrals"],$neutralkills,$lang["denies"],$creepdenies,$lang["towers"],$towerkills,$lang["rax"],$raxkills,$lang["couriers"],$courierkills);
 		
-		      <table style='margin-top:4px;width:96%;border: 0px solid #000' >
-		      <tr>
-		      <td width='60px'>$lang[wins]</td><td>$wins</td>
-		      <td width='60px'>$lang[games]</td><td>$totgames</td>
-		      <tr>
-		      <td width='60px'>$lang[losses]</td><td>$losses</td>
-		      <td width='60px'>$lang[w_l]</td><td>$winratio</td>
-		      </tr>
+		$tags = array('{HEROID}','{HERO}', '{L_INFO}','{SUMMARY}','{STATS}','{SKILLS}','{L_WINS}','{WINS}','{L_GAMES}','{TOTGAMES}','{L_LOSSES}','{LOSSES}','{L_WLRATIO}','{WLRATIO}','{L_KILLS}','{KILLS}','{L_ASSISTS}','{ASSISTS}','{L_DEATHS}','{DEATHS}','{L_KD}','{KD}','{L_CREEPS}','{CREEPS}','{L_NEUTRALS}','{NEUTRALS}','{L_DENIES}','{DENIES}','{L_TOWERS}','{TOWERS}','{L_RAX}','{RAX}','{L_COURIERS}','{COURIERS}');
 		
-		      <tr>
-		      <td width='60px'>$lang[kills]</td><td>$kills</td>
-		      <td width='60px'>$lang[assists]</td><td>$assists</td>
-		      </tr>
-		
-		      <tr>
-		      <td width='60px'>$lang[deaths]</td><td>$deaths</td>
-		      <td width='60px'>$lang[kd]</td><td>$kdratio</td>
-		      </tr>
-		
-		      <tr>
-		      <td width='60px'>$lang[creeps]</td><td>$creepkills</td>
-		      <td width='60px'>$lang[neutrals]</td><td>$neutralkills</td>
-		      </tr>
-		
-		      <tr>
-		      <td width='60px'>$lang[denies]</td><td>$creepdenies</td>
-		      <td width='60px'>$lang[towers]</td><td>$towerkills</td>
-		      </tr>
-		
-		      <tr>
-		      <td width='60px'>$lang[rax]</td><td>$raxkills</td>
-		      <td width='60px'>$lang[couriers]</td><td>$courierkills</td>
-		      </tr>
-              </tr>
-			  </table>
-			  
-	 </td> </table>";
+	 echo str_replace($tags, $data, file_get_contents("../style/$default_style/hero.html"));
     }
 	if ($ShowHeroMostUsedItems==1) {
 	$size = "48px";
-	echo "<table style='width:75%;'><tr><td align='top'>";
+	//echo "<div align='center'><table class='tableA'><tr><td align='top'>";
 	require_once("get_hero_items.php");
-	echo "</tr></table>";
+	//echo "</tr></table></div>";
 	}
 	
 	
 	
 	
-	else {echo "Direct access not allowed!"; die;}
+	else {echo ""; die;}
 	
 	?>
 	
