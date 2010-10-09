@@ -18,11 +18,10 @@
 	<link rel="stylesheet" href="'.$admin_style.'" type="text/css" />
 	<link href="editor.css" rel="Stylesheet" type="text/css" />
 	<script src="editor.js" type="text/javascript"></script>
-	<script type="text/javascript" src="../js/scripts.js"></script>
+	<script type="text/javascript" src="../js/AJAX.js"></script>
 	</head>
 	<body>
 	';
-	if ($admin == "admin" AND $password == "admin") {echo "Please change your admin username/password in DEV/config.php"; die;}
 	
 		  function getExtension($str)
           {
@@ -179,6 +178,7 @@
 	$add_news = "News";
 	$os_configuration = "Configuration";
 	$back_up = "Backup";
+	$_admins = "Admins";
 	}
 	
 	if ($_SESSION["user_level"]==2)
@@ -191,6 +191,7 @@
 	$add_news = "News";
 	$os_configuration = "";
 	$back_up = "";
+	$_admins = "";
 	}
 	
 	if ($_SESSION["user_level"] == 3)
@@ -203,6 +204,7 @@
 	$add_news = "News";
 	$os_configuration = "";
 	$back_up = "";
+	$_admins = "";
 	}
 
 
@@ -216,6 +218,9 @@
 	if (isset($_GET['addnews']) AND $_SESSION["user_level"] <=3) {$add_news = "<b>News</b>";}
 	if (isset($_GET['conf'])    AND $_SESSION["user_level"] <=1) {$os_configuration = "<b>Configuration</b>";}
 	if (isset($_GET['backup'])  AND $_SESSION["user_level"] <=1) {$back_up = "<b>Backup</b>";}
+	if (isset($_GET['admins'])  AND $_SESSION["user_level"] <=1) {$_admins = "<b>Admins</b>";}
+	if ((isset($_GET['admins'])  OR isset($_GET['edit_admin']))
+	AND $_SESSION["user_level"] <=1) {$_admins = "<b>Admins</b>";}
 	
 	$sel1 = ""; $sel2 = "";
 	
@@ -239,6 +244,9 @@
 	
 	if ($_SESSION["user_level"] <=3)
 	{echo "| <a href='index.php?addnews'>$add_news</a>";}
+		
+	if ($_SESSION["user_level"] <=1)
+	{echo "| <a href='index.php?admins'>$_admins</a>";}
 	
 	if ($_SESSION["user_level"] <=1)
 	{echo "| <a href='index.php?conf'>$os_configuration</a>";}
@@ -340,9 +348,13 @@
 	$sql = "SELECT * FROM heroes WHERE summary != '-' $letter ORDER BY LOWER(description) ASC LIMIT $offset, $rowsperpage";
 	$result = $db->query($sql);
 	
-
+    echo "<div align='center'><table class='tableA'><tr>
+			  <td align='right'><a href='index.php?addhero'><b>
+              <img  alt='' style='vertical-align: middle;' width='22px' height='22px' 
+			  src='../img/items/BTNCloakOfFlames.gif' border=0/>[+] Add hero</b></a>
+			  </td></tr></table></div>";
 	
-	 echo "<br/><div style='padding-right:3%;text-align:right'><a href='index.php?addhero'><b><img  alt='' style='vertical-align: middle;' width='22px' height='22px' src='../img/items/BTNCloakOfFlames.gif' border=0/>[+] Add hero</b></a></div>
+	 echo "
 	 <div align='center'>
 	 <table style='width:95%' border=1><tr>
 	 <th><div align='center'>HID</div></th>
@@ -934,7 +946,14 @@ function confirmDelete(delUrl) {
 		  
 	$result = $db->query($sql);
 	
-	 echo "<br/><div style='text-align:right;padding-right:3%;'><a href='index.php?additem'><b><img  alt='' style='vertical-align: middle;' width='22px' height='22px' src='../img/items/BTNAbility_Rogue_Sprint.gif' border=0/>[+] Add item</b></a></div>
+	echo "<div align='center'><table class='tableA'><tr>
+			  <td align='right'>
+			  <a href='index.php?additem'>
+			  <img  alt='' style='vertical-align: middle;' width='22px' height='22px' 
+			  src='../img/items/BTNAbility_Rogue_Sprint.gif' border=0/><b>[+] Add item</b></a>
+			  </td></tr></table></div>";
+	
+	 echo "
 	 <div align='center'>
 	 
 	 <table style='width:95%' border=1><tr>
@@ -2440,6 +2459,130 @@ function confirmDelete(delUrl) {
 	  
 	  }
 	  
+	  //ADMINISTRATORS
+	  if (isset($_GET['admins']) AND $_SESSION['user_level'] <=1)
+	  {
+	  echo "<script type='text/javascript'>
+       function confirmDelete(delUrl) {
+       if (confirm('Are you sure you want to delete this admin?')) {
+       document.location = delUrl;
+          }
+       }
+       </script>";
+	  
+	  $sql = "SELECT COUNT(*) FROM admins LIMIT 1";
+	  $result = $db->query($sql);
+	  $r = $db->fetch_row($result);
+	  $numrows = $r[0];
+	  $rowsperpage = 50;
+	  
+	  include("pagination.php");
+	  
+	  $sql = "SELECT * FROM admins ORDER BY LOWER(name) ASC LIMIT $offset, $rowsperpage";
+	  $result = $db->query($sql);
+	          echo "<div align='center'><table class='tableA'><tr>
+			  <td align='right'><a href='index.php?edit_admin&add'>
+			  <img  alt='' style='vertical-align: middle;' width='22px' height='22px' 
+			  src='../img/heroes/H06S.gif' border=0/> <b>[+]Add admin</b></a>
+			  </td></tr></table></div>";
+			  
+			  
+			  echo "<div align='center'><table class='tableA'><tr>
+			  <th class='padLeft'><div align='center'>ID</div></th>
+			  <th>Name</th>
+			  <th>Edit</th>
+			  <th>BotID</th>
+			  <th>Server</th>
+			  </tr>";
+	          while ($row = $db->fetch_array($result,'assoc')) {
+			  $Aname = $row["name"];
+			  $Sname = $row["name"];
+			  if (strtolower($Aname) == strtolower($head_admin))
+			  { $Aname = "<span style='color:#00C412'>$Aname</span>";}
+			  $AID = $row["id"];
+			  $ABotID = $row["botid"];
+			  $AServer = $row["server"];
+			  echo "<tr class='row'>
+			  <td width='48px' align='center' class='padLeft'>$AID</td>
+			  <td width='200px' align='left'><a href='index.php?edit_admin=$AID'>$Aname</a></td>
+			  <td width='180px'  align='left'><a href='index.php?edit_admin=$AID'>Edit</a>
+			  | <a href='../user.php?u=$Sname'>View</a>
+			  | <a href='javascript:confirmDelete(\"index.php?delete_admin=$AID&name=$Sname\");' >
+			  [x] Delete</a>
+			  </td>
+			  <td WIDTH = '65px' align='left'>$ABotID</td>
+			  <td align='left'>$AServer</td>
+			  </tr>";
+			  }
+			  echo "</table></div><br>";
+			  include("pagination.php"); 
+	  }
+	  if (isset($_GET['delete_admin']) AND $_SESSION['user_level'] <=1)
+	  {
+	  $del_admin = safeEscape($_GET["delete_admin"]);
+	  $sql = "DELETE FROM admins WHERE id = $del_admin LIMIT 1";
+	  $result = $db->query($sql);
+	  if ($result) {echo "<br>Admin <b>$_GET[name]</b> successfully deleted<br><br>
+	  <a href='index.php?admins'>Back to previous page</a><br><br>";}
+	  }
+
+	  if (isset($_GET['edit_admin']) AND $_SESSION['user_level'] <=1 AND $_SERVER['REQUEST_METHOD'] != 'POST')
+	  {
+	  $edit_admin = safeEscape($_GET["edit_admin"]);
+	  
+	  if (!isset($_GET["add"]))
+	  {
+	  $sql = "SELECT * FROM admins WHERE id = $edit_admin LIMIT 1";
+	  $result = $db->query($sql);
+	  $row = $db->fetch_array($result,'assoc');
+	  $butt = "Edit administrators";
+	  
+	  $Aname = $row["name"];
+	  $AID = $row["id"];
+	  $ABotID = $row["botid"];
+	  $AServer = $row["server"];}
+	  else
+	  {
+	  $butt = "Add administrator";
+	  $Aname = "";
+	  $AID = "";
+	  $ABotID = "0";
+	  $AServer = "";}
+	  echo '<form method="post" action="">
+	  <br><div align="center">
+	  <table style="width:500px;"><tr><th></th><th>'.$butt.'</th></tr>
+	  <tr class="row">
+	  <td width="70px;" align="right">Name:</td>
+	  <td><input id="name" type="text" name="name" value="'.$Aname.'" size="40" maxlength="80"/></td></tr>
+	  
+	  <tr class="row">
+	  <td width="70px;" align="right">BotID:</td>
+	  <td><input id="name" type="text" name="bot" value="'.$ABotID.'" size="8" maxlength="8"/></td></tr>
+	  <td width="70px;" align="right">Server:</td>
+	  <td><input id="name" type="text" name="server" value="'.$AServer.'" size="25" maxlength="30"/></td></tr>
+	  <td></td>
+	  <td><input type="submit" class="inputButton" value="Edit '.$Aname.'" /></td></tr>
+	</form></table></div><br>';
+	  }
+	  if (isset($_GET['edit_admin']) AND $_SESSION['user_level'] <=1 AND $_SERVER['REQUEST_METHOD'] == 'POST')
+	  {
+	  $edit_admin = safeEscape($_GET["edit_admin"]);
+	  $Aname = convEnt2($_POST["name"]);
+	  $AServer = strip_tags(convEnt2($_POST["server"]));
+	  $ABotID = convEnt2($_POST["bot"]);
+	  
+	  if (!isset($_GET["add"]))
+	 {$sql = "UPDATE admins SET botid = $ABotID, name = '$Aname', server = '$AServer'
+	  WHERE id = $edit_admin LIMIT 1";}
+	  else
+	  {$sql = "INSERT INTO admins(botid,name,server)
+	  VALUES($ABotID,'$Aname','$AServer')";}
+	  
+	  $result = $db->query($sql);
+	  if ($result) 
+	  {echo "<br>Admin updated successfully<br><br><a href='index.php?admins'>Back to previous page</a><br><br>";}
+	  
+	  }
 	  
 	 if ($pageGen==1) {
 	 echo "<table><tr><td align='center'>Total queries: ".$db->get_query_cout()."</td></tr></table><br>";}
