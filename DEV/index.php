@@ -6,7 +6,7 @@
 
 		
 	define("MAX_SIZE", 20); //20 KB max
-	define("VERSION", "1.2.1");
+	define("VERSION", "1.2.0");
 	
 	
 	echo '
@@ -34,19 +34,9 @@
               $ext = substr($str, $i + 1, $l);
               return $ext;
           }
-	
-	//CHECK LOGIN 
-	if (isset($_SESSION['user_name']) AND (isset($_SESSION['user_password'])))
-	{
-	    if ($_SESSION['user_name'] != $admin)
-	 	   {unset($_SESSION['user_name']);}
-		   
-		    if ($_SESSION['user_password']!=sha1($password))
-		        {unset($_SESSION['user_password']);}
-	}
 
 	//LOGIN
-    if (!isset($_SESSION['user_name']) AND (!isset($_SESSION['user_password'])))
+    if (!isset($_SESSION['user_name']) AND (!isset($_SESSION['user_pass'])))
     {
 	if ($_SERVER['REQUEST_METHOD'] != 'POST') {
 	
@@ -114,10 +104,18 @@
 	  $_SESSION["user_level"] = 3; 
       $_SESSION["logged"] = 1;
 	  }
+	  
+	  		if ($_GET) {echo "
+			<br><br><br><br>Direct access not allowed.<br><br><a href='index.php'>Try again</a>";
+		    unset($_SESSION['user_name']);unset($_SESSION['user_pass']);
+		    unset($_SESSION['user_level']);unset($_SESSION['logged']);  die;
+		    }
+	  
+	  
 	     if (isset($_SESSION["logged"]) AND $_SESSION["logged"] == 1)
 	 	 {
 		 if ($_SESSION['user_name'] == "admin" OR $_SESSION['user_pass'] == "admin")
-		 {
+		    {
 		 echo "<br><br><br><br>Please change your admin username/password";
 		 unset($_SESSION['user_name']);unset($_SESSION['user_pass']);
 		 unset($_SESSION['user_level']);unset($_SESSION['logged']);
@@ -137,7 +135,9 @@
 	 	 }
 		 else
 		    {
-			 echo "<div align='center'><br>Wrong username or password!<br><br><a href='index.php'>Back to previous page</a></div>";
+			 echo "<div align='center'><table style='width:350px; margin-top:110px;'><tr>
+			 <th class='padLeft'>Wrong username or password!</th></tr>
+			 <tr><td class='padLeft'><a href='index.php'>Back to previous page</a></td></tr></table></div>";
 			if (isset($_SESSION['user_name']))     {unset($_SESSION['user_name']);}
 			if (isset($_SESSION['user_pass']))     {unset($_SESSION['user_pass']);}
 			if (isset($_SESSION['user_level']))    {unset($_SESSION['user_level']);}
@@ -296,7 +296,9 @@
 	if ($_GET['style'] == "dota") {admin_write_value_of('$admin_style', "$admin_style", "style2.css");}
 	if ($_GET['style'] == "default") {admin_write_value_of('$admin_style', "$admin_style", "style.css");}
 	
-	echo "<br/>Configuration updated successfully.<br/><br/><a href='index.php'>Back to previous page</a><br/><br/>";
+	echo "<div align='center'><table style='width:350px; margin-top:32px;'><tr>
+			 <th class='padLeft'>Configuration updated successfully.</th></tr>
+			 <td class='padLeft'><a href='index.php'>Back to previous page</a></td></tr></table></div><br><br>";
 	}
 	
 	
@@ -468,7 +470,7 @@ function confirmDelete(delUrl) {
 //////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////
 
-	if (isset($_GET['heroes']) AND isset($_GET['edit']) AND isset($_SESSION['user_name'])  AND isset($_SESSION['user_password']) AND $_SERVER['REQUEST_METHOD'] == 'POST' AND $_SESSION['user_level'] <=1)	
+	if (isset($_GET['heroes']) AND isset($_GET['edit']) AND isset($_SESSION['user_name'])  AND isset($_SESSION['user_pass']) AND $_SERVER['REQUEST_METHOD'] == 'POST' AND $_SESSION['user_level'] <=1)	
 	{
 	include("../config.php");
 	         $heroid = strtoupper(convEnt2($_POST['heroid']));
@@ -1785,7 +1787,7 @@ function confirmDelete(delUrl) {
 	  
 	  <tr>
 	  <td width="160px">Date Format</td>
-	  <td><input value="'.$date_format.'" type="text" name="date" size=30 /> (<b>'.date($date_format).'</b>) - PHP <a  target="_blank" href="http://php.net/manual/en/function.date.php"><b>date()</b></a> function</td></tr>
+	  <td><input value="'.$date_format.'" type="text" name="date" size=12 /> (<b>'.date($date_format).'</b>) - PHP <a  target="_blank" href="http://php.net/manual/en/function.date.php"><b>date()</b></a> function</td></tr>
 	  
 	  <tr>
 	  <td width="160px">Display user disconnects</td>
@@ -2415,8 +2417,9 @@ function confirmDelete(delUrl) {
 		   </tr>";
 		   } echo "</table>"; include('pagination.php'); echo "<br>";
 	  }
-	  if (isset($_GET["delete_game"]) AND is_numeric($_GET["delete_game"] AND $_SESSION['user_level'] <=1) 
-	  AND $_GET["delete_game"] !="")
+
+	  if (isset($_GET["delete_game"]) AND is_numeric($_GET["delete_game"]) 
+	  AND $_GET["delete_game"] !=""  AND $_SESSION['user_level'] <=1)
 	  {
 	  $gameID = safeEscape($_GET["delete_game"]);
 	  $sql_1 = "DELETE FROM games WHERE id = $gameID LIMIT 1";
@@ -2428,7 +2431,7 @@ function confirmDelete(delUrl) {
 	  $result_2 = $db->query($sql_2);
 	  $result_3 = $db->query($sql_3);
 	  $result_4 = $db->query($sql_4);
-	  
+	  	  
 	  if ($result_1 AND $result_2 AND $result_3 AND $result_4)
 	  {echo "<table class='tableA'><tr>
 	  <td align='center'>Game: $gameID successfully deleted!</td></tr><tr>
