@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS items;
 CREATE TABLE `items` (
   `itemid` varchar(4) NOT NULL,
   `name` varchar(50) NOT NULL,

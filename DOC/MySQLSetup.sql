@@ -1,5 +1,6 @@
 DROP TABLE IF EXISTS originals;
 DROP TABLE IF EXISTS heroes;
+DROP TABLE IF EXISTS items;
 DROP TABLE IF EXISTS news;
 
 CREATE TABLE IF NOT EXISTS news (
@@ -227,17 +228,6 @@ INSERT INTO heroes (heroid, original, description, summary, stats, skills) VALUE
 INSERT INTO heroes (heroid, original, description, summary, stats, skills) VALUES ('N0BK', 'E01A', 'Witch Doctor', '-', '-', '-');
 
 
-DROP TABLE IF EXISTS items;
-CREATE TABLE IF NOT EXISTS items (
-  itemid varchar(4) NOT NULL,
-  name varchar(50) NOT NULL,
-  shortname varchar(50) NOT NULL,
-  item_info mediumtext character set utf8 collate utf8_bin NOT NULL,
-  icon varchar(50) NOT NULL,
-  PRIMARY KEY (itemid)
-);
-
-
 -- phpMyAdmin SQL Dump
 -- version 2.11.6
 -- http://www.phpmyadmin.net
@@ -259,15 +249,15 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 -- Table structure for table `items`
 --
 
-CREATE TABLE `items` (
-  `itemid` varchar(4) NOT NULL,
-  `name` varchar(50) NOT NULL,
-  `shortname` varchar(50) NOT NULL,
-  `item_info` mediumtext character set utf8 collate utf8_bin NOT NULL,
-  `icon` varchar(50) NOT NULL,
-  PRIMARY KEY  (`itemid`),
-  KEY `itemid` (`itemid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+DROP TABLE IF EXISTS items;
+CREATE TABLE IF NOT EXISTS items (
+  itemid varchar(4) NOT NULL,
+  name varchar(50) NOT NULL,
+  shortname varchar(50) NOT NULL,
+  item_info mediumtext character set utf8 collate utf8_bin NOT NULL,
+  icon varchar(50) NOT NULL,
+  PRIMARY KEY (itemid)
+);
 
 --
 -- Dumping data for table `items`
