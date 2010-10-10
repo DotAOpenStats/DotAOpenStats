@@ -2534,8 +2534,7 @@ function confirmDelete(delUrl) {
 	  <a href='index.php?admins'>Back to previous page</a><br><br>";}
 	  }
 
-	  if (isset($_GET['edit_admin']) AND is_numeric($_GET['edit_admin']) 
-	  AND $_SESSION['user_level'] <=1 AND $_SERVER['REQUEST_METHOD'] != 'POST')
+	  if (isset($_GET['edit_admin']) AND $_SESSION['user_level'] <=1 AND $_SERVER['REQUEST_METHOD'] != 'POST')
 	  {
 	  $edit_admin = safeEscape($_GET["edit_admin"]);
 	  
