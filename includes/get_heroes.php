@@ -152,7 +152,7 @@
 		$creepkills=ROUND($list["creepkills"],2);
 		$creepdenies=ROUND($list["creepdenies"],2);
 		$neutralkills=ROUND($list["neutralkills"],2);
-		$hid=$list["original"];
+		$hid=strtoupper($list["original"]);
 		
 		echo "<tr class='row'>
 		<td width='40px'><a href='hero.php?hero=$hid'><img width='32px' height='32px' alt='' src='./img/heroes/$hid.gif' border=0 /></a></div></td>

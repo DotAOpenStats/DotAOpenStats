@@ -1253,9 +1253,11 @@ function confirmDelete(delUrl) {
 	echo '
 	<br/><div align="center">
 	<form name="myForm" method="post" action=""> 
-	<div align="center"><b>News title:</b></div>
-	<div align="center"><input maxlength="90" type="text" size="90" value="'.$news_title.'" name="new_subject" />
-	</div>
+	<table class="tableA"><tr>
+	
+	<th><div align="center">
+	News Title:<input maxlength="90" type="text" size="90" value="'.$news_title.'" name="new_subject" />
+	</div></th></tr><tr><td align="center">
 	<div class="richeditor">
 		<div class="editbar">		
 			<button title="bold" onclick="AddTag(\'b\');" type="button" style="background-image:url(\'img/editor/text_bold.gif\');"></button>
@@ -1284,18 +1286,20 @@ function confirmDelete(delUrl) {
 			
 			<input name="html" value="html" title="Enable HTML. This will disable BBCode" type="checkbox"/>
 			<span style="color:#000;"><b>HTML</b></span>
-	</div>
+	</div></td></tr><tr><td align="center">
 	
-	 <textarea class="reply" id="reply" name="reply" style="padding-top:4px;height:260px;width:680px;">'.$news_content.'</textarea>
+	 <textarea class="reply" id="reply" name="reply" style="padding-top:4px;height:260px;width:645px;">'.$news_content.'</textarea></td></tr><tr><td align="center">
     <br>
-	<input type="submit" class="inputButton" value="'.$button.'" />
-	</div>';
+	<input type="submit" class="inputButton" value="'.$button.'" /> <br> <br>
+	</div></td></tr></table>';
 	
 		if (isset($_GET['edit_news'])){	
 		$pre_title = $news_title;
+		$news_title = str_replace('iframe', 'lframe', $news_title);
 		if (!isset($_POST['html']))
 		{
 		$pre_news = BBCode($news_content);
+		$pre_news = str_replace('iframe', 'lframe', $pre_news);
 		$pre_news = my_nl2br($pre_news);
 		//$pre_news = convEnt($news_content);
 		$pre_news = str_replace("\n","<br>",$pre_news);} 
@@ -1323,9 +1327,11 @@ function confirmDelete(delUrl) {
 	 while ($row = $db->fetch_array($result,'assoc')) {
 	 $dateis = date($date_format,strtotime($row["news_date"]));
 	 $title = "$row[news_title]";
+	 $title = str_replace('iframe', 'lframe', $title);
 	 $text = "$row[news_content]";
 	 $text = str_replace("<br>","\n",$text);
 	 $text = str_replace("<","&lt;",$text);
+	 $text = str_replace('iframe', 'lframe', $text);
 	 $text = convEnt($text);
 	 $text = BBDecode($text);
 	 $text = substr($text,0,200)." ...";
@@ -2303,6 +2309,8 @@ function confirmDelete(delUrl) {
 		 if ($d == "") {$err .= "Field <b>'deaths'</b> is empty.<br>";}
 		 if ($a == "") {$err .= "Field <b>'assists'</b> is empty.<br>";}
 		 
+		 if ($err!="") {$err.="<hr>";}
+		 
 		 $c = $row["creepkills"]; $cd = $row["creepdenies"];  $n = $row["neutralkills"];
 		 $i1 = $row["itemicon1"]; $i2 = $row["itemicon2"]; $i3 = $row["itemicon3"];
 		 $i4 = $row["itemicon4"]; $i5 = $row["itemicon5"]; $i6 = $row["itemicon6"];
@@ -2365,7 +2373,7 @@ function confirmDelete(delUrl) {
 		 }
 		 
         echo "<tr><td></td>
-		<td></td><td></td><td></td><td></td><td></td><td width='220px'>Winner: <b>$_win</b></td><td><span style='background-color:#FAFCEE;color:#950001;'>$err2</span> <b>$gamename</b></td>
+		<td></td><td></td><td></td><td></td><td></td><td width='220px'>Winner: <b>$_win </b>($duration)</td><td><span style='background-color:#FAFCEE;color:#950001;'>$err2</span> <b>$gamename </b></td>
 		</tr><table></div>";
 		
 		       if (isset($_GET["id"])) {
@@ -2463,8 +2471,8 @@ function confirmDelete(delUrl) {
 	  if (isset($_GET['admins']) AND $_SESSION['user_level'] <=1)
 	  {
 	  echo "<script type='text/javascript'>
-       function confirmDelete(delUrl) {
-       if (confirm('Are you sure you want to delete this admin?')) {
+       function confirmDelete(delUrl,mess) {
+       if (confirm(mess)) {
        document.location = delUrl;
           }
        }
@@ -2507,7 +2515,7 @@ function confirmDelete(delUrl) {
 			  <td width='200px' align='left'><a href='index.php?edit_admin=$AID'>$Aname</a></td>
 			  <td width='180px'  align='left'><a href='index.php?edit_admin=$AID'>Edit</a>
 			  | <a href='../user.php?u=$Sname'>View</a>
-			  | <a href='javascript:confirmDelete(\"index.php?delete_admin=$AID&name=$Sname\");' >
+			  | <a onclick='javascript:confirmDelete(\"index.php?delete_admin=$AID&name=$Sname\",\"Are you sure you want to delete admin ($Sname)?\");' href='javascript:;' >
 			  [x] Delete</a>
 			  </td>
 			  <td WIDTH = '65px' align='left'>$ABotID</td>
@@ -2517,7 +2525,7 @@ function confirmDelete(delUrl) {
 			  echo "</table></div><br>";
 			  include("pagination.php"); 
 	  }
-	  if (isset($_GET['delete_admin']) AND $_SESSION['user_level'] <=1)
+	  if (isset($_GET['delete_admin']) AND is_numeric($_GET['delete_admin']) <=1 AND $_SESSION['user_level'] <=1)
 	  {
 	  $del_admin = safeEscape($_GET["delete_admin"]);
 	  $sql = "DELETE FROM admins WHERE id = $del_admin LIMIT 1";
@@ -2526,7 +2534,8 @@ function confirmDelete(delUrl) {
 	  <a href='index.php?admins'>Back to previous page</a><br><br>";}
 	  }
 
-	  if (isset($_GET['edit_admin']) AND $_SESSION['user_level'] <=1 AND $_SERVER['REQUEST_METHOD'] != 'POST')
+	  if (isset($_GET['edit_admin']) AND is_numeric($_GET['edit_admin']) 
+	  AND $_SESSION['user_level'] <=1 AND $_SERVER['REQUEST_METHOD'] != 'POST')
 	  {
 	  $edit_admin = safeEscape($_GET["edit_admin"]);
 	  
@@ -2534,6 +2543,7 @@ function confirmDelete(delUrl) {
 	  {
 	  $sql = "SELECT * FROM admins WHERE id = $edit_admin LIMIT 1";
 	  $result = $db->query($sql);
+	  if ($db->num_rows($result)<=0) {echo "Unable to find administrator"; die;}
 	  $row = $db->fetch_array($result,'assoc');
 	  $butt = "Edit administrators";
 	  
@@ -2564,7 +2574,8 @@ function confirmDelete(delUrl) {
 	  <td><input type="submit" class="inputButton" value="Edit '.$Aname.'" /></td></tr>
 	</form></table></div><br>';
 	  }
-	  if (isset($_GET['edit_admin']) AND $_SESSION['user_level'] <=1 AND $_SERVER['REQUEST_METHOD'] == 'POST')
+	  if (isset($_GET['edit_admin']) AND $_SESSION['user_level'] <=1 
+	  AND $_SERVER['REQUEST_METHOD'] == 'POST'  AND is_numeric($_GET['edit_admin']))
 	  {
 	  $edit_admin = safeEscape($_GET["edit_admin"]);
 	  $Aname = convEnt2($_POST["name"]);

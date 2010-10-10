@@ -80,13 +80,18 @@
     $_drawPerc = ROUND(($_draw/$_totals)*100,1);
   
   echo "<div align='center'><table class='tableA'><tr>
-     <th width='40%' class='padLeft'>$_lang[sent_won]</th>
-	 <th width='40%' class='padLeft'>$_lang[scourge_won]</th>
-	 <th width='20%' class='padLeft'>$_lang[draw_game]</th>
+     <th></th>
+     <th>$_lang[sent_won]</th>
+	 <th>$_lang[scourge_won]</th>
+	 <th>$_lang[draw_game]</th>
+	 <th></th>
 	 </tr>
-	 <td class='padLeft'>$_sentWon ($_sentPerc%)</td>
-	 <td class='padLeft'>$_scourWon ($_scourPerc%)</td>
-	 <td class='padLeft'>$_draw ($_drawPerc%)</td>
+	 <tr class='row'>
+	 <td width='30%'></td>
+	 <td width='15%'>$_sentWon ($_sentPerc%)</td>
+	 <td width='15%'>$_scourWon ($_scourPerc%)</td>
+	 <td width='20%'>$_draw ($_drawPerc%)</td>
+	 <td></td>
 	 </tr>
 	 
 	 </table></div>";}

@@ -60,9 +60,10 @@
 		$result = $db->query($stepKills);
 		//$db->close($result);
 		while ($list = $db->fetch_array($result,'assoc')) {
+		$himg = strtoupper($list["topHero"]);
 		if ($list["topValue"]>0)
 		{echo "<tr class='row'><td align='left' width='180px'><a href='hero.php?hero=$list[topHero]' title='$list[topHeroName]'>
-		 <img alt='' style='vertical-align: middle;' width='32px' height='32px' src='img/heroes/$list[topHero].gif' border=0/></a>
+		 <img alt='' style='vertical-align: middle;' width='32px' height='32px' src='img/heroes/$himg.gif' border=0/></a>
 		 (<a href='game.php?gameid=$list[topGame]'>$list[topValue]</a>) 
 		 
 		 <a href='user.php?u=$list[topUser]' title='$list[topUser]'>$list[topUser]</a>
@@ -86,9 +87,10 @@
 		
 		$result = $db->query($stepAssists);
 		while ($list = $db->fetch_array($result,'assoc')) {
+		$himg = strtoupper($list["topHero"]);
 		if ($list["topValue"]>0)
 		{echo "<tr class='row'><td align='left' width='180px'><a href='hero.php?hero=$list[topHero]' title='$list[topHeroName]'>
-		 <img style='vertical-align: middle;' width='32px' height='32px' src='img/heroes/$list[topHero].gif' border=0/></a>
+		 <img style='vertical-align: middle;' width='32px' height='32px' src='img/heroes/$himg.gif' border=0/></a>
 		 (<a href='game.php?gameid=$list[topGame]'>$list[topValue]</a>) 
 		 
 		 <a href='user.php?u=$list[topUser]' title='$list[topUser]'>$list[topUser]</a>
@@ -113,9 +115,10 @@
 		
 		$result = $db->query($stepDeaths);
 		while ($list = $db->fetch_array($result,'assoc')) {
+		$himg = strtoupper($list["topHero"]);
 		if ($list["topValue"]>0)
 		{echo "<tr class='row'><td align='left' width='180px'><a href='hero.php?hero=$list[topHero]' title='$list[topHeroName]'>
-		 <img style='vertical-align: middle;' width='32px' height='32px' src='img/heroes/$list[topHero].gif' border=0/></a>
+		 <img style='vertical-align: middle;' width='32px' height='32px' src='img/heroes/$himg.gif' border=0/></a>
 		 (<a href='game.php?gameid=$list[topGame]'>$list[topValue]</a>) 
 		 
 		 <a href='user.php?u=$list[topUser]' title='$list[topUser]'>$list[topUser]</a>
@@ -139,9 +142,10 @@
 		
 		$result = $db->query($stepCK);
 		while ($list = $db->fetch_array($result,'assoc')) {
+		$himg = strtoupper($list["topHero"]);
 		if ($list["topValue"]>0)
 		{echo "<tr class='row'><td align='left' width='180px'><a href='hero.php?hero=$list[topHero]' title='$list[topHeroName]'>
-		 <img style='vertical-align: middle;' width='32px' height='32px' src='img/heroes/$list[topHero].gif' border=0/></a>
+		 <img style='vertical-align: middle;' width='32px' height='32px' src='img/heroes/$himg.gif' border=0/></a>
 		 (<a href='game.php?gameid=$list[topGame]'>$list[topValue]</a>) 
 		 
 		 <a href='user.php?u=$list[topUser]' title='$list[topUser]'>$list[topUser]</a>
@@ -164,9 +168,10 @@
 		
 		$result = $db->query($stepCD);
 		while ($list = $db->fetch_array($result,'assoc')) {
+		$himg = strtoupper($list["topHero"]);
 		if ($list["topValue"]>0)
 		{echo "<tr class='row'><td align='left' width='180px'><a href='hero.php?hero=$list[topHero]' title='$list[topHeroName]'>
-		 <img style='vertical-align: middle;' width='32px' height='32px' src='img/heroes/$list[topHero].gif' border=0/></a>
+		 <img style='vertical-align: middle;' width='32px' height='32px' src='img/heroes/$himg.gif' border=0/></a>
 		 (<a href='game.php?gameid=$list[topGame]'>$list[topValue]</a>) 
 		 
 		 <a href='user.php?u=$list[topUser]' title='$list[topUser]'>$list[topUser]</a>
@@ -202,9 +207,10 @@
 		
 		$result = $db->query($stepGold);
 		while ($list = $db->fetch_array($result,'assoc')) {
+		$himg = strtoupper($list["topHero"]);
 		if ($list["topValue"]>0)
 		{echo "<tr class='row'><td align='left' width='180px'><a href='hero.php?hero=$list[topHero]' title='$list[topHeroName]'>
-		 <img style='vertical-align: middle;' width='32px' height='32px' src='img/heroes/$list[topHero].gif' border=0/></a>
+		 <img style='vertical-align: middle;' width='32px' height='32px' src='img/heroes/$himg.gif' border=0/></a>
 		 (<a href='game.php?gameid=$list[topGame]'>$list[topValue]</a>) 
 		 
 		 <a href='user.php?u=$list[topUser]' title='$list[topUser]'>$list[topUser]</a>
@@ -227,9 +233,10 @@
 		
 		$result = $db->query($stepCK);
 		while ($list = $db->fetch_array($result,'assoc')) {
+		$himg = strtoupper($list["topHero"]);
 		if ($list["topValue"]>0)
 		{echo "<tr class='row'><td align='left' width='180px'><a href='hero.php?hero=$list[topHero]' title='$list[topHeroName]'>
-		 <img style='vertical-align: middle;' width='32px' height='32px' src='img/heroes/$list[topHero].gif' border=0/></a>
+		 <img style='vertical-align: middle;' width='32px' height='32px' src='img/heroes/$himg.gif' border=0/></a>
 		 (<a href='game.php?gameid=$list[topGame]'>$list[topValue]</a>) 
 		 
 		 <a href='user.php?u=$list[topUser]' title='$list[topUser]'>$list[topUser]</a>
@@ -252,9 +259,10 @@
 		
 		$result = $db->query($stepCK);
 		while ($list = $db->fetch_array($result,'assoc')) {
+		$himg = strtoupper($list["topHero"]);
 		if ($list["topValue"]>0)
 		{echo "<tr class='row'><td align='left' width='180px'><a href='hero.php?hero=$list[topHero]' title='$list[topHeroName]'>
-		 <img style='vertical-align: middle;' width='32px' height='32px' src='img/heroes/$list[topHero].gif' border=0/></a>
+		 <img style='vertical-align: middle;' width='32px' height='32px' src='img/heroes/$himg.gif' border=0/></a>
 		 (<a href='game.php?gameid=$list[topGame]'>$list[topValue]</a>) 
 		 
 		 <a href='user.php?u=$list[topUser]' title='$list[topUser]'>$list[topUser]</a>
@@ -277,9 +285,10 @@
 		
 		$result = $db->query($stepCK);
 		while ($list = $db->fetch_array($result,'assoc')) {
+		$himg = strtoupper($list["topHero"]);
 		if ($list["topValue"]>0)
 		{echo "<tr class='row'><td align='left' width='180px'><a href='hero.php?hero=$list[topHero]' title='$list[topHeroName]'>
-		 <img style='vertical-align: middle;' width='32px' height='32px' src='img/heroes/$list[topHero].gif' border=0/></a>
+		 <img style='vertical-align: middle;' width='32px' height='32px' src='img/heroes/$himg.gif' border=0/></a>
 		 (<a href='game.php?gameid=$list[topGame]'>$list[topValue]</a>) 
 		 
 		 <a href='user.php?u=$list[topUser]' title='$list[topUser]'>$list[topUser]</a>
@@ -303,9 +312,10 @@
 		
 		$result = $db->query($stepCK);
 		while ($list = $db->fetch_array($result,'assoc')) {
+		$himg = strtoupper($list["topHero"]);
 		if ($list["topValue"]>0)
 		{echo "<tr class='row'><td align='left' width='180px'><a href='hero.php?hero=$list[topHero]' title='$list[topHeroName]'>
-		 <img style='vertical-align: middle;' width='32px' height='32px' src='img/heroes/$list[topHero].gif' border=0/></a>
+		 <img style='vertical-align: middle;' width='32px' height='32px' src='img/heroes/$himg.gif' border=0/></a>
 		 (<a href='game.php?gameid=$list[topGame]'>$list[topValue]</a>) 
 		 
 		 <a href='user.php?u=$list[topUser]' title='$list[topUser]'>$list[topUser]</a>

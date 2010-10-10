@@ -97,11 +97,12 @@ $sqlKill = "SELECT
 		
 		$result = $db->query($sqlKill);
 		 while ($list = $db->fetch_array($result,'assoc')) {
-		 if ($list['topHero']=="") $list['topHero'] = "blank";
+		 $himg = strtoupper($list["topHero"]);
+		 if ($list['topHero']=="") {$himg = "blank";}
 		 
 		 echo "
 		 <tr class='row'><td width='35px'><a href='hero.php?hero=$list[topHero]' title='$list[topHeroName]'>
-		 <img style='vertical-align: middle;' width='32px' height='32px' src='img/heroes/$list[topHero].gif' border=0/></a></td>
+		 <img style='vertical-align: middle;' width='32px' height='32px' src='img/heroes/$himg.gif' border=0/></a></td>
 		 <td width='32px' align='left'>(<a href='game.php?gameid=$list[topGame]'>$list[topValue]</a>) </td>
 		 
 		 <td align='left'><a href='user.php?u=$list[topUser]' title='$list[topUser]'>$list[topUser]</a></td>
@@ -115,10 +116,11 @@ $sqlKill = "SELECT
 		 
 		 $result = $db->query($sqlAssists);
 		 while ($list = $db->fetch_array($result,'assoc')) {
-		 if ($list['topHero']=="") $list['topHero'] = "blank";
+		 $himg = strtoupper($list["topHero"]);
+		 if ($list['topHero']=="") {$himg = "blank";}
 		 echo "
 		 <tr class='row'><td width='35px'><a href='hero.php?hero=$list[topHero]' title='$list[topHeroName]'>
-		 <img style='vertical-align: middle;' width='32px' height='32px' src='img/heroes/$list[topHero].gif' border=0/></a></td>
+		 <img style='vertical-align: middle;' width='32px' height='32px' src='img/heroes/$himg.gif' border=0/></a></td>
 		 <td width='32px' align='left'>(<a href='game.php?gameid=$list[topGame]'>$list[topValue]</a>) </td>
 		 
 		 <td align='left'><a href='user.php?u=$list[topUser]' title='$list[topUser]'>$list[topUser]</a></td>
@@ -131,10 +133,11 @@ $sqlKill = "SELECT
 		 
 		 $result = $db->query($sqlDeaths);
 		 while ($list = $db->fetch_array($result,'assoc')) {
-		 if ($list['topHero']=="") $list['topHero'] = "blank";
+		 $himg = strtoupper($list["topHero"]);
+		 if ($list['topHero']=="") {$himg = "blank";}
 		 echo "
 		 <tr class='row'><td width='35px'><a href='hero.php?hero=$list[topHero]' title='$list[topHeroName]'>
-		 <img style='vertical-align: middle;' width='32px' height='32px' src='img/heroes/$list[topHero].gif' border=0/></a></td>
+		 <img style='vertical-align: middle;' width='32px' height='32px' src='img/heroes/$himg.gif' border=0/></a></td>
 		 <td width='32px' align='left'>(<a href='game.php?gameid=$list[topGame]'>$list[topValue]</a>) </td>
 		 
 		 <td align='left'><a href='user.php?u=$list[topUser]' title='$list[topUser]'>$list[topUser]</a></td>
@@ -147,11 +150,12 @@ $sqlKill = "SELECT
 		 
 		 $result = $db->query($sqlCreeps);
 		 while ($list = $db->fetch_array($result,'assoc')) {
-		 if ($list['topHero']=="") $list['topHero'] = "blank";
+		 $himg = strtoupper($list["topHero"]);
+		 if ($list['topHero']=="") {$himg = "blank";}
 		 
 		 echo "
 		 <tr class='row'><td width='35px'><a href='hero.php?hero=$list[topHero]' title='$list[topHeroName]'>
-		 <img style='vertical-align: middle;' width='32px' height='32px' src='img/heroes/$list[topHero].gif' border=0/></a></td>
+		 <img style='vertical-align: middle;' width='32px' height='32px' src='img/heroes/$himg.gif' border=0/></a></td>
 		 <td width='32px' align='left'>(<a href='game.php?gameid=$list[topGame]'>$list[topValue]</a>) </td>
 		 
 		 <td align='left'><a href='user.php?u=$list[topUser]' title='$list[topUser]'>$list[topUser]</a></td>
@@ -164,11 +168,12 @@ $sqlKill = "SELECT
 		 
 		 $result = $db->query($sqlDenies);
 		 while ($list = $db->fetch_array($result,'assoc')) {
-		 if ($list['topHero']=="") $list['topHero'] = "blank";
+		 $himg = strtoupper($list["topHero"]);
+		 if ($list['topHero']=="") {$himg = "blank";}
 		 
 		 echo "
 		 <tr class='row'><td width='35px'><a href='hero.php?hero=$list[topHero]' title='$list[topHeroName]'>
-		 <img style='vertical-align: middle;' width='32px' height='32px' src='img/heroes/$list[topHero].gif' border=0/></a></td>
+		 <img style='vertical-align: middle;' width='32px' height='32px' src='img/heroes/$himg.gif' border=0/></a></td>
 		 <td width='32px' align='left'>(<a href='game.php?gameid=$list[topGame]'>$list[topValue]</a>) </td>
 		 
 		 <td align='left'><a href='user.php?u=$list[topUser]' title='$list[topUser]'>$list[topUser]</a></td>

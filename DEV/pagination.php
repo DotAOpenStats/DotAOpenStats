@@ -6,6 +6,7 @@
 	if (isset($_GET['bans'])) {$prefix = "bans";}
 	if (isset($_GET['addnews'])) {$prefix = "addnews";}
 	if (isset($_GET['games'])) {$prefix = "games&check";}
+	if (isset($_GET['admins'])) {$prefix = "admins";}
 	if (isset($_GET['games']) AND isset($_GET['winner'])) {$prefix = "games&check&winner=$_GET[winner]";}
 	if (isset($_GET['l'])) {$l = "&l=".EscapeStr($_GET['l']);} else {$l = "";}
 

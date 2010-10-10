@@ -3,8 +3,7 @@
 session_start();
 
 $ADMINISTRATORS = array(
-  'admin' => 'admin',
-  'test' => 'test'
+  'admin' => 'admin'
 );
 
 $MODERATORS = array(

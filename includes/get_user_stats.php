@@ -46,7 +46,7 @@
 	
 	$result = $db->query($sql);
 	$list = $db->fetch_array($result,'assoc'); 
-	$mostkillshero=$list["original"];
+	$mostkillshero=strtoupper($list["original"]);
 	$mostkillsheroname=$list["description"];
 	$mostkillscount=$list["max(kills)"];
 	
@@ -64,7 +64,7 @@
 	
 	$result = $db->query($sql);
 	$list = $db->fetch_array($result,'assoc'); 
-	$mostdeathshero=$list["original"];
+	$mostdeathshero=strtoupper($list["original"]);
 	$mostdeathsheroname=$list["description"];
 	$mostdeathscount=$list["max(deaths)"];
 
@@ -82,7 +82,7 @@
 	
 	$result = $db->query($sql);
 	$list = $db->fetch_array($result,'assoc'); 
-	$mostassistshero=$list["original"];
+	$mostassistshero=strtoupper($list["original"]);
 	$mostassistsheroname=$list["description"];
 	$mostassistscountlist=$list["max(assists)"];
 	$mostassistscount=$list["max(assists)"];
@@ -109,7 +109,7 @@
 	
 	$result = $db->query($sql);
 	$list = $db->fetch_array($result,'assoc'); 
-	$mostwinshero=$list["original"];
+	$mostwinshero=strtoupper($list["original"]);
 	$mostwinsheroname=$list["description"];
 	$mostwinscount=$list["wins"];
 	
@@ -130,7 +130,7 @@
 	
 	$result = $db->query($sql);
 	$list = $db->fetch_array($result,'assoc'); 
-	$mostlosseshero=$list["original"];
+	$mostlosseshero=strtoupper($list["original"]);
 	$mostlossesheroname=$list["description"];
 	$mostlossescount=$list["losses"];
 	
@@ -151,7 +151,7 @@
 	
 	    $result = $db->query($sql);
 	    $list = $db->fetch_array($result,'assoc'); 
-		$mostplayedhero=$list["original"];
+		$mostplayedhero=strtoupper($list["original"]);
 		$mostplayedheroname=$list["description"];
 		$mostplayedcount=$list["played"];
 		$mostplayedtime=secondsToTime($list["timeplayed"]);

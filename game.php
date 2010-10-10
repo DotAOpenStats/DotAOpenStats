@@ -120,12 +120,12 @@
 		$item5=$list["item5"];
 		$item6=$list["item6"];
 		
-		$itemicon1=$list["itemicon1"];
-		$itemicon2=$list["itemicon2"];
-		$itemicon3=$list["itemicon3"];
-		$itemicon4=$list["itemicon4"];
-		$itemicon5=$list["itemicon5"];
-		$itemicon6=$list["itemicon6"];
+		$itemicon1=strtoupper($list["itemicon1"]);
+		$itemicon2=strtoupper($list["itemicon2"]);
+		$itemicon3=strtoupper($list["itemicon3"]);
+		$itemicon4=strtoupper($list["itemicon4"]);
+		$itemicon5=strtoupper($list["itemicon5"]);
+		$itemicon6=strtoupper($list["itemicon6"]);
 		
 		$itemID1=$list["item1"];
 		$itemID2=$list["item2"];
@@ -156,7 +156,7 @@
 		
 	    $left=secondsToTime($list["left"]);
 		$leftreason=$list["leftreason"];
-		$hero=$list["hero"];
+		$hero=strtoupper($list["hero"]);
 		$heroname=$list["description"];
 		
 		if ($hero!="") {
