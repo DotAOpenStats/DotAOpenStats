@@ -1,4 +1,4 @@
-ï»¿<?php
+<?php
 /*********************************************
 <!-- 
 *   	DOTA OPENSTATS
@@ -77,10 +77,10 @@
     ob_end_clean();
     echo str_replace('<!--TITLE-->', $pageTitle, $pageContents);
 		
-		$summ = str_replace("â€™","&rsquo;",$summ );
-		$summ = str_replace("â€¦","&hellip;",$summ );
-		$skills = str_replace("â€™","&rsquo;",$skills );
-		$skills = str_replace("Ã§","&ccedil;",$skills );
+		$summ = str_replace("’","&rsquo;",$summ );
+		$summ = str_replace("…","&hellip;",$summ );
+		$skills = str_replace("’","&rsquo;",$skills );
+		$skills = str_replace("ç","&ccedil;",$skills );
 		
 		$stats = str_replace("Strength","<img style='vertical-align: middle;' alt='' src='./img/strength.gif' border=0 />Strength",$stats );
 		
@@ -88,8 +88,8 @@
 		
 		$stats = str_replace("Intelligence","<img style='vertical-align: middle;' alt='' src='./img/intelligence.gif' border=0 />Intelligence",$stats );
 		
-		$summ = str_replace("â€™","&rsquo;",$summ );
-		$skills = str_replace("â€™","&rsquo;",$skills );
+		$summ = str_replace("’","&rsquo;",$summ );
+		$skills = str_replace("’","&rsquo;",$skills );
 		
 		$data = array($hid,$hero,$lang["info"],$summ,$stats,$skills,$lang["wins"],$wins,$lang["games"],$totgames,$lang["losses"],$losses,$lang["w_l"],$winratio,$lang["kills"],$kills,$lang["assists"],$assists,$lang["deaths"],$deaths,$lang["kd"],$kdratio,$lang["creeps"],$creepkills,$lang["neutrals"],$neutralkills,$lang["denies"],$creepdenies,$lang["towers"],$towerkills,$lang["rax"],$raxkills,$lang["couriers"],$courierkills);
 		
@@ -203,4 +203,3 @@
 	include('footer.php');
  
   ?>
-

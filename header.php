@@ -33,7 +33,6 @@
 *
 -->
 **********************************************/
-   ob_start();
   $time = microtime();
   $time = explode(' ', $time);
   $time = $time[1] + $time[0];

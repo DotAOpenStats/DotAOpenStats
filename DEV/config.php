@@ -22,26 +22,24 @@ $PUBLISHERS = array(
 
        If you dont have moderators or publisher, 
        just put your administrator username and password for ADMINISTATORS
-       and put empty username/password for others
+       and put empty username/password for others.
  
 
-    Example:
+    Example: (Administrator with username 'john' and password 'pass' - without Mods or publishers)
 	
 $ADMINISTRATORS = array(
-  'john' => 'pass',
-  'user2' => 'password2'
+  'john' => 'pass'
 );
 
 $MODERATORS = array(
-  '' => '',
   '' => ''
 );
 
 $PUBLISHERS = array(
-  '' => '',
   '' => ''
 );
 
+    --> DONT forget to setup MODERATORS, PUBLISHERS username/password OR leave it empty! <--
 */
 ////////////////////////////////////////////////////////////
 $admin_style = 'style2.css';

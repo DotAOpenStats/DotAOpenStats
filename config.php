@@ -1,7 +1,6 @@
 <?PHP
-   
-    if (!isset($_SESSION)) {session_start();}
-	
+if (!isset($_SESSION)) {session_start();}
+    ob_start();
 /*********************************************
 <!-- 
 *   	DOTA OPENSTATS
@@ -162,6 +161,6 @@ $NeutralsMedal = '500'; //Kill 500 neutrals!
 $PlayDurationMedal = '30'; //Play at least 30 hours!
 
 $pageGen = '1'; //Enable/disable info about page generation and total queries on every page
-$_debug = '1'; //Enable error reportings
+$_debug = '0'; //Enable error reportings
 
 ?>

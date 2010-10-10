@@ -6,7 +6,7 @@
 
 		
 	define("MAX_SIZE", 20); //20 KB max
-	define("VERSION", "1.2.1");
+	define("VERSION", "1.2.2");
 	
 	
 	echo '
@@ -19,6 +19,15 @@
 	<link href="editor.css" rel="Stylesheet" type="text/css" />
 	<script src="editor.js" type="text/javascript"></script>
 	<script type="text/javascript" src="../js/AJAX.js"></script>
+	
+	<script language="JavaScript">
+    function toggle(source) {
+    checkboxes = document.getElementsByName(\'checkbox[]\');
+    for(var i in checkboxes)
+    checkboxes[i].checked = source.checked;
+    }
+    </script>
+	
 	</head>
 	<body>
 	';
@@ -33,6 +42,28 @@
               $ext = substr($str, $i + 1, $l);
               return $ext;
           }
+		  
+	if (!isset($_SESSION["logged"]))
+	{
+	if (isset($_SESSION['user_name']))  {unset($_SESSION['user_name']);}
+	if (isset($_SESSION['user_pass']))  {unset($_SESSION['user_pass']);}
+	if (isset($_SESSION['user_level'])) {unset($_SESSION['user_level']);}
+	if (isset($_SESSION['logged']))     {unset($_SESSION['logged']);}
+	}	  
+	
+	if (isset($_SESSION["logged"]) AND isset($_SESSION["user_level"]) AND $_SESSION["user_level"]==1)
+	{
+	$un = $_SESSION['user_name'];
+	$pw = $_SESSION['user_pass'];
+	if (!array_key_exists($un,$ADMINISTRATORS))
+	  {
+	if (isset($_SESSION['user_name']))  {unset($_SESSION['user_name']);}
+	if (isset($_SESSION['user_pass']))  {unset($_SESSION['user_pass']);}
+	if (isset($_SESSION['user_level'])) {unset($_SESSION['user_level']);}
+	if (isset($_SESSION['logged']))     {unset($_SESSION['logged']);}
+	  
+	  }
+	} 
 
 	//LOGIN
     if (!isset($_SESSION['user_name']) AND (!isset($_SESSION['user_pass'])))
@@ -43,23 +74,23 @@
 		<a href="../index.php"><span style="font-size:9px;">DotA OpenStats</span></a></td></tr>';}
 		
     echo '<div align="center">
-<form method="post" action="">
-<table style="width:320px;margin-top:100px;" border=0><tr>
-<th><b>&nbsp;Login</b></th>
-<th></th></tr>
+         <form method="post" action="">
+         <table style="width:320px;margin-top:100px;" border=0><tr>
+         <th><b>&nbsp;Login</b></th>
+         <th></th></tr>
 
-<tr>
-<td height="36"><div align="right">Username </div></td>
-<td> <div align="left">
-&nbsp;<input id="user_name" type="text" name="user_name" maxlength="20"/>
-</div>
-</td></tr>
+         <tr>
+         <td height="36"><div align="right">Username </div></td>
+         <td> <div align="left">
+         &nbsp;<input id="user_name" type="text" name="user_name" maxlength="20"/>
+         </div>
+         </td></tr>
 
-<tr>
-<td height="36"><div align="right">Password </div></td>
-<td> <div align="left">
-&nbsp;<input id="user_name" type="password" name="user_pass" maxlength="20" />
-</tr><tr><td></td>
+         <tr>
+         <td height="36"><div align="right">Password </div></td>
+         <td> <div align="left">
+         &nbsp;<input id="user_name" type="password" name="user_pass" maxlength="20" />
+         </tr><tr><td></td>
         <td height="36">
 		<input type="submit" class="inputButton" value="Login" />
  	    </td></tr>'.$dotaos.'
@@ -67,15 +98,14 @@
 		
 		</form>
 			
-</div></div>';}
+         </div></div>';}
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	 $un = $_POST["user_name"];
 	 $pw = $_POST["user_pass"];
 	 
 	 //CHECK ADMINISTRATORS
-	  if ( in_array($_POST["user_pass"], $ADMINISTRATORS) 
-	  AND $ADMINISTRATORS[$un] == $_POST["user_pass"] 
+	  if ( in_array($_POST["user_pass"], $ADMINISTRATORS)
 	  AND array_key_exists($un,$ADMINISTRATORS) AND $un!="" AND $pw!="")
 	  {
 	  $_SESSION['user_name'] = $un;
@@ -86,7 +116,7 @@
 	  
 	  // CHECK MODERATORS
 	  if ( in_array($_POST["user_pass"], $MODERATORS) 
-	  AND $MODERATORS[$un] == $_POST["user_pass"] AND array_key_exists($un,$MODERATORS) AND $un!="" AND $pw!="")
+	  AND array_key_exists($un,$MODERATORS) AND $un!="" AND $pw!="")
 	  {
 	  $_SESSION['user_name'] = $un;
 	  $_SESSION['user_pass'] = $pw;
@@ -96,7 +126,7 @@
 	  
 	  // CHECK PUBLISHERS
 	  if ( in_array($_POST["user_pass"], $PUBLISHERS) 
-	  AND $PUBLISHERS[$un] == $_POST["user_pass"] AND array_key_exists($un,$PUBLISHERS) AND $un!="" AND $pw!="")
+	  AND array_key_exists($un,$PUBLISHERS) AND $un!="" AND $pw!="")
 	  {
 	  $_SESSION['user_name'] = $un;
 	  $_SESSION['user_pass'] = $pw;
@@ -155,9 +185,9 @@
 	
 	echo "<div align='center'><table style='width:320px;margin-top:100px;'><tr><th><div align='center'>You have been successfully logged out.</div></th></tr><tr><td><a href='index.php'>Back to previous page</a></td></tr></table></div>";
 	}
-	
+
 	//LOGIN SUCCESSFULLY
-	if (isset($_SESSION["logged"]))
+	if (isset($_SESSION["logged"]) AND isset($_SESSION["user_name"]))
 	{
     //BUILD ACP
 	echo "<div style='padding-top:4px;padding-bottom:4px;'>Welcome, <b>$_SESSION[user_name]</b> <a href='index.php?logout'>(Logout)</a>
@@ -574,7 +604,7 @@ function confirmDelete(delUrl) {
 	
 	include('pagination.php');
 	
-	echo '<form method="post" action="">
+	echo '<form method="post" name="myform" action="">
 	<input id="name" type="text" name="name" maxlength="60"/>
 	<input type="submit" class="inputButton" value="Search banned users" />
 	</form>
@@ -587,10 +617,10 @@ function confirmDelete(delUrl) {
 	
 	 <td  align='right'><a href='index.php?remove_dupbans'><b><img alt='' style='vertical-align: middle;' width='20px' height='20px' src='../img/items/BTNCancel.gif' border=0/> Remove duplicate bans </a></td>
 	 </tr></table></div>
-	 
+	 <form method='post' name='delete' action=''>
 	<div align='center'>
 	<table style='width:98%' border=1><tr>
-	<th>ID</th>
+	<th><input type='checkbox' onClick='toggle(this)' />ID</th>
 	<th>Name</th>
 	<th>Game</th>
 	<th>Action</th>
@@ -606,7 +636,7 @@ function confirmDelete(delUrl) {
 	$ip = substr($row["ip"],0,7)."xx.xx";
 	$name = strtolower(trim($row["name"]));
 	echo "<tr class='row'>
-	<td width='48px'>$row[id]</td>
+	<td width='48px'><input type='checkbox' name='checkbox[]' value='$row[id]'>$row[id]</td>
 	<td width='130px' style='padding-left:2px'><b><a href='../user.php?u=$name'>$row[name]</a></b></td>
 	<td width='160px'>$row[gamename]</td>
 	<td width='64px'><a title='Delete ban: $row[name]' href='index.php?bans&delete=$row[id]'>Delete</a></td>
@@ -617,16 +647,31 @@ function confirmDelete(delUrl) {
 	<td>$row[reason]</td>
 	</tr>";
 	}
-	echo "</table></div>";
-	echo "<br>";
+	echo "</table>
+	<table style='width:98%' border=1><tr><td>
+	<input class='inputButton' type='submit' name='Submit' value='Delete Selected'></td></tr></table></div>";
+	echo "<br></form>";
 	include('pagination.php');
 	}
+	if (isset($_POST['checkbox']) AND isset($_GET["bans"]) AND $_SESSION['user_level'] <=2) {
+	for ($i = 0; $i < count($_POST['checkbox']); $i++) {
+              //echo "<br />value $i = " . $_POST['checkbox'][$i];
+              $sql = "DELETE FROM bans WHERE id = " . safeEscape($_POST['checkbox'][$i]) . " LIMIT 1";
+			  $result = $db->query($sql);
+           }
+              if ($result) {
+                  echo "
+				  <br><br>$i ban(s) deleted!<br><br><a href='index.php?bans'>Back to previous page</a><br><br>";
+              } else {
+                  echo "An error occured!";
+              }
+	}
 	
-	if (isset($_GET['bans']) AND !isset($_GET['delete']) 
+	if (isset($_GET['bans']) AND !isset($_GET['delete']) AND isset($_POST['name'])
 	AND $_SERVER['REQUEST_METHOD'] == 'POST' AND $_SESSION['user_level'] <=2){
 	include("../config.php");
 	$searchName = $_POST['name'];
-	
+
 	if (strlen($_POST['name']) < 3)
 	{
 	echo "<br/><br/>Search term have too few characters<br/><br/><a href='index.php?bans'>Back to previous page</a>";
@@ -672,7 +717,7 @@ function confirmDelete(delUrl) {
 	  }
   }
   else {$res =  "<br/><b>The search term provided yielded no results.</b>";}
-  echo "</table></div>$res<br/><br/><a href='index.php?bans'>Back to previous page</a>";
+  echo "</table></div>$res<br/><br/><a href='index.php?bans'>Back to previous page</a><br><br>";
    }
 
 	if (isset($_GET['bans']) AND isset($_GET['delete']) 
@@ -1314,12 +1359,13 @@ function confirmDelete(delUrl) {
 		
 		</tr></table><hr><br/>";
 		}
+
 	
 	include('pagination.php');
 	$sql = "SELECT * FROM news ORDER BY news_date DESC LIMIT $offset, $rowsperpage";
 	$result = $db->query($sql);
 	 echo "<br><div align='center'><b>NEWS</b><table border=1 style='width:95%;'><tr>
-	 <th>ID</th>
+	 <th><input type='checkbox' onClick='toggle(this)' /> ID</th>
 	 <th>Content</th>
 	 <th><div align='center'>Date</div></th>
 	 <th><div align='center'>Action</div></th>
@@ -1336,7 +1382,8 @@ function confirmDelete(delUrl) {
 	 $text = BBDecode($text);
 	 $text = substr($text,0,200)." ...";
 	echo "<tr class='row'>
-	<td valign='top' width='40px'><div align='left'>$row[news_id]</div></td>
+	<td valign='top' width='40px'><div align='left'>
+	<input type='checkbox' name='checkbox[]' value='$row[news_id]'>$row[news_id]</div></td>
 	<td valign='top' width='250px'><b><a href='index.php?addnews&edit_news=$row[news_id]'>$title</a></b><br><hr style='width:50%;'>$text<br><br><br></td>
 	<td valign='top' width='80px'><div align='center'>$dateis</div></td>
 	<td valign='top' width='80px'><div align='center'><a href='index.php?addnews&edit_news=$row[news_id]'>Edit</a>
@@ -1345,7 +1392,10 @@ function confirmDelete(delUrl) {
 	</tr>
 	<tr><th></th><th></th><th></th><th></th></tr>";
 	 
-	 } echo "</table></div><br/>";
+	 } echo "</table>
+	 <table border=1 style='width:95%;'><tr><td>
+	 <input class='inputButton' type='submit' name='Submit' value='Delete Selected'></td></tr></table></div>
+	 <br/>";
 	 include('pagination.php');
 
 	}
@@ -1355,6 +1405,23 @@ function confirmDelete(delUrl) {
 	//////////////////////////////////////////////////
 	if (isset($_GET['addnews'])  AND $_SERVER['REQUEST_METHOD'] == 'POST' 
 	AND !isset($_GET['delete_news']) AND $_SESSION['user_level'] <=3) {
+	
+		if (isset($_POST['checkbox']) AND isset($_GET['addnews'])) {
+		
+          for ($i = 0; $i < count($_POST['checkbox']); $i++) {
+		  $newsID = safeEscape($_POST['checkbox'][$i]);
+              //echo "<br />value $i = " . $_POST['checkbox'][$i];
+			  $sql = "DELETE FROM news WHERE news_id = $newsID LIMIT 1";
+              $result =$db->query($sql);
+              }
+		   	if ($result) {echo "
+			<br><br>Deleted $i news<br><br><a href='index.php?addnews'>Back to previous page</a><br><br>"; die;} 
+			else {
+              echo "An error occured!"; die;}
+            }
+
+	
+	
 	//ADD NEWS
 	if (!isset($_GET['edit_news']))
 	{
@@ -2166,9 +2233,15 @@ function confirmDelete(delUrl) {
 	  <tr><td align='center'><br><a target='_blank' class='inputButton' href='https://sourceforge.net/projects/dotaopenstats/'>Download ".$vers."</a><br><br></td></tr>";
 	  }
 	  
-	  echo "</table></div><br><br>";
+	  echo "</table></div><br>";
+	  
+	 if ($_debug == 1)
+	 {echo "<div align='center'><div style='width:500px;background-color:#FFFFE0;color:#000;padding:4px;border:2px solid #E6DB55;'>
+	 <b>Notice:</b> It's not recommended to enable error reportings on live site.<br><br>
+	  You can disable error reportings in your <b>config.php</b> (&#36;_debug = 0)</div><br><br></div>";}
 
 	 }
+	 
 	  ////////////////////////////////////////////////////////////////////////
      //                              MANAGE GAMES                          //
 	////////////////////////////////////////////////////////////////////////
@@ -2227,6 +2300,30 @@ function confirmDelete(delUrl) {
 
   if ($_SERVER['REQUEST_METHOD'] == 'POST' OR isset($_GET['id']))
   {
+  if (isset($_POST['checkbox']) AND !isset($_POST["gid"]) AND $_SESSION['user_level'] <=3) {
+          for ($i = 0; $i < count($_POST['checkbox']); $i++) {
+		     $gid = safeEscape($_POST['checkbox'][$i]);
+             // echo "<br />value $i = " . $_POST['checkbox'][$i];
+              $sql_1 = "DELETE FROM games WHERE id = $gid LIMIT 1";
+              $sql_2 = "DELETE FROM gameplayers WHERE gameid = $gid";
+              $sql_3 = "DELETE FROM dotaplayers WHERE gameid = $gid";
+              $sql_4 = "DELETE FROM dotagames WHERE gameid = $gid";
+	  
+              $result_1 = $db->query($sql_1);
+              $result_2 = $db->query($sql_2);
+              $result_3 = $db->query($sql_3);
+              $result_4 = $db->query($sql_4);
+
+              }
+			  			  
+              if ($result_1 AND $result_2 AND $result_3 AND $result_4) 
+			  {echo "<br><br>$i Game(s) Deleted<br><br>
+			  <a href='index.php?games&check'>Back to previous page</a>"; die;} else {
+              echo "$l_error_occured";
+           }
+        }
+  
+  
     if (isset($_GET['gameid'])) 
 	{
 	$gid = safeEscape($_GET['gameid']);
@@ -2406,8 +2503,9 @@ function confirmDelete(delUrl) {
 		  LIMIT $offset, $rowsperpage";
   
           $result = $db->query($sql);
-		  echo "<table class='tableA'><tr>
-		  <th class='padLeft'>ID</th>
+		  echo "<form name ='myform' action='' method='post'>
+		  <table class='tableA'><tr>
+		  <th class='padLeft'><input type='checkbox' onClick='toggle(this)' />ID</th>
 		  <th>Game Name</th>
 		  <th>Duration</th>
 		  <th>Date</th>
@@ -2429,6 +2527,7 @@ function confirmDelete(delUrl) {
 
 		   echo "<tr class='row'>
 		   <td align='left' class='padLeft' width='64px'>
+		   <input type='checkbox' name='checkbox[]' value='$row[id]'>
 		   <a href='index.php?games&check&id=$row[id]'>$row[id]</a></td>
 		   <td align='left' width='250px'><a href='index.php?games&check&id=$row[id]$_winner$_page'>$gn</a></td>
 		   <td align='left' width='120px'>$duration</td>
@@ -2442,7 +2541,11 @@ function confirmDelete(delUrl) {
 		   </td>
 		   <td></td>
 		   </tr>";
-		   } echo "</table>"; include('pagination.php'); echo "<br>";
+		   } echo "</table><table><tr><td align='left'  class='padLeft'>
+		   <input class='inputButton' type='submit' name='Submit' value='Delete Selected'>
+		   </tr></td></table></form>"; 
+		   
+		   include('pagination.php'); echo "<br>";
 	  }
 
 	  if (isset($_GET["delete_game"]) AND is_numeric($_GET["delete_game"]) 
