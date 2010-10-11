@@ -76,6 +76,9 @@ $displayUsersDisconnects = '1';
 
 //Replay Location:
 $replayLocation = 'replays';
+//You can use timeoffset to mach replay date (from -12 to 13)
+//If replays working fine dont change this value (default 0).
+$replayTimeOffset = '0'; 
 
 //If Smart Parsing enabled replay will be saved into HTML output after first parsing. 
 //There is no need to parse same replay anymore.
