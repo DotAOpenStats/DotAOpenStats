@@ -57,6 +57,10 @@
 		$replayDate = $list["datetime"];
 		$gamename=$list["gamename"];
 		$win=$list["winner"];
+		
+   $replayDate =  strtotime($replayDate)+($replayTimeOffset*3600)+(0*60);  //3*3600 = +3 HOURS,   +0 minutes.
+   $replayDate = date("Y-m-d H:i",$replayDate);
+   //echo date("Y-m-d H:i",strtotime($replayDate));
    
    $gametimenew = substr(str_ireplace(":","-",date("Y-m-d H:i",strtotime($replayDate))),0,16);
    require_once('./includes/get_replay.php');
@@ -120,12 +124,12 @@
 		$item5=$list["item5"];
 		$item6=$list["item6"];
 		
-		$itemicon1=strtoupper($list["itemicon1"]);
-		$itemicon2=strtoupper($list["itemicon2"]);
-		$itemicon3=strtoupper($list["itemicon3"]);
-		$itemicon4=strtoupper($list["itemicon4"]);
-		$itemicon5=strtoupper($list["itemicon5"]);
-		$itemicon6=strtoupper($list["itemicon6"]);
+		$itemicon1=$list["itemicon1"];
+		$itemicon2=$list["itemicon2"];
+		$itemicon3=$list["itemicon3"];
+		$itemicon4=$list["itemicon4"];
+		$itemicon5=$list["itemicon5"];
+		$itemicon6=$list["itemicon6"];
 		
 		$itemID1=$list["item1"];
 		$itemID2=$list["item2"];
@@ -318,7 +322,39 @@
 		if ($list["itemname6"]!="") 
 		{$ic6 = "onMouseout='hidetooltip()' onMouseover='tooltip(\"".$a6."\",130)'";} else {$ic6 = "";}
 		
-
+		
+        if ($itemicon1 == "empty.gif") 
+		{$ITEM1 = "<img border=0 title=\"\" alt='' width='28px' src='./img/items/$itemicon1'>";}
+		else 
+		{$ITEM1 = "<a href='item.php?item=$itemID1'><img $ic1 border=0 title=\"\" alt='' width='28px' src='./img/items/$itemicon1'></a>";}
+		
+		if ($itemicon2 == "empty.gif") 
+		{$ITEM2 = "<img border=0 title=\"\" alt='' width='28px' src='./img/items/$itemicon2'>";}
+		else 
+		{$ITEM2 = "<a href='item.php?item=$itemID2'><img $ic2 border=0 title=\"\" alt='' width='28px' src='./img/items/$itemicon2'></a>";}
+		
+		if ($itemicon3 == "empty.gif") 
+		{$ITEM3 = "<img border=0 title=\"\" alt='' width='28px' src='./img/items/$itemicon3'>";}
+		else 
+		{$ITEM3 = "<a href='item.php?item=$itemID3'><img $ic3 border=0 title=\"\" alt='' width='28px' src='./img/items/$itemicon3'></a>";}
+		
+		if ($itemicon4 == "empty.gif") 
+		{$ITEM4 = "<img border=0 title=\"\" alt='' width='28px' src='./img/items/$itemicon4'>";}
+		else 
+		{$ITEM4 = "<a href='item.php?item=$itemID4'><img $ic4 border=0 title=\"\" alt='' width='28px' src='./img/items/$itemicon4'></a>";}
+		
+		if ($itemicon5 == "empty.gif") 
+		{$ITEM5 = "<img border=0 title=\"\" alt='' width='28px' src='./img/items/$itemicon5'>";}
+		else 
+		{$ITEM5 = "<a href='item.php?item=$itemID5'><img $ic5 border=0 title=\"\" alt='' width='28px' src='./img/items/$itemicon5'></a>";}
+		
+		if ($itemicon6 == "empty.gif") 
+		{$ITEM6 = "<img border=0 title=\"\" alt='' width='28px' src='./img/items/$itemicon6'>";}
+		else 
+		{$ITEM6 = "<a href='item.php?item=$itemID6'><img $ic6 border=0 title=\"\" alt='' width='28px' src='./img/items/$itemicon6'></a>";}
+		
+		
+		
 		echo "<tr class='row'>
 		      <td><a href='user.php?u=$name2'>$name</a> $Points</td>
 			  <td>$hero</td>
@@ -332,13 +368,7 @@
 			  <td><div align='center'>$gold</div></td>
 			  
 			  <td><div align='left'>
-			  <a href='item.php?item=$itemID1'><img $ic1 border=0 title=\"\" alt='' width='28px' src='./img/items/$itemicon1'></a>
-			  <a href='item.php?item=$itemID2'><img $ic2 border=0  title=\"\" alt='' width='28px' src='./img/items/$itemicon2'></a>
-			  <a href='item.php?item=$itemID3'><img $ic3 border=0  title=\"\" alt='' width='28px' src='./img/items/$itemicon3'></a>
-			  <a href='item.php?item=$itemID4'><img $ic4 border=0  title=\"\" alt='' width='28px' src='./img/items/$itemicon4'></a>
-			  <a href='item.php?item=$itemID5'><img $ic5 border=0  title=\"\" alt='' width='28px' src='./img/items/$itemicon5'></a>
-			  <a href='item.php?item=$itemID6'><img $ic6 border=0  title=\"\" alt='' width='28px' src='./img/items/$itemicon6'></a>
-			  
+			  $ITEM1 $ITEM2 $ITEM3 $ITEM4 $ITEM5 $ITEM6
 			  </div>
 			  </td>
 			  

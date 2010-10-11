@@ -1610,6 +1610,9 @@ function confirmDelete(delUrl) {
 	  $replayLocation = get_value_of('$replayLocation');
       $replayLocation = trim($replayLocation);
 	  
+	  $replayTimeOffset = get_value_of('$replayTimeOffset');
+      $replayTimeOffset = trim($replayTimeOffset);	
+	  
 	  $max_pagination_link = get_value_of('$max_pagination_link');
       $max_pagination_link = trim($max_pagination_link);
 	  
@@ -1899,6 +1902,10 @@ function confirmDelete(delUrl) {
 	  <td width="160px">Replay Location</td>
 	  <td><input value="'.$replayLocation.'" type="text" name="replay" size=30 /> (http://myDotaOsSite.com/<b>'.$replayLocation.'</b>)</td></tr>
 	  
+	  <tr>
+	  <td  valign="top" width="160px">Replay TimeShift</td>
+	  <td><input value="'.$replayTimeOffset.'" type="text" name="replayoffset" maxlength=3 size=3 /> <br>You can use timeoffset to match replay date (from -12 to 13)<br>If replays working fine dont change this value (default <b>0</b>)</td></tr>
+	  
 	  	  <tr><th>Monthly</th><th></th></tr>
 	  
 	  <tr>
@@ -2060,6 +2067,10 @@ function confirmDelete(delUrl) {
 	  write_value_of('$head_admin', "$head_admin", $_POST['head']);
 	  write_value_of('$bot_name', "$bot_name", $_POST['bot']);
 	  write_value_of('$replayLocation', "$replayLocation", $_POST['replay']);
+	  
+	  if (is_numeric($_POST['replayoffset']) AND $_POST['replayoffset']<=13 AND $_POST['replayoffset']>=-12)
+	  write_value_of('$replayTimeOffset', "$replayTimeOffset", $_POST['replayoffset']);
+	  
 	  write_value_of('$UserAchievements', "$UserAchievements", $_POST['ach']);
 	  write_value_of('$UserPointsOnGamePage', "$UserPointsOnGamePage", $_POST['upg']);
 	  write_value_of('$AccuratePointsCalculation', "$AccuratePointsCalculation", $_POST['apc']);
@@ -2441,6 +2452,9 @@ function confirmDelete(delUrl) {
 		   $replayDate = $row["datetime"];
 		   $gdate=date($date_format,strtotime($row["datetime"]));
 		   $duration=secondsToTime($row["duration"]);
+		   
+		   $replayDate =  strtotime($replayDate)+$replayTimeOffset*3600;  //3*3600 = +3 HOURS
+           $replayDate = date("Y-m-d H:i",$replayDate);
 	   	   $gametimenew = substr(str_ireplace(":","-",date("Y-m-d H:i",strtotime($replayDate))),0,16);
 		   $winner = $row["winner"];
 
