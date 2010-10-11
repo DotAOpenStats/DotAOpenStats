@@ -84,7 +84,8 @@
 	
 	include('includes/get_heroes.php');
   
-  
+    include('pagination.php');
+	echo "<br>";
   
     include('footer.php');
   

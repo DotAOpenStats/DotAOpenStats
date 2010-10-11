@@ -61,42 +61,12 @@
   $sort = 'DESC';
   if (isset($_GET['sort']) AND $_GET['sort'] == 'asc')
   {$sort = 'desc'; $sortdb = 'ASC';} else {$sort = 'asc'; $sortdb = 'DESC';}
-
-  include('pagination.php');
   
   //Show sentinel and scourge won
   if ($ShowSentinelScourgeWon == 1)
-    {$sql = getSentScourWon();
-    $result = $db->query($sql);
-    $row = $db->fetch_array($result,'assoc');
-	
-    $_totals = $row["sentinelWon"]+$row["scourgeWon"]+$row["draw"];
-    $_sentWon = $row["sentinelWon"];
-    $_scourWon = $row["scourgeWon"];
-    $_draw = $row["draw"];
-  
-    $_sentPerc = ROUND(($_sentWon/$_totals)*100,1);
-    $_scourPerc = ROUND(($_scourWon/$_totals)*100,1);
-    $_drawPerc = ROUND(($_draw/$_totals)*100,1);
-  
-  echo "<div align='center'><table class='tableA'><tr>
-     <th></th>
-     <th>$_lang[sent_won]</th>
-	 <th>$_lang[scourge_won]</th>
-	 <th>$_lang[draw_game]</th>
-	 <th></th>
-	 </tr>
-	 <tr class='row'>
-	 <td width='30%'></td>
-	 <td width='15%'>$_sentWon ($_sentPerc%)</td>
-	 <td width='15%'>$_scourWon ($_scourPerc%)</td>
-	 <td width='20%'>$_draw ($_drawPerc%)</td>
-	 <td></td>
-	 </tr>
-	 
-	 </table></div>";}
-  
-  
+    {require_once("./includes/get_games_summary.php");}
+
+    include('pagination.php');
 
   $sql = "SELECT 
           g.id, map, datetime, gamename, ownername, duration, creatorname, dg.winner, 
@@ -148,32 +118,10 @@
 	<td width='200px'><div align='left'>$gametime</div></td>
 	<td width='200px'><div align='left'><a href='user.php?u=$creator2'>$creator</a></div></td>
 	</tr>";
-		
-		//echo "<br/>id:$gameid | gn: $gamename | m: $map | time: $duration | win: $winner";
   }
       echo "</table></div>";
 	  
-	  $sql = "SELECT MAX(duration), MIN(duration), AVG(duration), SUM(duration) 
-	  FROM games 
-	  WHERE LOWER(map) LIKE LOWER('%dota%') LIMIT 1";
-	  
-	  $result = $db->query($sql);
-	  $row = $db->fetch_array($result,'assoc');
-
-      $maxDuration=secondsToTime($row["MAX(duration)"]);
-      $minDuration=secondsToTime($row["MIN(duration)"]);
-      $avgDuration=secondsToTime($row["AVG(duration)"]);
- 	  $totalDuration=secondsToTime($row["SUM(duration)"]);
-
   include('pagination.php');
-
-     echo "<div align='center'><table class='tableA'><tr>
-     <th width='33%' class='padLeft'>$lang[total_games] $numrows</th>
-	 <th width='33%'>$lang[avg_duration] $avgDuration</th>
-	 <th width='33%'>$lang[total_duration] $totalDuration</th>
-	 </tr>
-	 </table></div>
-	 ";
-  
+  echo "<br>";
   include('footer.php');
   ?>

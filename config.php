@@ -60,7 +60,7 @@ $ShowItemsMostUsedByHero = '1';
 //Show Items button on Menu buttons
 $enableItemsPage = '1';
 
-//Show total sentinel and scourge won on games page
+//Show total summary of all games (sentinel and scourge: wins, kills, creeps...)
 $ShowSentinelScourgeWon = '1';
 
 

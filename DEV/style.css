@@ -21,6 +21,15 @@ body {
 	height: 600px;
 }
 
+#wrapper {
+	height: auto !important;
+    margin-left: auto;
+    margin-right: auto;
+	text-align: center;
+	background-color: #F6F7FB;
+    border: 0px solid #F6F7FB;
+}
+
 A:link {
 color:#4D628A;text-decoration:none;
 }
@@ -66,6 +75,44 @@ td {
 	text-align: left;
 	font-size: 12px;
 	height: 26px;
+}
+
+.tableA{
+width:95%;margin:8px;
+}
+
+.tableB{
+height:24px;
+}
+
+.tableC {
+width:95%;
+padding-left:22px;
+}
+
+.tableNews {
+width:95%;
+}
+
+.tableSearchH {
+width:95%;margin-top:24px; margin-bottom:12px;
+}
+
+.tableSearchR{
+padding-left:4px; height:24px;
+}
+
+.inputSearch{
+height:24px;
+}
+
+.inputSearchButtons{
+height:32px;padding-left:4px;
+}
+
+
+.padLeft {
+padding-left:12px;
 }
 
 /* NOTE:  CSS3  (sorry, no IE support) */
@@ -139,7 +186,7 @@ cursor: pointer;
 }
 
 .pagination {
-	padding: 0px;
+	padding-right: 8px;
 	margin: 0px;
 	text-align:right;
 }

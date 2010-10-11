@@ -391,6 +391,39 @@ SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.new
 		  return $sql;
 	}
 	
+	function getSentScourgeKills($who){
+	$sql = "SELECT SUM(kills) as TotalKills 
+		  FROM dotaplayers 
+		  LEFT JOIN dotagames ON dotagames.gameid = dotaplayers.gameid
+          WHERE dotagames.winner = $who AND  dotagames.winner != 0
+		  AND dotagames.min >=10
+		  LIMIT 1";
+		  
+		  return $sql;
+	}
+	
+	function getSentScourgeCreepKills($who){
+	$sql = "SELECT SUM(creepkills) as TotalKills 
+		  FROM dotaplayers 
+		  LEFT JOIN dotagames ON dotagames.gameid = dotaplayers.gameid
+          WHERE dotagames.winner = $who AND  dotagames.winner != 0
+		  AND dotagames.min >=10
+		  LIMIT 1";
+		  
+		  return $sql;
+	}
+	
+	function getSentScourgeCreepDenies($who){
+	$sql = "SELECT SUM(creepdenies) as TotalKills 
+		  FROM dotaplayers 
+		  LEFT JOIN dotagames ON dotagames.gameid = dotaplayers.gameid
+          WHERE dotagames.winner = $who AND  dotagames.winner != 0
+		  AND dotagames.min >=10
+		  LIMIT 1";
+		  
+		  return $sql;
+	}
+	
 	  /////////////////////////////////////////////////////////////////
 	 //                          ITEMS                              //
 	/////////////////////////////////////////////////////////////////
@@ -413,6 +446,7 @@ SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.new
 	   AND !strstr($itemName,"Necronomicon Lev")
 	   AND !strstr($itemName,"Urn of Shadows")
 	   AND !strstr($itemName,"Dust of Appearance")
+	   AND !strstr($itemName,"s Dagger")
 	   )
 	{
 	$sql = "SELECT COUNT(*) as total, dp.item1,dp.item2, dp.item3, dp.item4, dp.item5, dp.item6, dp.hero, h.heroid, h.description as heroname 
@@ -686,6 +720,25 @@ SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.new
 	WHERE dp.hero = '$heroid' AND dp.hero !='' 
     OR it.name LIKE ('%Dust of Appearance%') OR it2.name LIKE ('%Dust of Appearance%') OR it3.name LIKE ('%Dust of Appearance%') 
 	OR it4.name LIKE ('%Dust of Appearance%') OR it5.name LIKE ('%Dust of Appearance%') OR it6.name LIKE ('%Dust of Appearance%')
+	GROUP BY dp.hero 
+	ORDER BY count(*) DESC,  dp.hero DESC LIMIT $tot
+	";}
+	
+	if (strstr($itemName,"s Dagger"))
+	{
+	//Now group Kelen's Dagger if is selected item
+	$sql = "SELECT COUNT(*) as total, dp.item1,dp.item2, dp.item3, dp.item4, dp.item5, dp.item6, dp.hero, h.heroid, h.description as heroname, it.name, it.itemid
+	FROM dotaplayers as dp 
+	LEFT JOIN heroes as h ON h.heroid = dp.hero AND h.summary != '-'
+	LEFT JOIN items as it ON it.name LIKE ('%s Dagger%') AND  it.item_info!='' AND (it.itemid = dp.item1)  
+	LEFT JOIN items as it2 ON it2.name LIKE ('%s Dagger%') AND  it2.item_info!='' AND (it2.itemid = dp.item2) 
+	LEFT JOIN items as it3 ON it3.name LIKE ('%s Dagger%') AND  it3.item_info!='' AND (it3.itemid = dp.item3) 
+	LEFT JOIN items as it4 ON it4.name LIKE ('%s Dagger%') AND  it4.item_info!='' AND (it4.itemid = dp.item4) 
+	LEFT JOIN items as it5 ON it5.name LIKE ('%s Dagger%') AND  it5.item_info!='' AND (it5.itemid = dp.item5) 
+	LEFT JOIN items as it6 ON it6.name LIKE ('%s Dagger%') AND  it6.item_info!='' AND (it6.itemid = dp.item6) 
+	WHERE dp.hero = '$heroid' AND dp.hero !='' 
+    OR it.name LIKE ('%s Dagger%') OR it2.name LIKE ('%s Dagger%') OR it3.name LIKE ('%s Dagger%') 
+	OR it4.name LIKE ('%s Dagger%') OR it5.name LIKE ('%s Dagger%') OR it6.name LIKE ('%s Dagger%')
 	GROUP BY dp.hero 
 	ORDER BY count(*) DESC,  dp.hero DESC LIMIT $tot
 	";}

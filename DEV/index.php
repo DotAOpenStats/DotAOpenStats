@@ -53,6 +53,7 @@
 	
 	if (isset($_SESSION["logged"]) AND isset($_SESSION["user_level"]) AND $_SESSION["user_level"]==1)
 	{
+
 	$un = $_SESSION['user_name'];
 	$pw = $_SESSION['user_pass'];
 	if (!array_key_exists($un,$ADMINISTRATORS))
@@ -143,10 +144,13 @@
 	  
 	     if (isset($_SESSION["logged"]) AND $_SESSION["logged"] == 1)
 	 	 {
-		 if ($_SESSION['user_name'] == "admin" OR $_SESSION['user_pass'] == "admin")
+		 if ($_SESSION['user_name'] == "admin" 
+		 OR $_SESSION['user_pass'] == "admin"
+		 OR $_SESSION['user_name'] == "user1" OR $_SESSION['user_name'] == "user2"
+		 OR $_SESSION['user_name'] == "john" OR $_SESSION['user_name'] == "dota")
 		    {
 		 echo "<br><br><br><br>Please change your admin username/password";
-		 unset($_SESSION['user_name']);unset($_SESSION['user_pass']);
+		 unset($_SESSION['user_name']); unset($_SESSION['user_pass']);
 		 unset($_SESSION['user_level']);unset($_SESSION['logged']);
 		 echo "<br><br><a href='index.php'>Back to previous page</a>"; die;
 		 }
@@ -1333,7 +1337,8 @@ function confirmDelete(delUrl) {
 			<span style="color:#000;"><b>HTML</b></span>
 	</div></td></tr><tr><td align="center">
 	
-	 <textarea class="reply" id="reply" name="reply" style="padding-top:4px;height:260px;width:645px;">'.$news_content.'</textarea></td></tr><tr><td align="center">
+	 <textarea class="reply" id="reply" name="reply" style="padding-top:4px;height:260px;width:645px;">'.$news_content.'</textarea></td></tr>
+	 <tr><td align="center">
     <br>
 	<input type="submit" class="inputButton" value="'.$button.'" /> <br> <br>
 	</div></td></tr></table>';
@@ -2164,7 +2169,7 @@ function confirmDelete(delUrl) {
 	   $table_news = $db->table_size("news",$database);
 	   $table_scores = $db->table_size("scores",$database);
 	   //$database_size = $db->database_size($database);
-	   echo "<br><br><div align='center'><table border=1 style='width:430px;'>
+	   echo "<br><a href='index.php?backup'>Back to previous page</a><br><br><div align='center'><table border=1 style='width:430px;'>
 	   <tr><th>Table: $database</th><th style='padding:6px;'>Size:<p class='alignright'></p></th></tr>
 	   <tr><td style='padding-right:4px;' width='180px;' align='right'><b>admins</b></td><td style='padding:6px;'>$table_admins</td>
 	   <tr><td style='padding-right:4px;' width='180px;' align='right'><b>bans</b></td><td style='padding:6px'>$table_bans</td>
@@ -2177,7 +2182,7 @@ function confirmDelete(delUrl) {
 	   <tr><td style='padding-right:4px;' width='180px;' align='right'><b>items</b></td><td style='padding:6px'>$table_items</td>
 	   <tr><td style='padding-right:4px;' width='180px;' align='right'><b>news</b></td><td style='padding:6px'>$table_news</td>
 	   <tr><td style='padding-right:4px;' width='180px;' align='right'><b>scores</b></td><td style='padding:6px'>$table_scores</td>
-	   </tr></table><br><br><a href='index.php?backup'>Back to previous page</a>";
+	   </tr></table><br><br><a href='index.php?backup'>Back to previous page</a><br><br>";
 	   }
 	   
 	   if (isset($_GET['optimize']) AND !isset($_GET['backup']) 

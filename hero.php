@@ -66,7 +66,7 @@
 		$skills=$row["skills"];
 	
 	    $hero=convEnt($list["description"]);
-		$hid=convEnt($list["original"]);
+		$hid=convEnt(strtoupper($list["original"]));
 		$summ=convEnt($list["summary"]);
 		$stats=convEnt($list["stats"]);
 		$skills=convEnt($list["skills"]);
