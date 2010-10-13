@@ -57,7 +57,7 @@
 			} 
   
   
-  $sql = getCountTops($games);
+  $sql = getCountTops($games,$HideBannedUsersOnTop);
   
      $result = $db->query($sql);
 	 $r = $db->fetch_row($result);

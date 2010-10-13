@@ -8,14 +8,14 @@
 	define("MAX_SIZE", 20); //20 KB max
 	define("VERSION", "1.2.2");
 	
-	
-	echo '
+	?>
+
 	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Dota OpenStats | ACP</title>
-	<link rel="stylesheet" href="'.$admin_style.'" type="text/css" />
+	<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Dota OpenStats | ACP</title>
+	<link rel="stylesheet" href="<?=$admin_style?>" type="text/css" />
 	<link href="editor.css" rel="Stylesheet" type="text/css" />
 	<script src="editor.js" type="text/javascript"></script>
 	<script type="text/javascript" src="../js/AJAX.js"></script>
@@ -30,7 +30,7 @@
 	
 	</head>
 	<body>
-	';
+<?
 	
 		  function getExtension($str)
           {
@@ -343,6 +343,23 @@
 			 <td class='padLeft'><a href='index.php'>Back to previous page</a></td></tr></table></div><br><br>";
 	}
 	
+	$sort = 'DESC';
+    if (isset($_GET['sort']) AND $_GET['sort'] == 'asc')
+    {$sort = 'desc'; $sortdb = 'ASC';} else {$sort = 'asc'; $sortdb = 'DESC';}
+	
+	if (isset($_GET['order']))
+	{
+	if ($_GET['order'] == 'name') {$order = ' LOWER(name) ';}
+	if ($_GET['order'] == 'date') {$order = ' date ';}
+	if ($_GET['order'] == 'game') {$order = ' LOWER(gamename) ';}
+	if ($_GET['order'] == 'reason') {$order = ' LOWER(reason) ';}
+	if ($_GET['order'] == 'bannedby') {$order = ' LOWER(admin) ';}
+	if ($_GET['order'] == 'id') {$order = ' id ';}
+	if ($_GET['order'] == 'duration') {$order = ' duration ';}
+
+	if ($_GET['order'] == 'creator') {$order = ' LOWER(creatorname) ';}
+	}
+	
 	
 	////////////////////////////////
 	//HEROES
@@ -605,6 +622,7 @@ function confirmDelete(delUrl) {
 	$r = $db->fetch_row($result);
 	$numrows = $r[0];
 	$rowsperpage = 50;
+	if (!isset($_GET["order"])) {$order = "id";}
 	
 	include('pagination.php');
 	
@@ -613,7 +631,7 @@ function confirmDelete(delUrl) {
 	<input type="submit" class="inputButton" value="Search banned users" />
 	</form>
 	';
-	$sql = "SELECT id,name,ip,date,gamename,admin,reason FROM bans ORDER BY date DESC LIMIT $offset, $rowsperpage";
+	$sql = "SELECT id,name,ip,date,gamename,admin,reason FROM bans ORDER BY $order $sort LIMIT $offset, $rowsperpage";
 	$result = $db->query($sql);
 	
 	echo "<div align='center'><table style='width:98%'><tr><td align='left'>
@@ -624,14 +642,16 @@ function confirmDelete(delUrl) {
 	 <form method='post' name='delete' action=''>
 	<div align='center'>
 	<table style='width:98%' border=1><tr>
-	<th><input type='checkbox' onClick='toggle(this)' />ID</th>
-	<th>Name</th>
-	<th>Game</th>
+	<th>
+	<input type='checkbox' onClick='toggle(this)' />
+	<a href='index.php?bans&order=id&sort=$sort'>ID</a></th>
+	<th><a href='index.php?bans&order=name&sort=$sort'>Name</a></th>
+	<th><a href='index.php?bans&order=game&sort=$sort'>Game</a></th>
 	<th>Action</th>
 	<th><div align='center'>Ip</div></th>
-	<th><div align='center'>Date</div></th>
-	<th>Banned by</th>
-	<th>Reason</th>
+	<th><a href='index.php?bans&order=date&sort=$sort'><div align='center'>Date</a></div></th>
+	<th><a href='index.php?bans&order=bannedby&sort=$sort'>Banned by</a></th>
+	<th><a href='index.php?bans&order=reason&sort=$sort'>Reason</a></th>
 	</tr>";
 	while ($row = $db->fetch_array($result,'assoc')) {
 	
@@ -644,11 +664,11 @@ function confirmDelete(delUrl) {
 	<td width='130px' style='padding-left:2px'><b><a href='../user.php?u=$name'>$row[name]</a></b></td>
 	<td width='160px'>$row[gamename]</td>
 	<td width='64px'><a title='Delete ban: $row[name]' href='index.php?bans&delete=$row[id]'>Delete</a></td>
-	<td width='64px'>$ip</td>
+	<td width='90px'>$ip</td>
 	<td width='150px'><div align='center'>$date</div></td>
 
 	<td width='90px'><a href='../user.php?u=$bannedby'>$row[admin]</a></td>
-	<td>$row[reason]</td>
+	<td width='220px'>$row[reason]</td>
 	</tr>";
 	}
 	echo "</table>
@@ -2508,8 +2528,17 @@ function confirmDelete(delUrl) {
 		$numrows = $r[0];
 		$rowsperpage = 50;
 		include('pagination.php');
-		if (isset($_GET["winner"]) AND $_GET["winner"] == 3) {$order = "g.duration";}
-		else {$order = "id";}
+		if (!isset($_GET["order"]))
+		{
+		  if (isset($_GET["winner"]) AND $_GET["winner"] == 3) {$order = "g.duration";}
+		  else {$order = "id"; }
+		}
+		   else
+		   {
+		   if ($_GET['order'] == 'date') 
+		   {$order = ' datetime ';}
+		   }
+		
 		
 		
 		$sql = "SELECT 
@@ -2518,17 +2547,18 @@ function confirmDelete(delUrl) {
 		  FROM games as g 
 		  LEFT JOIN dotagames as dg ON g.id = dg.gameid 
 		  WHERE map LIKE '%dota%' $getwinner $_shortGames
-		  ORDER BY $order DESC 
+		  ORDER BY $order $sortdb 
 		  LIMIT $offset, $rowsperpage";
   
           $result = $db->query($sql);
 		  echo "<form name ='myform' action='' method='post'>
 		  <table class='tableA'><tr>
-		  <th class='padLeft'><input type='checkbox' onClick='toggle(this)' />ID</th>
-		  <th>Game Name</th>
-		  <th>Duration</th>
-		  <th>Date</th>
-		  <th>Creator</th><th></th></tr>";
+		  <th class='padLeft'><input type='checkbox' onClick='toggle(this)' />
+		  <a href='index.php?games&check&order=id&sort=$sort'>ID</a></th>
+		  <th><a href='index.php?games&check&order=game&sort=$sort'>Game Name</a></th>
+		  <th><a href='index.php?games&check&order=duration&sort=$sort'>Duration</a></th>
+		  <th><a href='index.php?games&check&order=date&sort=$sort'>Date</a></th>
+		  <th><a href='index.php?games&check&order=creator&sort=$sort'>Creator</a></th><th></th></tr>";
 		    while ($row = $db->fetch_array($result,'assoc')) {
 		   $gn=$row["gamename"];
 		   $gcreator=$row["creatorname"];
@@ -2666,7 +2696,7 @@ function confirmDelete(delUrl) {
 	  $result = $db->query($sql);
 	  if ($db->num_rows($result)<=0) {echo "Unable to find administrator"; die;}
 	  $row = $db->fetch_array($result,'assoc');
-	  $butt = "Edit administrators";
+	  $butt = "Edit administrator";
 	  
 	  $Aname = $row["name"];
 	  $AID = $row["id"];
@@ -2692,11 +2722,11 @@ function confirmDelete(delUrl) {
 	  <td width="70px;" align="right">Server:</td>
 	  <td><input id="name" type="text" name="server" value="'.$AServer.'" size="25" maxlength="30"/></td></tr>
 	  <td></td>
-	  <td><input type="submit" class="inputButton" value="Edit '.$Aname.'" /></td></tr>
+	  <td><input type="submit" class="inputButton" value="'.$butt.' '.$Aname.'" /></td></tr>
 	</form></table></div><br>';
 	  }
 	  if (isset($_GET['edit_admin']) AND $_SESSION['user_level'] <=1 
-	  AND $_SERVER['REQUEST_METHOD'] == 'POST'  AND is_numeric($_GET['edit_admin']))
+	  AND $_SERVER['REQUEST_METHOD'] == 'POST' )
 	  {
 	  $edit_admin = safeEscape($_GET["edit_admin"]);
 	  $Aname = convEnt2($_POST["name"]);

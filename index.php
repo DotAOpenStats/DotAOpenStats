@@ -44,6 +44,27 @@
   <TR><TD><a href='https://sourceforge.net/projects/dotaopenstats/'>Download Dota OpenStats</a></TD>
   </TR></TABLE><br/>";
   
+    if (isset($_GET['id'])) 
+	{
+	$newsID = safeEscape($_GET['id']);
+	$sql = "SELECT * FROM news WHERE news_id = $newsID LIMIT 1";
+	$result = $db->query($sql);
+	$row = $db->fetch_array($result,'assoc');
+	$title = $row["news_title"];
+	$text = $row["news_content"];
+	$date = date($date_format,strtotime($row["news_date"]));
+	echo "<div align='center'><table class='tableNews'>
+	 <tr>
+	 <th class='padLeft'><p class='alignleft'>$title</p>
+	 <p class='alignright'>$lang[posted]  $date 
+	 <a name='$row[news_id]' href='index.php?id=$row[news_id]#$row[news_id]'>link</a></p></th>
+	 </tr>
+	 <td class='NewsText'>$text</td>
+	 </tr>
+	 </table>
+	 </div><br>";
+	}
+  
   	$sql = "SELECT COUNT(news_id) FROM news LIMIT 1";
 	$result = $db->query($sql);
 	$r = $db->fetch_row($result);
@@ -60,12 +81,12 @@
 	while ($row = $db->fetch_array($result,'assoc')) {
 	 $title = "$row[news_title]";
 	 $text = "$row[news_content]";
-	 $text = str_replace("<br>","<br>",$row["news_content"]);
+	 //$text = str_replace("<br>","<br>",$row["news_content"]);
 	 $date = date($date_format,strtotime($row["news_date"]));
-	 $text = str_replace("&lt;br&gt;","",$row["news_content"]);
+	 //$text = str_replace("&lt;br&gt;","",$row["news_content"]);
 	 echo "<div align='center'><table class='tableNews'>
 	 <tr>
-	 <th class='padLeft'><p class='alignleft'>$title</p><p class='alignright'>$lang[posted]  $date <a name='$row[news_id]' href='index.php?page=$currentpage#$row[news_id]'>link</a></p></th>
+	 <th class='padLeft'><p class='alignleft'>$title</p><p class='alignright'>$lang[posted]  $date <a name='$row[news_id]' href='index.php?page=$currentpage&id=$row[news_id]#$row[news_id]'>link</a></p></th>
 	 </tr><td class='NewsText'>$text</td>
 	 </tr>
 	 </table>

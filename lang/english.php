@@ -105,7 +105,7 @@ $lang["gotopage"] = "Go to page";
 $lang["nextpage"] = "Next page"; 
 $lang["gotolastpage"] = "Go to last page";
 $lang["of"] = "of";
-$lang["maches"] = "maches";
+$lang["maches"] = "matches";
 
 $lang["all_time_stats"] = "All time statistics";
 
@@ -145,7 +145,7 @@ $lang["toprank"] = "Ranks:";
 $lang["search_player"] = "Search player";
 $lang["search_players"] = "Search players";
 $lang["err_search"] = "Search term must have more than 3 characters";
-$lang["no_maches"] = "No maches for:";
+$lang["no_maches"] = "No matches for:";
 $lang["search_found"] = "Search found:";
 $lang["search_term_used"] = "Search term used:";
 $lang["search_users"] = "users";
@@ -174,7 +174,7 @@ $lang["feb"] = "February";
 $lang["mar"] = "March";
 $lang["apr"] = "April";
 $lang["may"] = "May";
-$lang["jun"] = "Jun";
+$lang["jun"] = "June";
 $lang["jul"] = "July";
 $lang["aug"] = "August";
 $lang["sep"] = "September";

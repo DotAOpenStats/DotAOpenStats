@@ -51,7 +51,10 @@
    
    $sql = "SELECT itemid 
           FROM items as Items
-		  WHERE item_info !='' AND name != 'Aegis Check' AND name != 'Arcane Ring' $letter
+		  WHERE item_info !='' 
+		  AND name != 'Aegis Check' 
+		  AND name NOT LIKE 'Disabled%' 
+		  AND name != 'Arcane Ring' $letter
 		  GROUP BY LOWER(shortname) 
 		  ORDER BY LOWER(shortname) ASC ";
    $result = $db->query($sql);
@@ -80,7 +83,10 @@
    
    $sql = "SELECT * 
           FROM items as Items
-		  WHERE item_info !='' AND name != 'Aegis Check' AND name != 'Arcane Ring' $letter
+		  WHERE item_info !='' 
+		  AND name != 'Aegis Check' 
+		  AND name != 'Arcane Ring' $letter
+		  AND name NOT LIKE 'Disabled%' 
 		  GROUP BY LOWER(shortname) 
 		  ORDER BY LOWER(shortname) ASC 
 		  LIMIT $offset, $rowsperpage";

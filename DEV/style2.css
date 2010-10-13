@@ -20,7 +20,7 @@ body {
 	width: 100%;
 	height: 700px;
 	background-image: url('../style/dota/img/bg.jpg');
-	background-repeat: none;
+	background-repeat:no-repeat;
 }
 
 #wrapper {

@@ -1,0 +1,75 @@
+
+======== DotA OpenStats Installation Guide ========
+                  (Based on Allstats)
+				  
+1) Install and configure a web server and MySQL or set up your hosted website.
+   If installing on your home computer:
+		For Windows: Download and install either:
+			a) WAMP - http://www.wampserver.com
+			b) MoWeS - http://www.chsoftware.net/en/useware/mowes/mowes.htm
+		For Linux: Download and install
+			a) LAMP - Follow steps at: http://lamphowto.com/
+			
+			(Optional) Set up DynDNS
+			DynDNS is a free service that gives your IP address it's own domain name.
+			They have a tray program that can automatically update their site with your IP address.
+			If you don't do this, in order for outsiders to view your website, they will have to know
+				your IP address.
+			Avaliable at: http://www.dyndns.com/
+			
+2) Install and setup GHost++ or GHostOne - Look at http://forum.codelain.com for these programs.
+
+    - Setup your db configuration:
+		$server - Your server, default "localhost" (If using remote computer than IP of the remote computer)
+		$username - Your DB username
+		$password - Your DB password
+		$database Your DB table
+
+	- Import the appropriate database schema file into your MySQL database (GHost)
+	        Navigate to PHPMyAdmin (by default at http://localhost/phpmyadmin)
+			Create a GHost database if you haven't already
+			Select your GHost database on the left
+			Select the import tab
+			Click choose file and select the included SQL setup file: (Filenames may change over time)
+				mysql_create_tables_v2.3one.sql for GHostOne
+				mysql_create_tables_v2.sql for GHost++ 
+			Click Import
+	
+3) Copy DotA OpenStats into your web folder. 
+	If you're using wamp your web server is named www under your wamp directory.
+
+4) Edit config.php for your settings
+     - Setup your db configuration:
+		$server - Your server, default "localhost" (If using remote computer than IP of the remote computer)
+		$username - Your DB username
+		$password - Your DB password
+		$database Your DB table
+
+5) Add tables into your MySQL(OpenStats)
+        Navigate to PHPMyAdmin (by default at http://localhost/phpmyadmin)
+		Create a GHost database if you haven't already
+		Select your GHost database on the left
+		Select the import tab
+		Click choose file and select the MySQLSetup.sql file
+		Click Import
+		
+	-import OptimizeMySQL.sql
+	
+6) Setup admin username and password:
+         In ../DEV/config.cfg edit your admin username and password.
+		 Navigatate to http://YOUR_DOTA_OS/DEV and enter your admin username and password to login.
+		 There are 3 user access levels.
+		 ADMINISTRATORS have all privilegies.
+		 MODERATORS can manage bans and add news.
+		 PUBLISHER can only add news.
+		 Read instructions in /DEV/config.cfg folder how to setup different user access level
+		 
+		 If you are just update from DotaOS 1.1 to 1.2 import this into your MySQL database:
+		 
+		 CREATE TABLE IF NOT EXISTS news (
+  news_id mediumint(8) NOT NULL auto_increment,
+  news_title varchar(90) character set utf8 collate utf8_bin NOT NULL,
+  news_content mediumtext character set utf8 collate utf8_bin NOT NULL,
+  news_date datetime NOT NULL,
+  PRIMARY KEY  (news_id)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;

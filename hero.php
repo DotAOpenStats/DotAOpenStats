@@ -170,9 +170,9 @@
 	if (trim(strtolower($banname)) == strtolower($name)) 
 	{$name = "<span style='color:#BD0000'>$list[name]</span>";}
 	
-	if (strlen($gamename)>=25) {$gamename = "".substr($gamename,0,25)."...";}
+	if (strlen($gamename)>=30) {$gamename = "".substr($gamename,0,30)."...";}
 	
-	
+	$win = $list["winner"];
 	$winner=$list["result"];
 	$type=$list["type"];
 	$creepkills=$list["creepkills"];
@@ -180,6 +180,9 @@
 	$neutralkills=$list["neutralkills"];
 	$towerkills=$list["towerkills"];
 	$raxkills=$list["raxkills"];
+	
+	if ($win == 1) {$gamename = "<span class='GamesSentinel'>$gamename</span>";}
+	if ($win == 2) {$gamename = "<span class='GamesScourge'>$gamename</span>";}
 	
 	echo "<tr class='row'>
 	<td style='padding-left:4px;width:160px;' ><a href='user.php?u=$name2'>$name</a></td>

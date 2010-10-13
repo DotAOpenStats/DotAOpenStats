@@ -16,10 +16,12 @@ CREATE TABLE IF NOT EXISTS heroes (
   heroid varchar(4) NOT NULL,
   original varchar(4) NOT NULL,
   description varchar(32) NOT NULL,
-  summary varchar(900) NOT NULL,
+  summary mediumtext NOT NULL,
   stats varchar(300) NOT NULL,
   skills varchar(300) NOT NULL,
-  PRIMARY KEY (heroid)
+  PRIMARY KEY (heroid),
+  KEY description (description),
+  KEY original (original)
 );
 
 
@@ -249,14 +251,14 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 -- Table structure for table `items`
 --
 
-DROP TABLE IF EXISTS items;
 CREATE TABLE IF NOT EXISTS items (
   itemid varchar(4) NOT NULL,
   name varchar(50) NOT NULL,
   shortname varchar(50) NOT NULL,
   item_info mediumtext character set utf8 collate utf8_bin NOT NULL,
   icon varchar(50) NOT NULL,
-  PRIMARY KEY (itemid)
+  PRIMARY KEY (itemid),
+  KEY name (name)
 );
 
 --

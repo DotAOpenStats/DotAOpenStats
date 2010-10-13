@@ -73,7 +73,7 @@
 		  CASE WHEN(gamestate = '17') THEN 'PRIV' ELSE 'PUB' end AS type 
 		  FROM games as g 
 		  LEFT JOIN dotagames as dg ON g.id = dg.gameid 
-		  WHERE map LIKE '%dota%' 
+		  WHERE map LIKE '%dota%'
 		  ORDER BY $order $sortdb 
 		  LIMIT $offset, $rowsperpage";
   

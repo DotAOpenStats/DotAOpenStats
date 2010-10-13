@@ -40,7 +40,7 @@
 	 $row = $db->fetch_array($result,'assoc');
 	 $TotSentinelCreepDenies = number_format($row["TotalKills"],"0",".",",");
 	 
-	 $sql = getSentScourgeCreepKills(2);
+	 $sql = getSentScourgeCreepDenies(2);
 	 $result = $db->query($sql);
 	 $row = $db->fetch_array($result,'assoc');
 	 $TotScourgeCreepDenies = number_format($row["TotalKills"],"0",".",",");

@@ -55,8 +55,9 @@
   <td style='height:24px;' width='30%'>$lang[head_admin]  <span style='color:red'>$head_admin</span></td>
   <td width='70%'> $lang[tot_admin] $total_admins</td></tr></table></div>";
   echo "
-  <div align='center'><table class='tableA'> 
-  <th class='tableD'>$lang[admin_name]</th>
+  <div align='center'>
+  <table class='tableA'> 
+  <th class='padLeft'>$lang[admin_name]</th>
   <th>$lang[admin_server]</th>
   </tr>";
   
@@ -68,7 +69,7 @@
   {$name = "<span style='color:#00C412'>$name</span>";}
   
   echo "<tr class='row'>
-  <td class='tableD' width='30%'><div align='left'><a href='user.php?u=$link'>$name</a></td>
+  <td class='tableD' width='30%'><div class='padLeft' align='left'><a href='user.php?u=$link'>$name</a></td>
   <td width='70%'><div align='left'>$list[server]</td>
   </tr>
   ";
@@ -79,53 +80,53 @@
   
   echo "<div align='center'><table style='width:95%;margin:8px;'>
   <th></th><th>Game Commands:</th></tr>
-  <td width='30%'><div align='left'>!stats [name]</td>
+  <td class='padLeft' width='30%'><div align='left'>!stats [name]</td>
   <td width='70%'><div align='left'>Display basic player statistics, optionally add [name] to display statistics for another player</td></tr>
   
   <tr>
-  <td width='30%'><div align='left'>!statsdota [name]</td>
+  <td class='padLeft' width='30%'><div align='left'>!statsdota [name]</td>
   <td width='70%'><div align='left'>Display DotA player statistics, optionally add [name] to display statistics for another player</td></tr>
   
   <th></th><th>Admin Commands:</th></tr>
   
   <tr>
-  <td width='30%'><div align='left'>!priv [name]</td>
+  <td class='padLeft' width='30%'><div align='left'>!priv [name]</td>
   <td width='70%'><div align='left'>Host a private game</td></tr>
   
   <tr>
-  <td width='30%'><div align='left'>!pub [name]</td>
+  <td class='padLeft' width='30%'><div align='left'>!pub [name]</td>
   <td width='70%'><div align='left'>Host a public game</td></tr>
   
   <tr>
-  <td width='30%'><div align='left'>!unhost</td>
+  <td class='padLeft' width='30%'><div align='left'>!unhost</td>
   <td width='70%'><div align='left'>Unhost the current game</td></tr>
   
   <tr>
-  <td width='30%'><div align='left'>!swap [s1] [s2]</td>
+  <td class='padLeft' width='30%'><div align='left'>!swap [s1] [s2]</td>
   <td width='70%'><div align='left'>Swap slots</td></tr>
   
   <tr>
-  <td width='30%'><div align='left'>!start [force]</td>
+  <td class='padLeft' width='30%'><div align='left'>!start [force]</td>
   <td width='70%'><div align='left'>Start game, optionally add [force] to skip checks</td></tr>
   
   <tr>
-  <td width='30%'><div align='left'>!ping [number]</td>
+  <td class='padLeft' width='30%'><div align='left'>!ping [number]</td>
   <td width='70%'><div align='left'>Ping players, optionally add [number] to kick players with ping above [number]</td></tr>
   
   <tr>
-  <td width='30%'><div align='left'>!close [number]</td>
+  <td class='padLeft' width='30%'><div align='left'>!close [number]</td>
   <td width='70%'><div align='left'>Close slot</td></tr>
   
   <tr>
-  <td width='30%'><div align='left'>!Open [number]</td>
+  <td class='padLeft' width='30%'><div align='left'>!Open [number]</td>
   <td width='70%'><div align='left'>Open slot</td></tr>
   
   <tr>
-  <td width='30%'><div align='left'>!ban [name] [reason]</td>
+  <td class='padLeft' width='30%'><div align='left'>!ban [name] [reason]</td>
   <td width='70%'><div align='left'>Permabans [name] for [reason].</td></tr>
   
   <tr>
-  <td width='30%'><div align='left'>!kick [partial name]</td>
+  <td class='padLeft' width='30%'><div align='left'>!kick [partial name]</td>
   <td width='70%'><div align='left'>Kick [partial name] from game.</td></tr>
   
   

@@ -143,7 +143,7 @@ return $return.$return2.$seconds_left.".".$milliseconds;
 		case 'observer': return 0;
 	}
 }
-     function getCountTops($games){
+     function getCountTops($games,$HideBannedUsersOnTop){
 	 $count = "
   SELECT COUNT(*) as count 
   FROM( 
@@ -158,7 +158,8 @@ return $return.$return2.$seconds_left.".".$milliseconds;
 	   AND dp.gameid = ga.id 
 	   AND gp.gameid = dg.gameid 
 	   AND gp.colour = dp.colour 
-	   GROUP BY gp.name having count(*) >= $games) as h
+	   GROUP BY gp.name having count(*) >= $games
+	  ) as h
   LIMIT 1";
   
   return $count;
@@ -433,6 +434,7 @@ SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.new
     
        if (
 	       !strstr($itemName,"Aghanim") 
+	   AND !strstr($itemName,"Armlet of Mordiggian") 
 	   AND !strstr($itemName,"Black King Bar") 
 	   AND !strstr($itemName,"Dagon Lev")
 	   AND !strstr($itemName,"Diffusal Blade")
@@ -447,6 +449,7 @@ SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.new
 	   AND !strstr($itemName,"Urn of Shadows")
 	   AND !strstr($itemName,"Dust of Appearance")
 	   AND !strstr($itemName,"s Dagger")
+	   AND !strstr($itemName,"Heart of Tarrasque")
 	   )
 	{
 	$sql = "SELECT COUNT(*) as total, dp.item1,dp.item2, dp.item3, dp.item4, dp.item5, dp.item6, dp.hero, h.heroid, h.description as heroname 
@@ -743,6 +746,44 @@ SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.new
 	ORDER BY count(*) DESC,  dp.hero DESC LIMIT $tot
 	";}
 	
+	if (strstr($itemName,"Armlet of Mordiggian"))
+	{
+	//Now group Kelen'Armlet of Mordiggian if is selected item
+	$sql = "SELECT COUNT(*) as total, dp.item1,dp.item2, dp.item3, dp.item4, dp.item5, dp.item6, dp.hero, h.heroid, h.description as heroname, it.name, it.itemid
+	FROM dotaplayers as dp 
+	LEFT JOIN heroes as h ON h.heroid = dp.hero AND h.summary != '-'
+	LEFT JOIN items as it ON it.name LIKE ('%Armlet of Mordiggian%') AND  it.item_info!='' AND (it.itemid = dp.item1)  
+	LEFT JOIN items as it2 ON it2.name LIKE ('%Armlet of Mordiggian%') AND  it2.item_info!='' AND (it2.itemid = dp.item2) 
+	LEFT JOIN items as it3 ON it3.name LIKE ('%Armlet of Mordiggian%') AND  it3.item_info!='' AND (it3.itemid = dp.item3) 
+	LEFT JOIN items as it4 ON it4.name LIKE ('%Armlet of Mordiggian%') AND  it4.item_info!='' AND (it4.itemid = dp.item4) 
+	LEFT JOIN items as it5 ON it5.name LIKE ('%Armlet of Mordiggian%') AND  it5.item_info!='' AND (it5.itemid = dp.item5) 
+	LEFT JOIN items as it6 ON it6.name LIKE ('%Armlet of Mordiggian%') AND  it6.item_info!='' AND (it6.itemid = dp.item6) 
+	WHERE dp.hero = '$heroid' AND dp.hero !='' 
+    OR it.name LIKE ('%Armlet of Mordiggian%') OR it2.name LIKE ('%Armlet of Mordiggian%') OR it3.name LIKE ('%Armlet of Mordiggian%') 
+	OR it4.name LIKE ('%Armlet of Mordiggian%') OR it5.name LIKE ('%Armlet of Mordiggian%') OR it6.name LIKE ('%Armlet of Mordiggian%')
+	GROUP BY dp.hero 
+	ORDER BY count(*) DESC,  dp.hero DESC LIMIT $tot
+	";}
+	
+	if (strstr($itemName,"Heart of Tarrasque"))
+	{
+	//Now group Kelen'Heart of Tarrasque if is selected item
+	$sql = "SELECT COUNT(*) as total, dp.item1,dp.item2, dp.item3, dp.item4, dp.item5, dp.item6, dp.hero, h.heroid, h.description as heroname, it.name, it.itemid
+	FROM dotaplayers as dp 
+	LEFT JOIN heroes as h ON h.heroid = dp.hero AND h.summary != '-'
+	LEFT JOIN items as it ON it.name LIKE ('%Heart of Tarrasque%') AND  it.item_info!='' AND (it.itemid = dp.item1)  
+	LEFT JOIN items as it2 ON it2.name LIKE ('%Heart of Tarrasque%') AND  it2.item_info!='' AND (it2.itemid = dp.item2) 
+	LEFT JOIN items as it3 ON it3.name LIKE ('%Heart of Tarrasque%') AND  it3.item_info!='' AND (it3.itemid = dp.item3) 
+	LEFT JOIN items as it4 ON it4.name LIKE ('%Heart of Tarrasque%') AND  it4.item_info!='' AND (it4.itemid = dp.item4) 
+	LEFT JOIN items as it5 ON it5.name LIKE ('%Heart of Tarrasque%') AND  it5.item_info!='' AND (it5.itemid = dp.item5) 
+	LEFT JOIN items as it6 ON it6.name LIKE ('%Heart of Tarrasque%') AND  it6.item_info!='' AND (it6.itemid = dp.item6) 
+	WHERE dp.hero = '$heroid' AND dp.hero !='' 
+    OR it.name LIKE ('%Heart of Tarrasque%') OR it2.name LIKE ('%Heart of Tarrasque%') OR it3.name LIKE ('%Heart of Tarrasque%') 
+	OR it4.name LIKE ('%Heart of Tarrasque%') OR it5.name LIKE ('%Heart of Tarrasque%') OR it6.name LIKE ('%Heart of Tarrasque%')
+	GROUP BY dp.hero 
+	ORDER BY count(*) DESC,  dp.hero DESC LIMIT $tot
+	";}
+	
 	return $sql;
 	}
 	
@@ -928,6 +969,7 @@ SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.new
 	SELECT CASE WHEN (kills = 0) THEN 0 WHEN (deaths = 0) then 1000 ELSE (kills*1.0/deaths*1.0) end as kdratio, 
 	dp.gameid as gameid, 
 	g.gamename, 
+	dg.winner,
 	kills, 
 	deaths,
 	assists, 

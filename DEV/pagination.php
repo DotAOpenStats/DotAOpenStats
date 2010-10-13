@@ -9,6 +9,8 @@
 	if (isset($_GET['admins'])) {$prefix = "admins";}
 	if (isset($_GET['games']) AND isset($_GET['winner'])) {$prefix = "games&check&winner=$_GET[winner]";}
 	if (isset($_GET['l'])) {$l = "&l=".EscapeStr($_GET['l']);} else {$l = "";}
+	if (isset($_GET['order'])) {$prefix.= "&order=".safeEscape($_GET['order']);}
+	if (isset($_GET['sort'])) {$prefix.= "&sort=".safeEscape($_GET['sort']);}
 
               $totalpages = ceil($numrows / $rowsperpage);
               if (isset($_GET['page']) && is_numeric($_GET['page'])) {

@@ -12,8 +12,7 @@ $MODERATORS = array(
 );
 
 $PUBLISHERS = array(
-  'john' => 'doe',
-  'dota' => 'openstats'
+  'john' => 'doe'
 );
 
 ////////////////////////////////////////////////////////////

@@ -36,10 +36,9 @@
     //FOOTER
 	   
    if (isset($_SESSION['style'])){
-   if ($_SESSION['style'] == "default") {$select1 = "selected"; $select2 = ""; $mystyle = "default";}
-   if ($_SESSION['style'] == "dota") {$select1 = ""; $select2 = "selected"; $mystyle = "dota";}
+   $mystyle = $_SESSION['style'];
    }
-   else {$select2 = "selected"; $select1 = ""; $mystyle = "dota";}
+   else {$mystyle = "dota";}
    
    if ($handle = opendir("./style")) {
        echo "<form name='myForm' method='post' action=''>";
