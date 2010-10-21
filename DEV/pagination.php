@@ -37,7 +37,7 @@
               if ($range >= $totalpages) {
                   $range = $totalpages;
               }
-              echo '<table><tr><td align="right" class="pagination"> <b>Page ' . $current_page . ' of ' . $totalpages . '</b> [' . $numrows . ' maches]  &nbsp; &nbsp;';
+              echo '<table><tr><td align="right" class="pagination"> <b>Page ' . $current_page . ' of ' . $totalpages . '</b> [' . $numrows . ' matches]  &nbsp; &nbsp;';
               if ($currentpage > 1) {
                   echo " <a title= 'First page' href='{$_SERVER['PHP_SELF']}?$prefix".$l."&page=1'><<</a> ";
                   $prevpage = $currentpage - 1;

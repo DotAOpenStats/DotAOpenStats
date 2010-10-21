@@ -78,6 +78,7 @@
 		 if ($_GET['order'] == 'denies') {$order = ' creepdenies ';}
 		 if ($_GET['order'] == 'neutrals') {$order = ' neutralkills ';}
 		 if ($_GET['order'] == 'games') {$order = ' totgames ';}
+		 if ($_GET['order'] == 'wins') {$order = ' wins ';}
 	 	 }
 		 
 		 $sort = 'ASC';

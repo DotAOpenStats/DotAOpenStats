@@ -15,19 +15,19 @@
 		$countAchievements = 0;
 		
 		//KILLS		
-		if ($kills < $KillsMedal ) {$opacity = " class='alpha' "; $ColClass = 'NotAchieved';} 
+		if ($kills2 < $KillsMedal ) {$opacity = " class='alpha' "; $ColClass = 'NotAchieved';} 
 		else {$ColClass = 'Achieved'; $TotalMedals++; }
 		$buildAchievements .= "<tr class='row'>
 		<td width='72px' align='left'><img $opacity alt='' width='48px' border=0 src='./img/achievements/kills.png'></td>
-		<td align='left'><span class='$ColClass'>Kill $KillsMedal enemy heroes. ($kills kills)</span></td>
+		<td align='left'><span class='$ColClass'>Kill $KillsMedal enemy heroes. ($kills2 kills)</span></td>
 		</tr>"; $opacity = ""; $countAchievements++;
 		
 		//ASSISTS		
-		if ($assists < $AssistMedal ) {$opacity = " class='alpha' "; $ColClass = 'NotAchieved';} 
+		if ($assists2 < $AssistMedal ) {$opacity = " class='alpha' "; $ColClass = 'NotAchieved';} 
 		else {$ColClass = 'Achieved'; $TotalMedals++; }
 		$buildAchievements .= "<tr class='row'>
 		<td width='72px' align='left'><img $opacity alt='' width='48px' border=0 src='./img/achievements/assist.png'></td>
-		<td align='left'><span class='$ColClass'>Assist in $AssistMedal kills. ($assists assists)</span></td>
+		<td align='left'><span class='$ColClass'>Assist in $AssistMedal kills. ($assists2 assists)</span></td>
 		</tr>"; $opacity = ""; $countAchievements++;
 		
 
@@ -48,11 +48,11 @@
 		</tr>"; $opacity = ""; $countAchievements++;
 		
 		//TOTAL GAMES	
-		if ($totgames < $GamesMedal ) {$opacity = " class='alpha' "; $ColClass = 'NotAchieved';} 
+		if ($totgames2 < $GamesMedal ) {$opacity = " class='alpha' "; $ColClass = 'NotAchieved';} 
 		else {$ColClass = 'Achieved'; $TotalMedals++; }
 		$buildAchievements .= "<tr class='row'>
 		<td width='72px' align='left'><img $opacity alt='' width='48px' border=0 src='./img/achievements/games.png'></td>
-		<td align='left'><span class='$ColClass'>Play $GamesMedal games. ($totgames games)</span></td>
+		<td align='left'><span class='$ColClass'>Play $GamesMedal games. ($totgames2 games)</span></td>
 		</tr>"; $opacity = ""; $countAchievements++;
 		
 		//WINS
@@ -64,43 +64,43 @@
 		</tr>"; $opacity = ""; $countAchievements++;
 		
 		//CREEPS
-		if ($creepkills < $CreepsMedal ) {$opacity = " class='alpha' "; $ColClass = 'NotAchieved';} 
+		if ($creepkills2 < $CreepsMedal ) {$opacity = " class='alpha' "; $ColClass = 'NotAchieved';} 
 		else {$ColClass = 'Achieved'; $TotalMedals++; }
 		$buildAchievements .= "<tr class='row'>
 		<td width='72px' align='left'><img $opacity alt='' width='48px' border=0 src='./img/achievements/creeps.gif'></td>
-		<td align='left'><span class='$ColClass'>Kill $CreepsMedal creeps. ($creepkills creeps)</span></td>
+		<td align='left'><span class='$ColClass'>Kill $CreepsMedal creeps. ($creepkills2 creeps)</span></td>
 		</tr>"; $opacity = ""; $countAchievements++;
 		
 		//DENIES
-		if ($creepdenies < $DeniesMedal ) {$opacity = " class='alpha' "; $ColClass = 'NotAchieved';} 
+		if ($creepdenies2 < $DeniesMedal ) {$opacity = " class='alpha' "; $ColClass = 'NotAchieved';} 
 		else {$ColClass = 'Achieved'; $TotalMedals++; }
 		$buildAchievements .= "<tr class='row'>
 		<td width='72px' align='left'><img $opacity alt='' width='48px' border=0 src='./img/achievements/denies.gif'></td>
-		<td align='left'><span class='$ColClass'>Deny $DeniesMedal creeps. ($creepdenies denies)</span></td>
+		<td align='left'><span class='$ColClass'>Deny $DeniesMedal creeps. ($creepdenies2 denies)</span></td>
 		</tr>"; $opacity = ""; $countAchievements++;
 		
 		//TOWERS
-		if ($towerkills < $TowersMedal ) {$opacity = " class='alpha' "; $ColClass = 'NotAchieved';} 
+		if ($towerkills2 < $TowersMedal ) {$opacity = " class='alpha' "; $ColClass = 'NotAchieved';} 
 		else {$ColClass = 'Achieved'; $TotalMedals++; }
 		$buildAchievements .= "<tr class='row'>
 		<td width='72px' align='left'><img $opacity alt='' width='48px' border=0 src='./img/achievements/towers.png'></td>
-		<td align='left'><span class='$ColClass'>Destroy $TowersMedal towers. ($towerkills towers)</span></td>
+		<td align='left'><span class='$ColClass'>Destroy $TowersMedal towers. ($towerkills2 towers)</span></td>
 		</tr>"; $opacity = ""; $countAchievements++;
 		
 		//COURIERS
-		if ($courierkills < $CouriersMedal ) {$opacity = " class='alpha' "; $ColClass = 'NotAchieved';} 
+		if ($courierkills2 < $CouriersMedal ) {$opacity = " class='alpha' "; $ColClass = 'NotAchieved';} 
 		else {$ColClass = 'Achieved'; $TotalMedals++; }
 		$buildAchievements .= "<tr class='row'>
 		<td width='72px' align='left'><img $opacity alt='' width='48px' border=0 src='./img/achievements/couriers.gif'></td>
-		<td align='left'><span class='$ColClass'>Kill $CouriersMedal enemy couriers. ($courierkills couriers)</span></td>
+		<td align='left'><span class='$ColClass'>Kill $CouriersMedal enemy couriers. ($courierkills2 couriers)</span></td>
 		</tr>"; $opacity = ""; $countAchievements++;
 		
 		//NEUTRALS
-		if ($neutralkills < $NeutralsMedal ) {$opacity = " class='alpha' "; $ColClass = 'NotAchieved';} 
+		if ($neutralkills2 < $NeutralsMedal ) {$opacity = " class='alpha' "; $ColClass = 'NotAchieved';} 
 		else {$ColClass = 'Achieved'; $TotalMedals++; }
 		$buildAchievements .= "<tr class='row'>
 		<td width='72px' align='left'><img $opacity alt='' width='48px' border=0 src='./img/achievements/neutrals.png'></td>
-		<td align='left'><span class='$ColClass'>Kill $NeutralsMedal neutrals. ($neutralkills neutrals)</span></td>
+		<td align='left'><span class='$ColClass'>Kill $NeutralsMedal neutrals. ($neutralkills2 neutrals)</span></td>
 		</tr>"; $opacity = ""; $countAchievements++;
 		
 		//PLAY DURATION

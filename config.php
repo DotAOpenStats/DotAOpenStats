@@ -60,6 +60,10 @@ $ShowItemsMostUsedByHero = '1';
 //Show Items button on Menu buttons
 $enableItemsPage = '1';
 
+//All slots are shown on Game page (Although they play 2v2, 3v3...)
+//If this option is disabled then you can not see the exact slot of player. It will hide empty slots.
+$ShowAllSlotsInGame = '0';
+
 //Show total summary of all games (sentinel and scourge: wins, kills, creeps...)
 $ShowSentinelScourgeWon = '1';
 
@@ -76,7 +80,7 @@ $displayUsersDisconnects = '1';
 
 //Replay Location:
 $replayLocation = 'replays';
-//You can use timeoffset to mach replay date (from -12 to 13)
+//You can use timeoffset to match replay date (from -12 to 13 hours)
 //If replays working fine dont change this value (default 0).
 $replayTimeOffset = '0'; 
 
@@ -164,6 +168,6 @@ $NeutralsMedal = '500'; //Kill 500 neutrals!
 $PlayDurationMedal = '30'; //Play at least 30 hours!
 
 $pageGen = '1'; //Enable/disable info about page generation and total queries on every page
-$_debug = '0'; //Enable error reportings
+$_debug = '1'; //Enable error reportings
 
 ?>

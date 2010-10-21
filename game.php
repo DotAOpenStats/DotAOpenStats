@@ -105,6 +105,11 @@
 	   
 	   $scourge = 1;
 	   $sentinel = 1;
+	   $sent_kills = 0;
+	   $scour_kills = 0;
+	   $my_score = 0;
+	   $best_score = 0;
+	   $best_player = "";	
 	   while ($list = $db->fetch_array($result,'assoc')) {
 	    $kills=$list["kills"];
 		$deaths=$list["deaths"];
@@ -174,6 +179,12 @@
 		$newcolour=$list["newcolour"];
 		$gameid=$list["gameid"]; 
 		$banname=$list["banname"];
+			
+		$my_score = ($kills - $deaths + $assists*0.5) + ($towerkills*0.3 + $raxkills*0.3);
+		if ($my_score > $best_score AND $kills>0) 
+		{$best_player = $name; 
+		$best_score = ($kills - $deaths + $assists*0.5) + ($towerkills*0.3 + $raxkills*0.3);
+		}
 		
 		if (trim(strtolower($banname)) == strtolower($name)) 
 		{$name = "<span style='color:#BD0000'>$list[name]</span>";}
@@ -258,7 +269,7 @@
 		{$Points = "<p class='alignright'><a title='$name3 gain $CalPoints points for this game'><span class='$class'>$CalPoints</span></a></p>";}
 		}
 		//User points mod	
-		
+		if ($newcolour<=5) {$sent_kills += $kills;}
 		if($sentinel == 1 AND $newcolour<=5){
 			$sentinel=0;
 			echo "<tr class='sentinelRow'>
@@ -278,6 +289,7 @@
 			</tr>";
 			}
 		
+		if ($newcolour>5) {$scour_kills += $kills;}
 		
 		if($scourge == 1 AND $newcolour>5){
 			$scourge=0;
@@ -354,7 +366,12 @@
 		{$ITEM6 = "<a href='item.php?item=$itemID6'><img $ic6 border=0 title=\"\" alt='' width='28px' src='./img/items/$itemicon6'></a>";}
 		
 		
+		if (empty($name2)) 
+		{$gold = ""; $Points = ""; $hero =""; $kills = ""; $deaths =""; $assists="";$creepkills="";
+		$creepdenies="";$neutralkills="";$towerkills="";
+		$ITEM1="";$ITEM2="";$ITEM3="";$ITEM4="";$ITEM5="";$ITEM6="";$left="";$leftreason="";}
 		
+		if (!empty($name2) OR $ShowAllSlotsInGame == 1) {
 		echo "<tr class='row'>
 		      <td><a href='user.php?u=$name2'>$name</a> $Points</td>
 			  <td>$hero</td>
@@ -375,14 +392,21 @@
 			  <td><div align='left'>$left</div></td>
 			  <td><div align='left'><span class='leftReason'>$leftreason</span></div></td>
 			  
-			  </tr>";
+			  </tr>";}
 	   
 	   }
-  echo "</table><br>";
+  echo "</table>";
+  echo "<table><tr>
+  <td width='320px;' align='left' class='padLeft'>
+  <b>Best player:</b> <a href='user.php?u=$best_player'>$best_player</a></td>
+  
+  <td class='padRight' align='left'>
+  <h1><b>$lang[Sentinel]</b> $sent_kills:$scour_kills <b>$lang[Scourge]</b></h1></td></tr></table><br>";
   
      if(file_exists($replayloc)) {
      //include('./includes/AJAX2.php');
-	  echo "<input type='button' class='inputButton' value='$lang[gamelog]' onclick='javascript:toggle();' />
+	  echo "<div class='padAll'>
+	  <input type='button' class='inputButton' value='$lang[gamelog]' onclick='javascript:toggle();' />
 	  <a class='inputButton' href='javascript:toggle();' id='displayText' name='info'>show</a>
 	  <div id='toggleText' style='display: none'>";
 	  
@@ -394,7 +418,7 @@
 	     {echo file_get_contents($txtReplay);} else {require('./includes/get_chat.php');}
 	  }
 	  
-	  echo "</div>";
+	  echo "</div></div>";
 
 	 /*$replayloc = str_replace("+","%2B",$replayloc);
 	 $replayloc = str_replace(" ","%20",$replayloc);

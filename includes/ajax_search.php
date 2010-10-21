@@ -54,7 +54,7 @@
 	  
 	  $searchTerm = trim($_GET['searchterm']);
 	  $searchTerm = strip_tags($searchTerm); // remove any html/javascript.
-	  $searchTerm = mysql_real_escape_string($searchTerm); // prevent sql injection.
+	  $searchTerm = EscapeStr($searchTerm); 
 	  
 	  $bans_only = "	  AND b.name = e.name"; //Maybe for later usage
 	  
@@ -80,7 +80,7 @@
       WHERE b.name <> '' and winner <> 0 
 	  AND LOWER(b.name) LIKE LOWER('%{$searchTerm}%') 
 	  GROUP BY b.name
-	  ORDER BY LOWER(b.name) ASC 
+	  ORDER BY a.id DESC, b.name ASC 
 	  LIMIT $search_limit";
 	  
 	  $qry_result = $db->query($sql) or die(mysql_error());

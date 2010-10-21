@@ -6,7 +6,7 @@
 
 		
 	define("MAX_SIZE", 20); //20 KB max
-	define("VERSION", "1.2.2");
+	define("VERSION", "1.2.4");
 	
 	?>
 
@@ -22,7 +22,7 @@
 	
 	<script language="JavaScript">
     function toggle(source) {
-    checkboxes = document.getElementsByName(\'checkbox[]\');
+    checkboxes = document.getElementsByName('checkbox[]');
     for(var i in checkboxes)
     checkboxes[i].checked = source.checked;
     }
@@ -708,7 +708,7 @@ function confirmDelete(delUrl) {
     $banrecords = $db->num_rows($result);
   if ($banrecords>=1)
   {
-  	 echo "<div align='center'><br/>Search found: $banrecords maches <a href='index.php?bans'><b>(Back)</b></a>
+  	 echo "<div align='center'><br/>Search found: $banrecords matches <a href='index.php?bans'><b>(Back)</b></a>
 	 <br><br>
 	 <table valign='top' style='width:98%'><tr>
 	 <th>ID</th>
@@ -1621,7 +1621,15 @@ function confirmDelete(delUrl) {
 		  
 		  if ($FastGameWon == "1") {$fgwy = "checked";$fgwn = "";} else {
           $fgwy = "";
-          $fgwn = "checked";}			  
+          $fgwn = "checked";}	
+
+
+      $ShowAllSlotsInGame = get_value_of('$ShowAllSlotsInGame');
+      $ShowAllSlotsInGame = trim($ShowAllSlotsInGame);
+		  
+		  if ($ShowAllSlotsInGame == "1") {$sasy = "checked";$sasn = "";} else {
+          $sasy = "";
+          $sasn = "checked";}			  
 	
       $ScoreStart = get_value_of('$ScoreStart');
       $ScoreStart = trim($ScoreStart);	
@@ -2036,6 +2044,13 @@ function confirmDelete(delUrl) {
 	  It will calculate total score before and after selected game.
 	  This will also take up much more resources">(<b>*</b>Points from database. <b>This take up much more resources</b>)<br><span style="color:red">Only for Score Method 1</span></a></td></tr>
 	  
+	  <tr>
+	  <td width="160px">Show All Slots in Game</td>
+	  <td>
+	  <input type="radio" name="sas" '.$sasy.' value="1" /> Yes
+	  <input type="radio" name="sas" '.$sasn.' value="0" /> No 
+	  | (All slots are shown on Game page, including empty slots)</td></tr>
+	  
 	  <tr><th>Database</th><th></th></tr>
 	  <tr>
 	  <td width="160px">Server</td>
@@ -2099,6 +2114,7 @@ function confirmDelete(delUrl) {
 	  write_value_of('$UserAchievements', "$UserAchievements", $_POST['ach']);
 	  write_value_of('$UserPointsOnGamePage', "$UserPointsOnGamePage", $_POST['upg']);
 	  write_value_of('$AccuratePointsCalculation', "$AccuratePointsCalculation", $_POST['apc']);
+	  write_value_of('$ShowAllSlotsInGame', "$ShowAllSlotsInGame", $_POST['sas']);
 	  
 	  write_value_of('$server', "$server", $_POST['server']);
 	  write_value_of('$username', "$username", $_POST['username']);
@@ -2355,7 +2371,7 @@ function confirmDelete(delUrl) {
               if ($result_1 AND $result_2 AND $result_3 AND $result_4) 
 			  {echo "<br><br>$i Game(s) Deleted<br><br>
 			  <a href='index.php?games&check'>Back to previous page</a>"; die;} else {
-              echo "$l_error_occured";
+              echo "An error occured!";
            }
         }
   
@@ -2755,5 +2771,5 @@ function confirmDelete(delUrl) {
 	 &copy; '.date("Y").' <a href=\'http://openstats.iz.rs\'><b>DotA OpenStats</b></a></td>
 	 </tr></table></div>'; 
 
-	} //IS LOOGED
+	} //IS LOGGED
 	?>

@@ -123,9 +123,11 @@ padding-right:120pt;
 padding-left:8pt;
 }
 
-.padLeft{
-padding-left:12px;
-}
+.padLeft{padding-left:12px;}
+
+.padRight{padding-right:12px;}
+
+.padAll{padding:4px;}
 
 .tableSearchH {
 width:95%;margin-top:24px; margin-bottom:12px;

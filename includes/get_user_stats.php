@@ -214,18 +214,27 @@
 	
 	$row = $db->fetch_array($result,'assoc');
 
-	$kills=$row["SUM(kills)"];
-	$death=$row["SUM(deaths)"];
-    $assists=$row["SUM(assists)"];
-	$creepkills=$row["SUM(creepkills)"];
-	$creepdenies=$row["SUM(creepdenies)"];
-	$neutralkills=$row["SUM(neutralkills)"];
-	$towerkills=$row["SUM(towerkills)"];
-	$raxkills=$row["SUM(raxkills)"];
-	$courierkills=$row["SUM(courierkills)"];
+	$kills=number_format($row["SUM(kills)"],"0",".",",");
+	$kills2=$row["SUM(kills)"];
+	$death=number_format($row["SUM(deaths)"],"0",".",",");
+	$death2=$row["SUM(deaths)"];
+    $assists=number_format($row["SUM(assists)"],"0",".",",");
+	$assists2=$row["SUM(assists)"];
+	$creepkills=number_format($row["SUM(creepkills)"],"0",".",",");
+	$creepkills2=$row["SUM(creepkills)"];
+	$creepdenies=number_format($row["SUM(creepdenies)"],"0",".",",");
+	$creepdenies2=$row["SUM(creepdenies)"];
+	$neutralkills=number_format($row["SUM(neutralkills)"],"0",".",",");
+	$neutralkills2=$row["SUM(neutralkills)"];
+	$towerkills=number_format($row["SUM(towerkills)"],"0",".",",");
+	$towerkills2=$row["SUM(towerkills)"];
+	$raxkills=number_format($row["SUM(raxkills)"],"0",".",",");
+	$courierkills=number_format($row["SUM(courierkills)"],"0",".",",");
+	$courierkills2=$row["SUM(courierkills)"];
 	$name=$row["name"];
-	$totgames=$row["COUNT(dp.id)"];
-
+	//$totgames=number_format($row["COUNT(dp.id)"],"0",".",",");
+    //$totgames2=$row["COUNT(dp.id)"];
+	
 	if ($displayUsersDisconnects == 1 OR $ScoreMethod == 2)	
 	{
 	$sql = "SELECT 
@@ -274,12 +283,13 @@
     $wins=$db->getUserWins($username);
     //calculate losses
     $losses=$db->getUserLosses($username);
+
+	if ($death2 >=1)
+	{$kdratio = ROUND($kills2/$death2,1);} else {$kdratio =0;}
 	
-	if ($death >=1)
-	{$kdratio = ROUND($kills/$death,1);} else {$kdratio =0;}
-	
-	$totgames = $wins+$losses;
-	$totscore = ROUND($score,2);
+	$totgames = number_format($wins+$losses,"0",".",",");
+	$totgames2 = $wins+$losses;
+	$totscore = number_format(ROUND($score,2),"0",".",",");
 	
 	if($wins == 0 and $wins+$losses == 0)
 	{$winloose = 0;}
@@ -337,10 +347,10 @@
         $firstgame=$row["MIN(datetime)"];
   
 		if ($totalMinutes>0)
-		{$killsPerMin = ROUND($kills/$totalMinutes,2);
-		$killsPerHour = ROUND($kills/$totalHours,2);
-		$deathsPerMin = ROUND($death/$totalMinutes,2);
-		$creepsPerMin = ROUND($creepkills/$totalMinutes,2);
+		{$killsPerMin = ROUND($kills2/$totalMinutes,2);
+		$killsPerHour = ROUND($kills2/$totalHours,2);
+		$deathsPerMin = ROUND($death2/$totalMinutes,2);
+		$creepsPerMin = ROUND($creepkills2/$totalMinutes,2);
 		}  
 		    else 
 		    {
@@ -350,22 +360,22 @@
 		    $creepsPerMin =0;
 			}
 		
-		if ($totgames>0)
+		if ($totgames2>0)
 		{
-		$killsPerGame = ROUND($kills/$totgames,2);	
-		$deathsPerGame = ROUND($death/$totgames,2);
-		$DiscPercent = ROUND($disc/($disc+$totgames), 4)*100;
+		$killsPerGame = ROUND($kills2/$totgames2,2);	
+		$deathsPerGame = ROUND($death2/$totgames2,2);
+		$DiscPercent = ROUND($disc/($disc+$totgames2), 4)*100;
 		} 
 		else {$killsPerGame = 0; $DiscPercent = 0; $deathsPerGame =0;}
 		
-		if ($kills >0)
-	    {$KillsPercent = ROUND($kills/($kills+$death), 4)*100; } else {$KillsPercent = 0;}
+		if ($kills2 >0)
+	    {$KillsPercent = ROUND($kills2/($kills2+$death2), 4)*100; } else {$KillsPercent = 0;}
 		
-		if ($totgames >0)
-		{$AssistsPerGame = ROUND($assists/$totgames,2);} else {$AssistsPerGame = 0;}
+		if ($totgames2 >0)
+		{$AssistsPerGame = ROUND($assists2/$totgames2,2);} else {$AssistsPerGame = 0;}
 		
 		if ($ScoreMethod == 2 AND $DBScore == 0)
-		{$totscore = $ScoreStart + ($wins * $ScoreWins) + ($losses * $ScoreLosses) + ($disc*$ScoreDisc) ; 
+		{$totscore = number_format($ScoreStart + ($wins * $ScoreWins) + ($losses * $ScoreLosses) + ($disc*$ScoreDisc),"0",".",",") ; 
 		//$totscore = ROUND( $ScoreStart+(($wins * 5) - ($losses * 3)) , 2) ; 
 		if ($BANNED !="") {$totscore  = $ScoreStart + ($ScoreDisc*10);}
 		}
