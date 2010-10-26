@@ -41,7 +41,7 @@ $username = 'root';
 $password = '';
 $database = 'new_dota';
 
-$default_style = 'dota';
+$default_style = 'twilight';
 $default_language = 'english';
 
 $bans_per_page = '20';
@@ -77,6 +77,9 @@ $top_stats = '5';
 $HideBannedUsersOnTop = '1';
 
 $displayUsersDisconnects = '1';
+
+//Filter the results on the game page by years, months and days
+$FiltersOnGamePage = '1';
 
 //Replay Location:
 $replayLocation = 'replays';
@@ -168,6 +171,6 @@ $NeutralsMedal = '500'; //Kill 500 neutrals!
 $PlayDurationMedal = '30'; //Play at least 30 hours!
 
 $pageGen = '1'; //Enable/disable info about page generation and total queries on every page
-$_debug = '1'; //Enable error reportings
+$_debug = '0'; //Enable error reportings
 
 ?>

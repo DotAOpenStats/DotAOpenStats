@@ -38,7 +38,7 @@
    if (isset($_SESSION['style'])){
    $mystyle = $_SESSION['style'];
    }
-   else {$mystyle = "dota";}
+   else {$mystyle = "$default_style";}
    
    if ($handle = opendir("./style")) {
        echo "<form name='myForm' method='post' action=''>";

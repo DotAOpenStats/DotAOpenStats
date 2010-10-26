@@ -60,6 +60,18 @@
    if (isset($_GET['l']) )
    {$lett = 'l='.safeEscape($_GET['l']).'&';} else {$lett = "";}
    
+      
+   if (isset($_GET["y"])) {$pref_ydm = "y=".safeEscape($_GET['y'])."&";}
+   else {$pref_ydm = "";}
+   
+   if (isset($_GET["m"])) {$pref_ydm .= "m=".safeEscape($_GET['m'])."&";}
+   if (isset($_GET["d"])) {$pref_ydm .= "d=".safeEscape($_GET['d'])."&";}
+   
+   if (isset($_POST["years"])) {$pref_ydm = "y=".safeEscape($_POST['years'])."&";}
+   
+   if (isset($_POST["months"])) {$pref_ydm .= "m=".safeEscape($_POST['months'])."&";}
+   if (isset($_POST["days"])) {$pref_ydm .= "d=".safeEscape($_POST['days'])."&";}
+   
    
               $rowsperpage = $result_per_page;
               $totalpages = ceil($numrows / $rowsperpage);
@@ -96,23 +108,23 @@
 			  
               echo '<table><tr><td style="padding-right:24px;" align="right" class="pagination"> <b>'.$lang["page"].' ' . $current_page . ' '.$lang["of"].' ' . $totalpages . '</b> [' . $numrows . ' '.$lang["maches"].']  &nbsp; &nbsp;';
               if ($currentpage > 1) {
-                  echo " <a title= '$lang[firstpage]' href='{$_SERVER['PHP_SELF']}?".$news.$herois.$gplay.$un.$ord.$sorted.$lett."page=1'><<</a> ";
+                  echo " <a title= '$lang[firstpage]' href='{$_SERVER['PHP_SELF']}?".$news.$herois.$gplay.$un.$ord.$sorted.$lett.$pref_ydm."page=1'><<</a> ";
                   $prevpage = $currentpage - 1;
-                  echo " <a title='$lang[prevpage]' href='{$_SERVER['PHP_SELF']}?".$news.$herois.$gplay.$un.$ord.$sorted.$lett."page=$prevpage'><</a> ";
+                  echo " <a title='$lang[prevpage]' href='{$_SERVER['PHP_SELF']}?".$news.$herois.$gplay.$un.$ord.$sorted.$lett.$pref_ydm."page=$prevpage'><</a> ";
               }
               for ($x = ($currentpage - $range); $x < (($currentpage + $range) + 1); $x++) {
                   if (($x > 0) && ($x <= $totalpages)) {
                       if ($x == $currentpage) {
                           echo " [<b>$x</b>] ";
                       } else {
-                          echo " <a title='$lang[gotopage] " . $x . "' href='{$_SERVER['PHP_SELF']}?".$news.$herois.$gplay.$un.$ord.$sorted.$lett."page=$x'>$x</a> ";
+                          echo " <a title='$lang[gotopage] " . $x . "' href='{$_SERVER['PHP_SELF']}?".$news.$herois.$gplay.$un.$ord.$sorted.$lett.$pref_ydm."page=$x'>$x</a> ";
                       }
                   }
               }
               if ($currentpage != $totalpages) {
                   $nextpage = $currentpage + 1;
-                  echo " <a title='$lang[nextpage] ' href='{$_SERVER['PHP_SELF']}?".$news.$herois.$gplay.$un.$ord.$sorted.$lett."page=$nextpage'>></a> ";
-                  echo " <a title='$lang[gotolastpage]' href='{$_SERVER['PHP_SELF']}?".$news.$herois.$gplay.$un.$ord.$sorted.$lett."page=$totalpages'>>></a> ";
+                  echo " <a title='$lang[nextpage] ' href='{$_SERVER['PHP_SELF']}?".$news.$herois.$gplay.$un.$ord.$sorted.$lett.$pref_ydm."page=$nextpage'>></a> ";
+                  echo " <a title='$lang[gotolastpage]' href='{$_SERVER['PHP_SELF']}?".$news.$herois.$gplay.$un.$ord.$sorted.$lett.$pref_ydm."page=$totalpages'>>></a> ";
               }
               echo '</td></tr></table>';
 			  

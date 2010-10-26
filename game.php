@@ -71,7 +71,7 @@
   echo str_replace('<!--TITLE-->', $pageTitle, $pageContents);
   //echo $replayloc;
   
-	if(file_exists($replayloc)){$DownloadReplay = "| <a href='$replayurl'>$lang[download_rep]</a> <!--<input type='button' class='inputButton' value='$lang[download_rep]' onclick='location.href=\"$replayurl\"'--> | <a href='#info'>Game Log</a>";}
+	if(file_exists($replayloc)){$DownloadReplay = "| <a href='".$replayurl."'>$lang[download_rep]</a> <!--<input type='button' class='inputButton' value='$lang[download_rep]' onclick='location.href=\"$replayurl\"'--> | <a href='#info'>Game Log</a>";}
 	else {$DownloadReplay = "";}
 
   echo "<table><tr>

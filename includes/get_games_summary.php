@@ -5,11 +5,13 @@
 
     $_totals = $row["sentinelWon"]+$row["scourgeWon"]+$row["draw"];
     $_sentWon = number_format($row["sentinelWon"],"0",".",",");
+	$_sentWon2 = $row["sentinelWon"];
     $_scourWon = number_format($row["scourgeWon"],"0",".",",");
+	$_scourWon2 = $row["scourgeWon"];
     $_draw = number_format($row["draw"],"0",".",",");
   
-    $_sentPerc = ROUND(($_sentWon/$_totals)*100,1);
-    $_scourPerc = ROUND(($_scourWon/$_totals)*100,1);
+    $_sentPerc = ROUND(($_sentWon2/$_totals)*100,1);
+    $_scourPerc = ROUND(($_scourWon2/$_totals)*100,1);
     $_drawPerc = ROUND(($_draw/$_totals)*100,1);
 	
 	 //Get total kills

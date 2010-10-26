@@ -450,6 +450,7 @@ SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.new
 	   AND !strstr($itemName,"Dust of Appearance")
 	   AND !strstr($itemName,"s Dagger")
 	   AND !strstr($itemName,"Heart of Tarrasque")
+	   AND !strstr($itemName,"Radiance")
 	   )
 	{
 	$sql = "SELECT COUNT(*) as total, dp.item1,dp.item2, dp.item3, dp.item4, dp.item5, dp.item6, dp.hero, h.heroid, h.description as heroname 
@@ -784,6 +785,25 @@ SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.new
 	ORDER BY count(*) DESC,  dp.hero DESC LIMIT $tot
 	";}
 	
+	if (strstr($itemName,"Radiance"))
+	{
+	//Now group Kelen'Radiance if is selected item
+	$sql = "SELECT COUNT(*) as total, dp.item1,dp.item2, dp.item3, dp.item4, dp.item5, dp.item6, dp.hero, h.heroid, h.description as heroname, it.name, it.itemid
+	FROM dotaplayers as dp 
+	LEFT JOIN heroes as h ON h.heroid = dp.hero AND h.summary != '-'
+	LEFT JOIN items as it ON it.name LIKE ('%Radiance%') AND  it.item_info!='' AND (it.itemid = dp.item1)  
+	LEFT JOIN items as it2 ON it2.name LIKE ('%Radiance%') AND  it2.item_info!='' AND (it2.itemid = dp.item2) 
+	LEFT JOIN items as it3 ON it3.name LIKE ('%Radiance%') AND  it3.item_info!='' AND (it3.itemid = dp.item3) 
+	LEFT JOIN items as it4 ON it4.name LIKE ('%Radiance%') AND  it4.item_info!='' AND (it4.itemid = dp.item4) 
+	LEFT JOIN items as it5 ON it5.name LIKE ('%Radiance%') AND  it5.item_info!='' AND (it5.itemid = dp.item5) 
+	LEFT JOIN items as it6 ON it6.name LIKE ('%Radiance%') AND  it6.item_info!='' AND (it6.itemid = dp.item6) 
+	WHERE dp.hero = '$heroid' AND dp.hero !='' 
+    OR it.name LIKE ('%Radiance%') OR it2.name LIKE ('%Radiance%') OR it3.name LIKE ('%Radiance%') 
+	OR it4.name LIKE ('%Radiance%') OR it5.name LIKE ('%Radiance%') OR it6.name LIKE ('%Radiance%')
+	GROUP BY dp.hero 
+	ORDER BY count(*) DESC,  dp.hero DESC LIMIT $tot
+	";}
+	
 	return $sql;
 	}
 	
@@ -1108,7 +1128,14 @@ SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.new
 	}
 	
 	
-	
+	function getV($default_style) {
+	$file = file_get_contents('../style/'.$default_style.'/'.base64_decode("Zm9vdGVyLmh0bWw="));
+	if (!strstr($file,base64_decode("UG93ZXJlZCBieSA8YSB0YXJnZXQ9J19ibGFuaycgaHJlZj0naHR0cDovL29wZW5zdGF0cy5pei5ycyc+RG90QSBPcGVuU3RhdHM8L2E+"))) 
+	{return "PGRpdiBzdHlsZT0ncGFkZGluZy10b3A6NDBweDsnIGFsaWduPSdjZW50ZXInPjx0YWJsZSBzdHlsZT0nd2lkdGg6NDAwcHg7Jz48dHI+PHRkIGFsaWduPSdjZW50ZXInPk1pc3NpbmcgY29weXJpZ2h0IG5vdGljZSBpbiA8Yj50d2lsaWdodC9mb290ZXIuaHRtbDwvYj48L3RkPjwvdHI+PC90YWJsZT48L2Rpdj4=
+";}
+	else
+	return false;
+	}
 
 ///////////////////////
 

@@ -41,7 +41,25 @@
   ob_end_clean();
   echo str_replace('<!--TITLE-->', $pageTitle, $pageContents);
   
-  $sql = "SELECT COUNT(*) FROM games LIMIT 1";
+  if ($FiltersOnGamePage == 1) {
+  if (isset($_POST["years"])) {$sql_year = "AND YEAR(datetime) = '".safeEscape($_POST["years"])."'";} 
+  else $sql_year = "";
+  if (isset($_POST["months"])) {$sql_month = "AND MONTH(datetime) = '".safeEscape($_POST["months"])."'";}
+  else   $sql_month = "";
+  if (isset($_POST["days"]) AND $_POST["days"]>0) 
+  {$sql_day = "AND DAYOFMONTH(datetime) = '".safeEscape($_POST["days"])."'";} 
+  else $sql_day = "";
+  
+  if (isset($_GET["y"])) {$sql_year = "AND YEAR(datetime) = '".safeEscape($_GET["y"])."'";} 
+  if (isset($_GET["m"])) {$sql_month = "AND MONTH(datetime) = '".safeEscape($_GET["m"])."'";}
+  if (isset($_GET["d"]) AND $_GET["d"]>0) 
+  {$sql_day = "AND DAYOFMONTH(datetime) = '".safeEscape($_GET["d"])."'";} 
+  } else {$sql_year =""; $sql_month =""; $sql_day=""; }
+  
+  $sql = "SELECT COUNT(*) FROM games 
+  WHERE map LIKE '%dota%' 
+  $sql_year $sql_month $sql_day
+  LIMIT 1";
   
   $result = $db->query($sql);
   $r = $db->fetch_row($result);
@@ -65,7 +83,11 @@
   //Show sentinel and scourge won
   if ($ShowSentinelScourgeWon == 1)
     {require_once("./includes/get_games_summary.php");}
-
+	
+	if ($FiltersOnGamePage == 1) {
+	require_once('./includes/get_games_filter.php');
+	}
+	
     include('pagination.php');
 
   $sql = "SELECT 
@@ -73,7 +95,7 @@
 		  CASE WHEN(gamestate = '17') THEN 'PRIV' ELSE 'PUB' end AS type 
 		  FROM games as g 
 		  LEFT JOIN dotagames as dg ON g.id = dg.gameid 
-		  WHERE map LIKE '%dota%'
+		  WHERE map LIKE '%dota%' $sql_year $sql_month $sql_day
 		  ORDER BY $order $sortdb 
 		  LIMIT $offset, $rowsperpage";
   

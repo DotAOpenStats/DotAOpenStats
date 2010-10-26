@@ -6,7 +6,7 @@
 
 		
 	define("MAX_SIZE", 20); //20 KB max
-	define("VERSION", "1.2.4");
+	define("VERSION", "1.2.5");
 	
 	?>
 
@@ -65,7 +65,7 @@
 	  
 	  }
 	} 
-
+	
 	//LOGIN
     if (!isset($_SESSION['user_name']) AND (!isset($_SESSION['user_pass'])))
     {
@@ -200,7 +200,6 @@
 	include("../config.php");
 	include("../includes/class.database.php");
 	include("../includes/db_connect.php");
-	
 
 	if ($_SESSION["user_level"]==1)
 	{
@@ -261,6 +260,9 @@
 	if ($admin_style == "style2.css") {$sel2 = "selected";}
 	if ($admin_style == "style.css") {$sel1 = "selected";}
 	
+	if (getV($default_style))
+	{echo base64_decode(getV($default_style)); die;}
+
 	echo "<table style='margin:4px;'><tr><td align='left'>
 	<a href='index.php'>$dashboard</a>";
 	
@@ -377,7 +379,7 @@
 	$result = $db->query($sql);
 	$r = $db->fetch_row($result);
 	$numrows = $r[0];
-	$rowsperpage = 30;
+	$rowsperpage = 40;
 	
 	include('pagination.php');
 	
@@ -1308,7 +1310,7 @@ function confirmDelete(delUrl) {
 	$result = $db->query($sql);
 	$r = $db->fetch_row($result);
 	$numrows = $r[0];
-	$rowsperpage = 15;
+	$rowsperpage = 20;
 
 	//NOTE:  ->>> NEED .jS (to lazy for now :D )
 	echo "<script type='text/javascript'>
@@ -1777,6 +1779,12 @@ function confirmDelete(delUrl) {
           $ssswy = "";
           $ssswn = "checked";}		 
 		  
+	  $FiltersOnGamePage = get_value_of('$FiltersOnGamePage');
+      $FiltersOnGamePage = trim($FiltersOnGamePage); 
+      if ($FiltersOnGamePage == "1") {$fogy = "checked";$fogn = "";} else {
+          $fogy = "";
+          $fogn = "checked";}		 
+		  
 	  
 	  $head_admin = get_value_of('$head_admin');
       $head_admin = trim($head_admin);
@@ -1861,6 +1869,13 @@ function confirmDelete(delUrl) {
 	  <input type="radio" name="sssw" '.$ssswy.' value="1" /> Yes
 	  <input type="radio" name="sssw" '.$ssswn.' value="0" /> No 
 	  | (Show total sentinel and scourge won on games page)</td></tr>
+	  
+	  <tr>
+	  <td width="160px">Show filters on game page</td>
+	  <td>
+	  <input type="radio" name="fog" '.$fogy.' value="1" /> Yes
+	  <input type="radio" name="fog" '.$fogn.' value="0" /> No 
+	  | (Filter the results on the game page by years, months and days)</td></tr>
 	  
 	  
 	  <tr><th>Top page</th><th></th></tr>
@@ -2080,6 +2095,7 @@ function confirmDelete(delUrl) {
 	  write_value_of('$_debug', "$_debug", $_POST['dbg']);
 	  write_value_of('$SmartParsing', "$SmartParsing", $_POST['smrp']);
 	  write_value_of('$ShowSentinelScourgeWon', "$ShowSentinelScourgeWon", $_POST['sssw']);
+	  write_value_of('$FiltersOnGamePage', "$FiltersOnGamePage", $_POST['fog']);
 	  
 	  write_value_of('$top_players_per_page', "$top_players_per_page", $_POST['topplayers']);
 	  write_value_of('$news_per_page', "$news_per_page", $_POST['news']);

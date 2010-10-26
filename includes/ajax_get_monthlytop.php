@@ -9,13 +9,13 @@
 	 require_once("../lang/$default_language.php");
 	 
 	 	 
-	 $sqlYear = EscapeStr($_GET["sqlyear"]);
-	 $sqlMonth = EscapeStr($_GET["sqlmonth"]);
+	 $sqlYear = safeEscape($_GET["sqlyear"]);
+	 $sqlMonth = safeEscape($_GET["sqlmonth"]);
 	 //$day_stats = EscapeStr($_GET["daystats"]); 
 	 $day_stats = "";
-     $year = EscapeStr($_GET["year"]);
-	 $month = EscapeStr($_GET["month"]);
-	 $day = EscapeStr($_GET["day"]);
+     $year = safeEscape($_GET["year"]);
+	 $month = safeEscape($_GET["month"]);
+	 $day = safeEscape($_GET["day"]);
 	 
 	 if (isset($_GET['games'])) {$games = safeEscape($_GET['games']);} else {$games = 2;}
 	 
