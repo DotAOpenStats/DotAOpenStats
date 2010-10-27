@@ -89,7 +89,7 @@
 	}
 	
     include('pagination.php');
-
+	
   $sql = "SELECT 
           g.id, map, datetime, gamename, ownername, duration, creatorname, dg.winner, 
 		  CASE WHEN(gamestate = '17') THEN 'PRIV' ELSE 'PUB' end AS type 

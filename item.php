@@ -90,7 +90,7 @@
         <img width='48px' height='48px' border='0' 
       src='./img/heroes/$hero.gif'></a>";
               }
-              echo "</td></tr></table></div>";
+              echo "</td></tr></table></div><br>";
           }
       }
   } 

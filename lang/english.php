@@ -63,10 +63,7 @@ $lang["result"] = "Result";
 $lang["average"] = "Average:";
 $lang["total"] = "Total:";
 $lang["total_games"] = "Total Games:";
-$lang["total_wins"] = "Total Wins:";
-$lang["total_kills"] = "Total Kills:";
-$lang["total_creeps"] = "Total Creep Kills:";
-$lang["total_creep_denies"] = "Total Creep Denies:";
+
 $lang["avg_duration"] = "Average Duration:";
 $lang["total_duration"] = "Total Duration:";
 $lang["min_duration"] = "Min Duration:";

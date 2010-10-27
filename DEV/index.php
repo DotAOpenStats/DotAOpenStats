@@ -6,7 +6,7 @@
 
 		
 	define("MAX_SIZE", 20); //20 KB max
-	define("VERSION", "1.2.5");
+	define("VERSION", "1.2.6");
 	
 	?>
 

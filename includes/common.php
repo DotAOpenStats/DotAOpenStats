@@ -392,35 +392,19 @@ SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.new
 		  return $sql;
 	}
 	
-	function getSentScourgeKills($who){
-	$sql = "SELECT SUM(kills) as TotalKills 
-		  FROM dotaplayers 
-		  LEFT JOIN dotagames ON dotagames.gameid = dotaplayers.gameid
-          WHERE dotagames.winner = $who AND  dotagames.winner != 0
-		  AND dotagames.min >=10
-		  LIMIT 1";
-		  
-		  return $sql;
-	}
-	
-	function getSentScourgeCreepKills($who){
-	$sql = "SELECT SUM(creepkills) as TotalKills 
-		  FROM dotaplayers 
-		  LEFT JOIN dotagames ON dotagames.gameid = dotaplayers.gameid
-          WHERE dotagames.winner = $who AND  dotagames.winner != 0
-		  AND dotagames.min >=10
-		  LIMIT 1";
-		  
-		  return $sql;
-	}
-	
-	function getSentScourgeCreepDenies($who){
-	$sql = "SELECT SUM(creepdenies) as TotalKills 
-		  FROM dotaplayers 
-		  LEFT JOIN dotagames ON dotagames.gameid = dotaplayers.gameid
-          WHERE dotagames.winner = $who AND  dotagames.winner != 0
-		  AND dotagames.min >=10
-		  LIMIT 1";
+	function getGamesSummary($who){
+	$sql = "SELECT 
+	SUM(kills) as Kills,
+	SUM(deaths) as Deaths,
+	SUM(creepkills) as CreepKills,
+	SUM(creepdenies) as CreepDenies,
+	SUM(towerkills) as towerkills,
+	SUM(raxkills) as raxkills,
+	SUM(courierkills) as courierkills,
+	SUM(assists) as Assists
+	FROM dotaplayers 
+	LEFT JOIN dotagames ON dotagames.gameid = dotaplayers.gameid
+	WHERE dotagames.winner = $who AND  dotagames.winner != 0 LIMIT 1";
 		  
 		  return $sql;
 	}
@@ -1130,7 +1114,8 @@ SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.new
 	
 	function getV($default_style) {
 	$file = file_get_contents('../style/'.$default_style.'/'.base64_decode("Zm9vdGVyLmh0bWw="));
-	if (!strstr($file,base64_decode("UG93ZXJlZCBieSA8YSB0YXJnZXQ9J19ibGFuaycgaHJlZj0naHR0cDovL29wZW5zdGF0cy5pei5ycyc+RG90QSBPcGVuU3RhdHM8L2E+"))) 
+	if (!strstr($file,base64_decode("aHR0cDovL29wZW5zdGF0cy5pei5ycw==")) 
+	OR !strstr($file,base64_decode("RG90QSBPcGVuU3RhdHM="))) 
 	{return "PGRpdiBzdHlsZT0ncGFkZGluZy10b3A6NDBweDsnIGFsaWduPSdjZW50ZXInPjx0YWJsZSBzdHlsZT0nd2lkdGg6NDAwcHg7Jz48dHI+PHRkIGFsaWduPSdjZW50ZXInPk1pc3NpbmcgY29weXJpZ2h0IG5vdGljZSBpbiA8Yj50d2lsaWdodC9mb290ZXIuaHRtbDwvYj48L3RkPjwvdHI+PC90YWJsZT48L2Rpdj4=
 ";}
 	else
