@@ -6,7 +6,7 @@
 
 		
 	define("MAX_SIZE", 20); //20 KB max
-	define("VERSION", "1.2.6");
+	define("VERSION", "1.2.7");
 	
 	?>
 
@@ -1783,7 +1783,13 @@ function confirmDelete(delUrl) {
       $FiltersOnGamePage = trim($FiltersOnGamePage); 
       if ($FiltersOnGamePage == "1") {$fogy = "checked";$fogn = "";} else {
           $fogy = "";
-          $fogn = "checked";}		 
+          $fogn = "checked";}	
+
+      $CountryFlags = get_value_of('$CountryFlags');
+      $CountryFlags = trim($CountryFlags); 
+      if ($CountryFlags == "1") {$cfy = "checked";$cfn = "";} else {
+          $cfy = "";
+          $cfn = "checked";}			  
 		  
 	  
 	  $head_admin = get_value_of('$head_admin');
@@ -1876,6 +1882,13 @@ function confirmDelete(delUrl) {
 	  <input type="radio" name="fog" '.$fogy.' value="1" /> Yes
 	  <input type="radio" name="fog" '.$fogn.' value="0" /> No 
 	  | (Filter the results on the game page by years, months and days)</td></tr>
+	  
+	  <tr>
+	  <td width="160px">Show Country Flags</td>
+	  <td>
+	  <input type="radio" name="cf" '.$cfy.' value="1" /> Yes
+	  <input type="radio" name="cf" '.$cfn.' value="0" /> No 
+	  | (Show Country Flags on Top and User page)</td></tr>
 	  
 	  
 	  <tr><th>Top page</th><th></th></tr>
@@ -2096,6 +2109,7 @@ function confirmDelete(delUrl) {
 	  write_value_of('$SmartParsing', "$SmartParsing", $_POST['smrp']);
 	  write_value_of('$ShowSentinelScourgeWon', "$ShowSentinelScourgeWon", $_POST['sssw']);
 	  write_value_of('$FiltersOnGamePage', "$FiltersOnGamePage", $_POST['fog']);
+	  write_value_of('$CountryFlags', "$CountryFlags", $_POST['cf']);
 	  
 	  write_value_of('$top_players_per_page', "$top_players_per_page", $_POST['topplayers']);
 	  write_value_of('$news_per_page', "$news_per_page", $_POST['news']);

@@ -147,9 +147,28 @@
 		$name2=trim(strtolower($list["name"]));
 		$banname=$list["banname"];
 		//echo "$name ".$list["disc"]." | " ;
+		$myFlag = "";
+		$IPaddress = $list["ip"];
+		
+		//COUNTRY FLAGS
+		if ($CountryFlags == 1 AND file_exists("./includes/ip_files/countries.php")  AND $IPaddress!="")
+		{
+		$two_letter_country_code=iptocountry($IPaddress);
+		include("./includes/ip_files/countries.php");
+		$three_letter_country_code=$countries[$two_letter_country_code][0];
+        $country_name=convEnt2($countries[$two_letter_country_code][1]);
+		$file_to_check="./includes/flags/$two_letter_country_code.gif";
+		if (file_exists($file_to_check)){
+		        $flagIMG = "<img src=$file_to_check>";
+                $flag = "<img onMouseout='hidetooltip()' onMouseover='tooltip(\"".$flagIMG." $country_name\",100); return false' src='$file_to_check' width='20' height='13'>";
+                }else{
+                $flag =  "<img title='$country_name' src='./includes/flags/noflag.gif' width='20' height='13'>";
+                }	
+		$myFlag = $flag;
+		}
 		
 		if (trim(strtolower($banname)) == strtolower($name)) 
-		{$name = "<span style='color:#BD0000'>$list[name]</span>";}
+		{$name = "$flag <span style='color:#BD0000'>$list[name]</span>";}
 		
 		$totgames=$list["totgames"]."";
 		//AVG
@@ -191,9 +210,9 @@
 		//$killdeathratio=ROUND($list["killdeathratio"],1); 
 
 	
-		  $data = array($counter, $name2, $name, $totalscore, $totgames, $wins ,$winlosses,$losses, $kills, $death,$assists,$killdeathratio,$creepkills,$creepdenies,$neutralkills, );
+		  $data = array($counter, $name2, $name, $totalscore, $totgames, $wins ,$winlosses,$losses, $kills, $death,$assists,$killdeathratio,$creepkills,$creepdenies,$neutralkills, $myFlag);
    
-   $tags = array('{%COUNTER%}','{%NAME_URL%}', '{%NAME%}', '{%SCORE%}', '{%TOTGAMES%}', '{%WINS%}', '{%WINLOSSES%}','{%LOSSES%}','{%KILLS%}', '{%DEATHS%}', '{%ASSISTS%}', '{%KDRATIO%}', '{%CK%}', '{%CD%}','{%NEUTRALS%}'
+   $tags = array('{%COUNTER%}','{%NAME_URL%}', '{%NAME%}', '{%SCORE%}', '{%TOTGAMES%}', '{%WINS%}', '{%WINLOSSES%}','{%LOSSES%}','{%KILLS%}', '{%DEATHS%}', '{%ASSISTS%}', '{%KDRATIO%}', '{%CK%}', '{%CD%}','{%NEUTRALS%}','{%FLAG%}'
    );
    
    echo str_replace($tags, $data, file_get_contents("./style/$default_style/top_row.html"));

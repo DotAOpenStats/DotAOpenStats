@@ -121,6 +121,10 @@ padding-left:8pt;
 padding-left:2px;
 }
 
+.padAll{
+padding:4px;
+}
+
 .tableSearchH {
 width:95%;margin-top:24px; margin-bottom:12px;
 }

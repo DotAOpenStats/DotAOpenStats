@@ -18,6 +18,7 @@ $lang["bans"] = "Bans";
 $lang["showing"] = "Showing: ";
 $lang["min_games_played"] = "Minimum Games Played:";
 $lang["update"] = "Update";
+$lang["bans_only"] = "Bans only";
 
 $lang["id"] = "Id";
 $lang["name"] = "Name";

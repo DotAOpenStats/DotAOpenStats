@@ -144,6 +144,10 @@ return $return.$return2.$seconds_left.".".$milliseconds;
 	}
 }
      function getCountTops($games,$HideBannedUsersOnTop){
+	 if ($HideBannedUsersOnTop != '0')
+    $_sql = " AND gp.name NOT IN (SELECT name FROM bans) ";
+  else
+    $_sql = "";
 	 $count = "
   SELECT COUNT(*) as count 
   FROM( 
@@ -158,6 +162,7 @@ return $return.$return2.$seconds_left.".".$milliseconds;
 	   AND dp.gameid = ga.id 
 	   AND gp.gameid = dg.gameid 
 	   AND gp.colour = dp.colour 
+	   $_sql 
 	   GROUP BY gp.name having count(*) >= $games
 	  ) as h
   LIMIT 1";
@@ -197,6 +202,7 @@ return $return.$return2.$seconds_left.".".$milliseconds;
 	 avg(dp.kills) as kills, 
 	 SUM(dp.kills) as totkills,
 	 SUM(dp.deaths) as totdeaths,
+	 gp.ip as ip,
 	 COUNT(*) as totgames, 
 	 case when (kills = 0) then 0 
 	 when (deaths = 0) then 1000 
@@ -244,6 +250,7 @@ return $return.$return2.$seconds_left.".".$milliseconds;
 	 end as killdeathratio 
 	 FROM (
           SELECT gp.name as name, 
+		  gp.ip as ip,
 		  bans.name as banname, 
 		  avg(dp.courierkills) as courierkills, 
 		  avg(dp.raxkills) as raxkills,
@@ -312,6 +319,7 @@ return $return.$return2.$seconds_left.".".$milliseconds;
 	   leftreason, 
 	   gp.left, 
 	   gp.name as name, 
+	   gp.ip as ip,
 	   b.name as banname 
 	   FROM dotaplayers AS dp 
 	   LEFT JOIN gameplayers AS gp ON gp.gameid = dp.gameid and dp.colour = gp.colour 
@@ -714,7 +722,7 @@ SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.new
 	
 	if (strstr($itemName,"s Dagger"))
 	{
-	//Now group Kelen's Dagger if is selected item
+	//Now group Dagger if is selected item
 	$sql = "SELECT COUNT(*) as total, dp.item1,dp.item2, dp.item3, dp.item4, dp.item5, dp.item6, dp.hero, h.heroid, h.description as heroname, it.name, it.itemid
 	FROM dotaplayers as dp 
 	LEFT JOIN heroes as h ON h.heroid = dp.hero AND h.summary != '-'
@@ -733,7 +741,7 @@ SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.new
 	
 	if (strstr($itemName,"Armlet of Mordiggian"))
 	{
-	//Now group Kelen'Armlet of Mordiggian if is selected item
+	//Now group Armlet of Mordiggian if is selected item
 	$sql = "SELECT COUNT(*) as total, dp.item1,dp.item2, dp.item3, dp.item4, dp.item5, dp.item6, dp.hero, h.heroid, h.description as heroname, it.name, it.itemid
 	FROM dotaplayers as dp 
 	LEFT JOIN heroes as h ON h.heroid = dp.hero AND h.summary != '-'
@@ -752,7 +760,7 @@ SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.new
 	
 	if (strstr($itemName,"Heart of Tarrasque"))
 	{
-	//Now group Kelen'Heart of Tarrasque if is selected item
+	//Now group Heart of Tarrasque if is selected item
 	$sql = "SELECT COUNT(*) as total, dp.item1,dp.item2, dp.item3, dp.item4, dp.item5, dp.item6, dp.hero, h.heroid, h.description as heroname, it.name, it.itemid
 	FROM dotaplayers as dp 
 	LEFT JOIN heroes as h ON h.heroid = dp.hero AND h.summary != '-'
@@ -771,7 +779,7 @@ SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.new
 	
 	if (strstr($itemName,"Radiance"))
 	{
-	//Now group Kelen'Radiance if is selected item
+	//Now group Radiance if is selected item
 	$sql = "SELECT COUNT(*) as total, dp.item1,dp.item2, dp.item3, dp.item4, dp.item5, dp.item6, dp.hero, h.heroid, h.description as heroname, it.name, it.itemid
 	FROM dotaplayers as dp 
 	LEFT JOIN heroes as h ON h.heroid = dp.hero AND h.summary != '-'
@@ -984,6 +992,7 @@ SUM(case when(((dg.winner = 1 and dp.newcolour < 6) or (dg.winner = 2 and dp.new
 	raxkills, 
 	courierkills, 
 	b.name as name, 
+	b.ip as ip,
 	f.name as banname, 
 	CASE when(gamestate = '17') then 'PRIV' else 'PUB' end as type, 
 	CASE when ((winner=1 AND newcolour < 6) 
@@ -1278,6 +1287,20 @@ $replace = array(
 	'[spoiler]\\1[/spoiler]'
 );
 return preg_replace($search , $replace, $text);
+}
+
+  function iptocountry($ip) {
+    $numbers = preg_split( "/\./", $ip);
+	include("ip_files/".$numbers[0].".php");
+    $code=($numbers[0] * 16777216) + ($numbers[1] * 65536) + ($numbers[2] * 256) + ($numbers[3]);
+    foreach($ranges as $key => $value){
+        if($key<=$code){
+            if($ranges[$key][0]>=$code){$two_letter_country_code=$ranges[$key][1];break;}
+            }
+    }
+    if ($two_letter_country_code==""){$two_letter_country_code="unkown";}
+    return $two_letter_country_code;
+
 }
 
   function convHTML($ic1,$ic2,$ic3,$ic4,$ic5,$ic6,$HTML,$hero,$hero2,$url){

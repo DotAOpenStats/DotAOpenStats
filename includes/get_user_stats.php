@@ -7,7 +7,7 @@
   
   $sql = "
   SELECT 
-  gp.name AS name, bans.name AS banname, count(1) AS counttimes 
+  gp.name AS name, bans.name AS banname, count(1) AS counttimes, gp.ip AS ip
   FROM 
   gameplayers gp 
   JOIN dotaplayers dp ON dp.colour = gp.colour 
@@ -23,12 +23,29 @@
   
   if ($db->num_rows($result) <=0) {echo $lang["err_user"] ; die;}
 
-  while ($list = $db->fetch_array($result,'assoc')) {
+  $list = $db->fetch_array($result,'assoc'); 
   
   if (strtolower("$list[name]") == strtolower($list['banname'])) {$BANNED =  "(Banned)"; $COLOR = "style='color:#DC0000;'";}
 
   $realname = $list['name'];
-  }
+  $myFlag = "";
+  $IPaddress = $list["ip"];
+  
+  if ($CountryFlags == 1 AND file_exists("./includes/ip_files/countries.php") AND $IPaddress!="" )
+		{
+		$two_letter_country_code=iptocountry($IPaddress);
+		include("./includes/ip_files/countries.php");
+		$three_letter_country_code=$countries[$two_letter_country_code][0];
+        $country_name=convEnt2($countries[$two_letter_country_code][1]);
+		$file_to_check="./includes/flags/$two_letter_country_code.gif";
+		if (file_exists($file_to_check)){
+		        $flagIMG = "<img src=$file_to_check>";
+                $flag = "<img onMouseout='hidetooltip()' onMouseover='tooltip(\"".$flagIMG." $country_name\",100); return false' src='$file_to_check' width='20' height='13'>";
+                }else{
+                $flag =  "<img title='$country_name' src='./includes/flags/noflag.gif' width='20' height='13'>";
+                }	
+		$myFlag = $flag;
+		}
   
   /////////////////////////////////// HERO STATS ///////////////////////////////////
   
@@ -276,7 +293,7 @@
 	<div align='left'><a href='heroes.php?u=$realname'>$lang[show_hero_stats] 
 	<span $COLOR><b>$realname</b></span></a></div>
 	</td>
-	<td><div align='left'>$lang[show_stats_user] <b>$realname <span $COLOR>$BANNED</span></b></div></td>
+	<td><div align='left'>$lang[show_stats_user] <b>$realname $myFlag <span $COLOR>$BANNED</span></b></div></td>
 	</tr>
 	</table>";
 	//calculate wins

@@ -41,7 +41,7 @@ $username = 'root';
 $password = '';
 $database = 'new_dota';
 
-$default_style = 'twilight';
+$default_style = 'dota';
 $default_language = 'english';
 
 $bans_per_page = '20';
@@ -67,6 +67,8 @@ $ShowAllSlotsInGame = '0';
 //Show total summary of all games (sentinel and scourge: wins, kills, creeps...)
 $ShowSentinelScourgeWon = '1';
 
+//Show Country Flags
+$CountryFlags = '1';
 
 //Show All Time Stats on Top page
 $AllTimeStats = '1';
@@ -111,7 +113,7 @@ $ScoreDisc = '-10';
 $scoreFormula = '((((kills-deaths+assists*0.5+towerkills*0.5+raxkills*0.2+(courierkills+creepdenies)*0.1+neutralkills*0.03+creepkills*0.03) * .2)+(wins-losses)))*10'; 
 
 //Pre-Calculate score
-//If enabled:  Player scores will be taken from the score table in your MySQL database. You must populate this table through your own methods. (Not recommended)
+//If enabled:  Player scores will be taken from the score table in your MySQL database. You must populate this table through your own methods.
 $DBScore = '0';
 
 //Minimal ratio (lefttime/duration) that a player/hero has to complete a game to be counted as win/loss. otherwise game is ignored.
@@ -159,7 +161,7 @@ $UserAchievements = '1';
 
 $KillsMedal = '500'; //Kill 500 enemy heroes!
 $AssistMedal = '200'; //Assist in 200 kills. How many kills to achieve this medal (default 200).
-$WinPercentMedal = '85'; //Achieve 90 % victory
+$WinPercentMedal = '85'; //Achieve 85 % victory
 $KillsPercentMedal = '60'; //Achieve 60 % of kills.
 $GamesMedal = '50'; //Play 50 games!
 $WinsMedal = '50'; //Win 50 games!

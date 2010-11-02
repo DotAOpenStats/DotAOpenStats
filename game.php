@@ -179,7 +179,25 @@
 		$newcolour=$list["newcolour"];
 		$gameid=$list["gameid"]; 
 		$banname=$list["banname"];
-			
+		$myFlag = "";
+		$IPaddress = $list["ip"];
+		//COUNTRY FLAGS
+		if ($CountryFlags == 1 AND file_exists("./includes/ip_files/countries.php")  AND $IPaddress!="")
+		{
+		$two_letter_country_code=iptocountry($IPaddress);
+		include("./includes/ip_files/countries.php");
+		$three_letter_country_code=$countries[$two_letter_country_code][0];
+        $country_name=convEnt2($countries[$two_letter_country_code][1]);
+		$file_to_check="./includes/flags/$two_letter_country_code.gif";
+		if (file_exists($file_to_check)){
+		        $flagIMG = "<img src=$file_to_check>";
+                $flag = "<span style='float:left;padding-left:4px;'><img onMouseout='hidetooltip()' onMouseover='tooltip(\"".$flagIMG." $country_name\",100); return false' src='$file_to_check' width='20' height='13'></span>";
+                }else{
+                $flag =  "<img title='$country_name' src='./includes/flags/noflag.gif' width='20' height='13'>";
+                }	
+		$myFlag = $flag;
+		}
+
 		$my_score = ($kills - $deaths + $assists*0.5) + ($towerkills*0.3 + $raxkills*0.3);
 		if ($my_score > $best_score AND $kills>0) 
 		{$best_player = $name; 
@@ -373,7 +391,7 @@
 		
 		if (!empty($name2) OR $ShowAllSlotsInGame == 1) {
 		echo "<tr class='row'>
-		      <td><a href='user.php?u=$name2'>$name</a> $Points</td>
+		      <td>$myFlag <a href='user.php?u=$name2'>$name</a> $Points</td>
 			  <td>$hero</td>
 			  <td><div align='center'>$kills</div></td>
 			  <td><div align='center'>$deaths</div></td>

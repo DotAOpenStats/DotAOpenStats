@@ -51,12 +51,12 @@
 	 
 	  {echo "<div align='center'<span style='color:red'>$lang[err_search] </span></div><br/>";die;}
 
-	  
 	  $searchTerm = trim($_GET['searchterm']);
 	  $searchTerm = strip_tags($searchTerm); // remove any html/javascript.
 	  $searchTerm = EscapeStr($searchTerm); 
 	  
 	  $bans_only = "	  AND b.name = e.name"; //Maybe for later usage
+	  $sql_reson = " , e.reason";
 	  
 	  $sql = "
 	  SELECT 
@@ -71,7 +71,9 @@
 	  , MAX(datetime) as lastplayed
 	  , MIN(datetime) as firstplayed
 	  , b.name as name
+	  , b.ip as ip
 	  , e.name as banname 
+	  , e.reason 
       FROM dotaplayers AS a 
 	  LEFT JOIN gameplayers AS b ON b.gameid = a.gameid and a.colour = b.colour 
       LEFT JOIN dotagames AS c ON c.gameid = a.gameid 
@@ -80,7 +82,7 @@
       WHERE b.name <> '' and winner <> 0 
 	  AND LOWER(b.name) LIKE LOWER('%{$searchTerm}%') 
 	  GROUP BY b.name
-	  ORDER BY a.id DESC, b.name ASC 
+	  ORDER BY COUNT(a.id) DESC, b.name ASC 
 	  LIMIT $search_limit";
 	  
 	  $qry_result = $db->query($sql) or die(mysql_error());
@@ -106,6 +108,7 @@
 		<th><div align='center'>$lang[denies]</div></th>
 		<th><div align='center'>$lang[first_game]</div></th>
 		<th><div align='center'>$lang[last_game]</div></th>
+		<th></th>
 		</tr>";
 	 
 	 
@@ -125,25 +128,45 @@
         $banname=$list["banname"];
 		$ntitle = "title='$name'";
 		
+		$myFlag = "";
+		$IPaddress = $list["ip"];
+		//COUNTRY FLAGS
+		if ($CountryFlags == 1 AND file_exists("../includes/ip_files/countries.php") AND $IPaddress!="")
+		{
+		$two_letter_country_code=iptocountry($IPaddress);
+		include("../includes/ip_files/countries.php");
+		$three_letter_country_code=$countries[$two_letter_country_code][0];
+        $country_name=convEnt2($countries[$two_letter_country_code][1]);
+		$file_to_check="./flags/$two_letter_country_code.gif";
+		if (file_exists($file_to_check)){
+		        $flagIMG = "<img src=includes/$file_to_check>";
+                $flag = "<img onMouseout='hidetooltip()' onMouseover='tooltip(\"".$flagIMG." $country_name\",100); return false' src='includes/$file_to_check' width='20' height='13'>";
+                }else{
+                $flag =  "<img title='$country_name' src='includes/flags/noflag.gif' width='20' height='13'>";
+                }	
+		$myFlag = $flag;
+		}
+		
 		
 		if (trim(strtolower($banname)) == $name2) 
-		{$name = "<span style='color:#BD0000'>$list[name]</span>";
-		$ntitle = "title='Banned'";}
+		{$reason = " <br>$lang[reason]: ".trim($list["reason"]);
+		$name = "<span style='color:#BD0000'>$list[name]</span>";
+		$ntitle = "title='Banned'"; } else $reason = "";
 		
 	echo "<tr class='row'>
 	<td style='padding-left:4px; width='150px'>
-	<div align='left'><a $ntitle href='user.php?u=$name2'>$name</a></div></td>
+	<div align='left'>$myFlag <a $ntitle href='user.php?u=$name2'>$name</a> $reason</div></td>
 	
-	<td width='80px'><div align='center'>$totgames</div></td>
-	<td width='80px'><div align='center'></div></td>
-	<td width='80px'><div align='center'>$kills</div></td>
-	<td width='80px'><div align='center'>$death</div></td>
-	<td width='80px'><div align='center'>$assists</div></td>
-	<td width='80px'><div align='center'>$creepkills</div></td>
-	<td width='80px'><div align='center'>$creepdenies</div></td>
-	<td width='150px'><div align='center'>$firstplayed</div></td>
-	<td width='150px'><div align='center'>$lastplayed</div></td>
-	
+	<td width='64px'><div align='center'>$totgames</div></td>
+	<td width='32px'><div align='center'></div></td>
+	<td width='64px'><div align='center'>$kills</div></td>
+	<td width='64px'><div align='center'>$death</div></td>
+	<td width='64px'><div align='center'>$assists</div></td>
+	<td width='64px'><div align='center'>$creepkills</div></td>
+	<td width='64px'><div align='center'>$creepdenies</div></td>
+	<td width='160px'><div align='center'>$firstplayed</div></td>
+	<td width='160px'><div align='center'>$lastplayed</div></td>
+	<td width='16px'></td>
 	</tr>";
 	 }
 	 echo "</table></div>";

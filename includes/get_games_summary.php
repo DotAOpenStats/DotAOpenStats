@@ -9,10 +9,18 @@
     $_scourWon = number_format($row["scourgeWon"],"0",".",",");
 	$_scourWon2 = $row["scourgeWon"];
     $_draw = number_format($row["draw"],"0",".",",");
-  
-    $_sentPerc = ROUND(($_sentWon2/$_totals)*100,1);
+	
+	
+    if ($_totals>=1)
+    {$_sentPerc = ROUND(($_sentWon2/$_totals)*100,1);
     $_scourPerc = ROUND(($_scourWon2/$_totals)*100,1);
-    $_drawPerc = ROUND(($_draw/$_totals)*100,1);
+    $_drawPerc = ROUND(($_draw/$_totals)*100,1);}
+	else 
+	{
+	$_sentPerc  = 0;
+	$_scourPerc = 0;
+	$_drawPerc  = 0;
+	}
 	
 	//Get games summary Sentinels
 	$sql = getGamesSummary(1);

@@ -35,6 +35,7 @@ $sql = "
 	 FROM ( 
 	 SELECT 
 	 gp.name as name, 
+	 gp.ip as ip, 
 	 bans.name as banname, 
 	 avg(dp.courierkills) as courierkills, 
 	 avg(dp.raxkills) as raxkills,
@@ -98,6 +99,7 @@ $sql = "
 	 end as killdeathratio 
 	 FROM (
           SELECT gp.name as name, 
+		  gp.ip as ip, 
 		  bans.name as banname, 
 		  avg(dp.courierkills) as courierkills, 
 		  avg(dp.raxkills) as raxkills,
@@ -200,8 +202,28 @@ $sql = "
 	 $list["totalscore"] = ROUND($list["totalscore"],2);
 	 $plName = strtolower($list["name"])."'a";
 	 $tooltipName = convEnt2($list["name"]);
+	 
+	    $myFlag = "";
+		$IPaddress = $list["ip"];
+		//COUNTRY FLAGS
+		if ($CountryFlags == 1 AND file_exists("../includes/ip_files/countries.php") AND $IPaddress!="")
+		{
+		$two_letter_country_code=iptocountry($IPaddress);
+		include("../includes/ip_files/countries.php");
+		$three_letter_country_code=$countries[$two_letter_country_code][0];
+        $country_name=convEnt2($countries[$two_letter_country_code][1]);
+		$file_to_check="./flags/$two_letter_country_code.gif";
+		if (file_exists($file_to_check)){
+		        $flagIMG = "<img src=includes/$file_to_check>";
+                $flag = "<img onMouseout='hidetooltip()' onMouseover='tooltip(\"".$flagIMG." $country_name\",100); return false' src='includes/$file_to_check' width='20' height='13'>";
+                }else{
+                $flag =  "<img title='$country_name' src='includes/flags/noflag.gif' width='20' height='13'>";
+                }	
+		$myFlag = $flag;
+		}
+	 
 	 echo "<tr class='row'>
-		<td width='180px' style='padding-left:4px;'><a href='user.php?u=$plName'>$list[name]</a></td>
+		<td width='180px' style='padding-left:4px;'>$myFlag <a href='user.php?u=$plName'>$list[name]</a></td>
 		<td width='110px'><div align='center'>$list[totalscore]</div></td>
 		<td width='64px'><div align='center'>$totgames</div></td>
 		<td width='64px'><div align='center'>$wins</div></td>

@@ -167,10 +167,29 @@
 	
 	$name=$list["name"];
 	$name2=trim(strtolower($list["name"]));
+	
+	$IPaddress = $list["ip"];
 	if (trim(strtolower($banname)) == strtolower($name)) 
 	{$name = "<span style='color:#BD0000'>$list[name]</span>";}
-	
+	$myFlag = "";
 	if (strlen($gamename)>=30) {$gamename = "".substr($gamename,0,30)."...";}
+	
+	//COUNTRY FLAGS
+		if ($CountryFlags == 1 AND file_exists("./includes/ip_files/countries.php") AND $IPaddress!="")
+		{
+		$two_letter_country_code=iptocountry($IPaddress);
+		include("./includes/ip_files/countries.php");
+		$three_letter_country_code=$countries[$two_letter_country_code][0];
+        $country_name=convEnt2($countries[$two_letter_country_code][1]);
+		$file_to_check="./includes/flags/$two_letter_country_code.gif";
+		if (file_exists($file_to_check)){
+		        $flagIMG = "<img src=$file_to_check>";
+                $flag = "<img onMouseout='hidetooltip()' onMouseover='tooltip(\"".$flagIMG." $country_name\",100); return false' src='$file_to_check' width='20' height='13'>";
+                }else{
+                $flag =  "<img title='$country_name' src='./includes/flags/noflag.gif' width='20' height='13'>";
+                }	
+		$myFlag = $flag;
+		}
 	
 	$win = $list["winner"];
 	$winner=$list["result"];
@@ -185,7 +204,7 @@
 	//if ($win == 2) {$gamename = "<span class='GamesScourge'>$gamename</span>";}
 	
 	echo "<tr class='row'>
-	<td style='padding-left:4px;width:160px;' ><a href='user.php?u=$name2'>$name</a></td>
+	<td style='padding-left:4px;width:160px;' >$myFlag <a href='user.php?u=$name2'>$name</a></td>
 	<td width='220px'><a title='$list[gamename]' href='game.php?gameid=$gameid'>$gamename</a></td>
 	<td width='56px'>$type</td>
 	<td width='64px'>$winner</td>

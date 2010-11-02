@@ -88,14 +88,32 @@
   $get_date = date($date_format,strtotime($list['date']) );
   $name = trim("$list[name]");
   $reason = trim("$list[reason]"); 
+  $myFlag = "";
+  $IPaddress = $list["ip"];
+  //COUNTRY FLAGS
+		if ($CountryFlags == 1 AND file_exists("./includes/ip_files/countries.php") AND $IPaddress!="")
+		{
+		$two_letter_country_code=iptocountry($IPaddress);
+		include("./includes/ip_files/countries.php");
+		$three_letter_country_code=$countries[$two_letter_country_code][0];
+        $country_name=convEnt2($countries[$two_letter_country_code][1]);
+		$file_to_check="./includes/flags/$two_letter_country_code.gif";
+		if (file_exists($file_to_check)){
+		        $flagIMG = "<img src=$file_to_check>";
+                $flag = "<img onMouseout='hidetooltip()' onMouseover='tooltip(\"".$flagIMG." $country_name\",100); return false' src='$file_to_check' width='20' height='13'>";
+                }else{
+                $flag =  "<img title='$country_name' src='./includes/flags/noflag.gif' width='20' height='13'>";
+                }	
+		$myFlag = $flag;
+		}
   
   $celltitle = " title='$reason'";
   
   if (strlen($reason)>=40) {$reason = "".strtolower(substr($reason,0,40))."...";}
   
-  $data = array($celltitle, $list['id'], $name, $reason, $list['gamename'], $get_date, strtolower($list['admin']),$list['admin']);
+  $data = array($celltitle, $myFlag, $list['id'], $name, $reason, $list['gamename'], $get_date, strtolower($list['admin']),$list['admin']);
    
-   $tags = array('{CELL}','{ID}', '{NAME}', '{REASON}', '{GAMENAME}', '{DATE}', '{ADMIN}','{ADMIN_NAME}'
+   $tags = array('{CELL}', '{FLAG}', '{ID}', '{NAME}', '{REASON}', '{GAMENAME}', '{DATE}', '{ADMIN}','{ADMIN_NAME}'
    );
    
    echo str_replace($tags, $data, file_get_contents("./style/$default_style/bans.html"));
