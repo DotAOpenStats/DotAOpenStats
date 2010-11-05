@@ -65,6 +65,12 @@ $lang["average"] = "Average:";
 $lang["total"] = "Total:";
 $lang["total_games"] = "Total Games:";
 
+$lang["last_update"] = "Last update:";
+$lang["next_update"] = "Next update:";
+
+$lang["safelist"] = "Safelist";
+$lang["voucher"] = "Voucher";
+
 $lang["avg_duration"] = "Average Duration:";
 $lang["total_duration"] = "Total Duration:";
 $lang["min_duration"] = "Min Duration:";
@@ -139,7 +145,6 @@ $lang["avg_denies"] = "AVG Denies";
 
 $lang["toprank"] = "Ranks:";
 
-
 $lang["search_player"] = "Search player";
 $lang["search_players"] = "Search players";
 $lang["err_search"] = "Search term must have more than 3 characters";
@@ -184,5 +189,3 @@ $lang["submit"] = "Submit";
 $lang["gamelog"] = "Game Log";
 
 ?>
-
-

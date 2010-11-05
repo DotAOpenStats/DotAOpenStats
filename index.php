@@ -35,10 +35,7 @@
 **********************************************/
   include('header.php');
   $pageTitle = "$lang[site_name] | $lang[title]";
-  $pageContents = ob_get_contents();
-  ob_end_clean();
-  echo str_replace('<!--TITLE-->', $pageTitle, $pageContents);
-  
+
   echo "<TABLE><TR><TD style='height:24px;'> $lang[welcome_title]</TD>
   <TR><TD>DotA OpenStats is Php/MySql based web statistic and CMS site for DotA Games</TD></TR>
   <TR><TD><a href='https://sourceforge.net/projects/dotaopenstats/'>Download Dota OpenStats</a></TD>
@@ -96,4 +93,11 @@
 
   include('footer.php');
   
+  $pageContents = ob_get_contents();
+  ob_end_clean();
+  echo str_replace('<!--TITLE-->', $pageTitle, $pageContents);
+  
+  //Cache this page
+  if ($cachePages == '1')
+  file_put_contents($CacheTopPage, str_replace("<!--TITLE-->",$pageTitle,$pageContents));
   ?>

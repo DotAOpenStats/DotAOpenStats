@@ -36,9 +36,6 @@
    include('header.php');
    
    $pageTitle = "$lang[site_name] | Items";
-   $pageContents = ob_get_contents();
-   ob_end_clean();
-   echo str_replace('<!--TITLE-->', $pageTitle, $pageContents);
    
    if (isset($_GET["l"]) AND ctype_alnum($_GET["l"]))  
 	{$letter = " AND LOWER(shortname) LIKE '".safeEscape($_GET["l"])."%'";} else {$letter = "";}
@@ -118,4 +115,10 @@
    
   include('pagination.php');
   include('footer.php');
+     $pageContents = ob_get_contents();
+   ob_end_clean();
+   echo str_replace('<!--TITLE-->', $pageTitle, $pageContents);
+   //Cache this page
+  if ($cachePages == '1')
+  file_put_contents($CacheTopPage, str_replace("<!--TITLE-->",$pageTitle,$pageContents));
   ?>

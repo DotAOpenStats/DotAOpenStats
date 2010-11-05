@@ -73,10 +73,7 @@
 		
 			
 	$pageTitle = "$lang[site_name] | $hero";
-	$pageContents = ob_get_contents();
-    ob_end_clean();
-    echo str_replace('<!--TITLE-->', $pageTitle, $pageContents);
-		
+
 		$summ = str_replace("’","&rsquo;",$summ );
 		$summ = str_replace("…","&hellip;",$summ );
 		$skills = str_replace("’","&rsquo;",$skills );
@@ -223,5 +220,13 @@
 	echo "<br>";
 	
 	include('footer.php');
+	
+	$pageContents = ob_get_contents();
+    ob_end_clean();
+    echo str_replace('<!--TITLE-->', $pageTitle, $pageContents);
+	
+  //Cache this page
+  if ($cachePages == '1')
+  file_put_contents($CacheTopPage, str_replace("<!--TITLE-->",$pageTitle,$pageContents));
  
   ?>

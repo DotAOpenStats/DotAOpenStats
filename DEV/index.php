@@ -18,7 +18,7 @@
 	<link rel="stylesheet" href="<?=$admin_style?>" type="text/css" />
 	<link href="editor.css" rel="Stylesheet" type="text/css" />
 	<script src="editor.js" type="text/javascript"></script>
-	<script type="text/javascript" src="../js/AJAX.js"></script>
+	<!--<script type="text/javascript" src="../js/AJAX.js"></script>-->
 	
 	<script language="JavaScript">
     function toggle(source) {
@@ -239,8 +239,7 @@
 	$back_up = "";
 	$_admins = "";
 	}
-
-
+	
 	if (isset($_GET['bans'])    AND $_SESSION["user_level"] <=2)   {$manage_bans = "<b>Manage Bans</b>";}
 	if (isset($_GET['addban'])  AND $_SESSION["user_level"] <=2) {$manage_bans = "<b>Manage Bans</b>";}
 	if (isset($_GET['heroes'])  AND $_SESSION["user_level"] <=1) {$edit_h = "<b>Edit Heroes</b>";}
@@ -611,8 +610,7 @@ function confirmDelete(delUrl) {
 			 }
 	
 	}
-	
-	
+
 	////////////////////////////////////////////
 	//BANS
 	////////////////////////////////////////////
@@ -720,14 +718,11 @@ function confirmDelete(delUrl) {
 	 <th>Game</th>
 	 <th>Reason</th>
 	 <th>Banned by</th>
-	 
 	 </tr>";
-  
 
 	while ($row = $db->fetch_array($result,'assoc')) {
 	$reason = substr($row["reason"],0,50);
     $date = date($date_format,strtotime($row["date"]));
-	
 	$name = strtolower(trim($row["name"]));
 	
 	echo "<tr>
@@ -738,7 +733,6 @@ function confirmDelete(delUrl) {
 	<td>$row[gamename]</td>
 	<td width='250px' title='$row[reason]'>$reason</td>
 	<td>$row[admin]</td>
-	
 	</tr>";
 	  }
   }
@@ -752,10 +746,8 @@ function confirmDelete(delUrl) {
 	
 	$sql = "DELETE FROM bans WHERE id = $banid LIMIT 1";
 	$result = $db->query($sql);
-	
 	if ($result)
 	{echo "<div align='center'><table style='width:400px;margin-top:40px;'></tr><th>Ban(ID): $banid successfully deleted! </th></tr><tr><td><a href='index.php?bans'>Back to previous page</a></td></tr></table></div>";}
-
 	}
 	
 	///////////////////////////////////////
@@ -825,8 +817,7 @@ function confirmDelete(delUrl) {
 	
 	echo "<div align='center'><table style='width:400px;margin-top:40px;'><tr><td>Removed <b>$del_duplicates</b> duplicate bans</td></tr><tr><td><a href='index.php?bans'>Back to previous page</a></td></tr></table></div><br><br>";
 	}
-	
-	
+
 	//////////////////////////////////////////////////
 	//ADD HERO
 	//////////////////////////////////////////////////
@@ -1447,8 +1438,6 @@ function confirmDelete(delUrl) {
               echo "An error occured!"; die;}
             }
 
-	
-	
 	//ADD NEWS
 	if (!isset($_GET['edit_news']))
 	{
@@ -1474,8 +1463,7 @@ function confirmDelete(delUrl) {
 
 	if (strlen($mytext) <=5) {echo "<br/>News content have to few characters!<br/>"; die;}
 	if (strlen($mytitle) >=91) {echo "<br/>News title have to many characters!<br/>"; die;}
-	
-	
+
 	$sql = "INSERT INTO news (news_content,news_title,news_date) VALUES
 	('$mytext','$mytitle',NOW())";
 	
@@ -1510,7 +1498,6 @@ function confirmDelete(delUrl) {
 		//$mytext = convEnt2($mytext);
 		$mytext = EscapeStr($mytext);
 		} 
-		
 		
 		$mytitle = trim($_POST['new_subject']);
 		$mytitle = my_nl2br($mytitle);
@@ -1783,14 +1770,28 @@ function confirmDelete(delUrl) {
       $FiltersOnGamePage = trim($FiltersOnGamePage); 
       if ($FiltersOnGamePage == "1") {$fogy = "checked";$fogn = "";} else {
           $fogy = "";
-          $fogn = "checked";}	
+          $fogn = "checked";}		  
 
       $CountryFlags = get_value_of('$CountryFlags');
       $CountryFlags = trim($CountryFlags); 
       if ($CountryFlags == "1") {$cfy = "checked";$cfn = "";} else {
           $cfy = "";
-          $cfn = "checked";}			  
-		  
+          $cfn = "checked";}	
+
+      $cachePages = get_value_of('$cachePages');
+      $cachePages = trim($cachePages); 
+      if ($cachePages == "1") {$cachePy = "checked";$cachePn = "";} else {
+          $cachePy = "";
+          $cachePn = "checked";}
+
+     $cacheDir = get_value_of('$cacheDir');
+     $cacheDir = trim($cacheDir);	
+
+      $showUpdate = get_value_of('$showUpdate');
+      $showUpdate = trim($showUpdate); 
+      if ($showUpdate == "1") {$supdy = "checked";$supdn = "";} else {
+          $supdy = "";
+          $supdn = "checked";}	 
 	  
 	  $head_admin = get_value_of('$head_admin');
       $head_admin = trim($head_admin);
@@ -1888,7 +1889,7 @@ function confirmDelete(delUrl) {
 	  <td>
 	  <input type="radio" name="cf" '.$cfy.' value="1" /> Yes
 	  <input type="radio" name="cf" '.$cfn.' value="0" /> No 
-	  | (Show Country Flags on Top and User page)</td></tr>
+	  | (Show Country Flags)</td></tr>
 	  
 	  
 	  <tr><th>Top page</th><th></th></tr>
@@ -2079,6 +2080,24 @@ function confirmDelete(delUrl) {
 	  <input type="radio" name="sas" '.$sasn.' value="0" /> No 
 	  | (All slots are shown on Game page, including empty slots)</td></tr>
 	  
+	  	  
+	  <tr><th>Cache</th><th></th></tr>
+	  <tr>
+	  <td>Enable page caching</td><td>
+	  <input type="radio" name="cachePage" '.$cachePy.' value="1" /> Yes
+	  <input type="radio" name="cachePage" '.$cachePn.' value="0" /> No 
+	  | (Enable page caching)</td></tr>
+	  
+	  <tr>
+	  <td width="160px">Cache directory</td>
+	  <td><input value="'.$cacheDir.'" type="text" name="cacheDir" maxlength=60 size=30 /> (You must create this directory)</td></tr>
+	  
+	  <tr>
+	  <td>Show cache status</td><td>
+	  <input type="radio" name="cacheStatus" '.$supdy.' value="1" /> Yes
+	  <input type="radio" name="cacheStatus" '.$supdn.' value="0" /> No 
+	  | (Show Last cached time and Next update time in footer)</td></tr>
+	  
 	  <tr><th>Database</th><th></th></tr>
 	  <tr>
 	  <td width="160px">Server</td>
@@ -2145,6 +2164,10 @@ function confirmDelete(delUrl) {
 	  write_value_of('$UserPointsOnGamePage', "$UserPointsOnGamePage", $_POST['upg']);
 	  write_value_of('$AccuratePointsCalculation', "$AccuratePointsCalculation", $_POST['apc']);
 	  write_value_of('$ShowAllSlotsInGame', "$ShowAllSlotsInGame", $_POST['sas']);
+	  
+	  write_value_of('$cachePages', "$cachePages", $_POST['cachePage']);
+	  write_value_of('$cacheDir', "$cacheDir", $_POST['cacheDir']);
+	  write_value_of('$showUpdate', "$showUpdate", $_POST['cacheStatus']);
 	  
 	  write_value_of('$server', "$server", $_POST['server']);
 	  write_value_of('$username', "$username", $_POST['username']);
@@ -2405,7 +2428,6 @@ function confirmDelete(delUrl) {
            }
         }
   
-  
     if (isset($_GET['gameid'])) 
 	{
 	$gid = safeEscape($_GET['gameid']);
@@ -2584,9 +2606,7 @@ function confirmDelete(delUrl) {
 		   if ($_GET['order'] == 'date') 
 		   {$order = ' datetime ';}
 		   }
-		
-		
-		
+
 		$sql = "SELECT 
           g.id, map, datetime, gamename, ownername, duration, creatorname, dg.winner, 
 		  CASE WHEN(gamestate = '17') THEN 'PRIV' ELSE 'PUB' end AS type 
@@ -2662,7 +2682,6 @@ function confirmDelete(delUrl) {
 	  <td align='center'>Game: $gameID successfully deleted!</td></tr><tr>
 	  <td align='center'><a href='javascript:history.go(-1);'>Back to previous page</a></td>
 	  </tr></table>";}
-	  
 	  }
 	  
 	  //ADMINISTRATORS
@@ -2691,7 +2710,6 @@ function confirmDelete(delUrl) {
 			  <img  alt='' style='vertical-align: middle;' width='22px' height='22px' 
 			  src='../img/heroes/H06S.gif' border=0/> <b>[+]Add admin</b></a>
 			  </td></tr></table></div>";
-			  
 			  
 			  echo "<div align='center'><table class='tableA'><tr>
 			  <th class='padLeft'><div align='center'>ID</div></th>
@@ -2789,17 +2807,16 @@ function confirmDelete(delUrl) {
 	  $result = $db->query($sql);
 	  if ($result) 
 	  {echo "<br>Admin updated successfully<br><br><a href='index.php?admins'>Back to previous page</a><br><br>";}
-	  
 	  }
 	  
 	 if ($pageGen==1) {
 	 echo "<table><tr><td align='center'>Total queries: ".$db->get_query_cout()."</td></tr></table><br>";}
-	 
-	echo '</body><div>
+	 ?>
+	</body><div>
 	 <table><tr>
 	 <td style="padding-right:12px;text-align:right;" align="right">
 	 &copy; '.date("Y").' <a href=\'http://openstats.iz.rs\'><b>DotA OpenStats</b></a></td>
-	 </tr></table></div>'; 
-
+	 </tr></table></div>
+    <?php
 	} //IS LOGGED
 	?>

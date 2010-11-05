@@ -38,9 +38,6 @@
   //include('./includes/AJAX2.php');	 
   
   $pageTitle = "Dota OpenStats | $lang[top_players]";
-  $pageContents = ob_get_contents();
-  ob_end_clean();
-  echo str_replace('<!--TITLE-->', $pageTitle, $pageContents);
   
   $games = $minGamesPlayed;
   $gplay = $minGamesPlayed;
@@ -233,7 +230,15 @@
    echo "<div id='divActivities2'></div>";}
 
   
-  
+  if (!file_exists($CacheTopPage) OR $cachePages == '0')
   include('footer.php');
+  
+  $pageContents = ob_get_contents();
+  ob_end_clean();
+  echo str_replace('<!--TITLE-->', $pageTitle, $pageContents);
+  
+  //Cache this page
+  if ($cachePages == '1')
+  file_put_contents($CacheTopPage, str_replace("<!--TITLE-->",$pageTitle,$pageContents));
   
   ?>

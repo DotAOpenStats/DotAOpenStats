@@ -37,10 +37,6 @@
   //include('./includes/AJAX.php');
     
     $pageTitle = "$lang[site_name] | $lang[heroes]";
-  
-    $pageContents = ob_get_contents();
-    ob_end_clean();
-    echo str_replace('<!--TITLE-->', $pageTitle, $pageContents);
    
    if (!isset($_GET["u"])) {$showStatsFor = $lang["hero_stats_all"];} 
    else {
@@ -88,10 +84,12 @@
 	echo "<br>";
   
     include('footer.php');
+
+    $pageContents = ob_get_contents();
+    ob_end_clean();
+    echo str_replace('<!--TITLE-->', $pageTitle, $pageContents);
   
-  
+   //Cache this page
+  if ($cachePages == '1')
+  file_put_contents($CacheTopPage, str_replace("<!--TITLE-->",$pageTitle,$pageContents));
   ?>
-  
-  
-  
-  

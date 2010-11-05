@@ -1320,5 +1320,4 @@ return preg_replace($search , $replace, $text);
   
   }
 
-
 ?>

@@ -9,14 +9,15 @@
 		}
 	}
 
-
    	if (isset($_SESSION['style']))
 	{
 	   if (file_exists("./style/$_SESSION[style]"))
 		{
 	   $default_style = $_SESSION['style'];
 	    }
-
 	}
+	
+	if (!file_exists($cacheDir) AND $cachePages==1) 
+	{echo "<table><tr><td align='center'>Warning: missing folder '<b>$cacheDir</b>'</td></tr></table>";}
 
    ?>

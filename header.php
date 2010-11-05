@@ -40,11 +40,59 @@
 
    require_once('config.php');
    require_once('./lang/'.$default_language.'.php');
+   
+   //Caching START 
+   if ($cachePages == '1')
+   {
+  $break = Explode('/',$_SERVER["SCRIPT_NAME"]);
+  $cPage = $break[count($break) - 1];
+  $cPage = str_replace(".php","",$cPage);
+   
+  $CacheTopPage = "./$cacheDir/$cPage"."_".$_SERVER['QUERY_STRING'].".html";
+  $CacheTopPage = str_replace("=","_",$CacheTopPage);
+  $CacheTopPage = str_replace("&","_",$CacheTopPage);
+
+  //cache TOP
+  if (file_exists($CacheTopPage) AND $_SERVER['REQUEST_METHOD'] == 'POST')
+  			{
+			   if (is_numeric($_POST['gp'])){
+			   $gplay = trim(strip_tags($_POST['gp']));
+			   $games = $gplay;
+			   $CacheTopPage = str_replace("gp_$minGamesPlayed","gp_$gplay",$CacheTopPage);
+			   }
+			} 
+   //cache MONTHLY
+    if ($_SERVER['REQUEST_METHOD'] == 'POST' AND isset($_POST["months"]) AND isset($_POST["years"])) {
+	$dd = strip_tags($_POST["days"]);
+	$mm = strip_tags(mysql_real_escape_string($_POST["months"]));
+	$yyyy = strip_tags(mysql_real_escape_string($_POST["years"]));
+    $CacheTopPage = "./$cacheDir/$cPage-$dd-$mm-$yyyy.html";
+    }
+
+  if (file_exists($CacheTopPage) AND time() - $cachetime < filemtime($CacheTopPage))
+  {
+   //echo $CacheTopPage;
+  $created = filemtime($CacheTopPage);
+  $nextUpdate = $cachetime + $created;
+  $cached = file_get_contents($CacheTopPage); 
+  echo $cached;
+       if ($showUpdate == '1')
+           {
+	      echo "<table><tr>
+          <td align='center'>".$lang["last_update"]." ".date($date_format, filemtime($CacheTopPage))."</td>
+          <td align='center'>".$lang["next_update"]." ".date($date_format, $nextUpdate)."</td></tr></table><br>"; 
+		  exit;
+		  }
+	   }
+	}
+   //Caching END 
    require_once('./includes/class.database.php');
    require_once('./includes/db_connect.php');
    require_once('./includes/common.php');
    require_once('./includes/get_style.php');
    
+   if ($enableSafeListPage == 1)
+   {$safeListLink = "<a class='menuButtons' href='safelist.php'>$lang[safelist]</a>";} else $safeListLink = "";
 
    if ($enableItemsPage == 1) {$itemButton = "<a class='menuButtons' href='items.php'>$lang[items]</a>";} else {$itemButton = "";}
    //HEADER
@@ -61,7 +109,8 @@
    $lang["admins"],
    $minGamesPlayed,
    $lang["heroes"],
-   $itemButton);
+   $itemButton,
+   $safeListLink);
    
    $tags = array('{STYLE}', 
    '{LOGO}',
@@ -77,7 +126,8 @@
    '{ADMINS}',
    '{MINGAMES}',
    '{HEROES}',
-   '{ITEMS}');
+   '{ITEMS}',
+   '(SAFELIST)');
    
    echo str_replace($tags, $data, file_get_contents("./style/$default_style/header.html"));
    

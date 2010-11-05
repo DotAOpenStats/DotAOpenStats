@@ -66,10 +66,6 @@
      ";
 
       $pageTitle = "$lang[site_name] | $itemName2";
-      $pageContents = ob_get_contents(); 
-	  ob_end_clean();
-      echo str_replace('<!--TITLE-->', $pageTitle, $pageContents);
-
       if ($ShowItemsMostUsedByHero == 1) {
           $sql = getMostUsedHeroByItem("", $itemid, 8,$itemName );
           
@@ -95,6 +91,11 @@
       }
   } 
 
-  
   include('footer.php');
+      $pageContents = ob_get_contents(); 
+	  ob_end_clean();
+      echo str_replace('<!--TITLE-->', $pageTitle, $pageContents);
+	  //Cache this page
+  if ($cachePages == '1')
+  file_put_contents($CacheTopPage, str_replace("<!--TITLE-->",$pageTitle,$pageContents));
 ?>

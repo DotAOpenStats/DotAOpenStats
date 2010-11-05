@@ -66,9 +66,6 @@
    require_once('./includes/get_replay.php');
 
   $pageTitle = "$lang[site_name] | $gamename";
-  $pageContents = ob_get_contents();
-  ob_end_clean();
-  echo str_replace('<!--TITLE-->', $pageTitle, $pageContents);
   //echo $replayloc;
   
 	if(file_exists($replayloc)){$DownloadReplay = "| <a href='".$replayurl."'>$lang[download_rep]</a> <!--<input type='button' class='inputButton' value='$lang[download_rep]' onclick='location.href=\"$replayurl\"'--> | <a href='#info'>Game Log</a>";}
@@ -452,8 +449,12 @@
 		  }
   
   include('footer.php');
+  
+  $pageContents = ob_get_contents();
+  ob_end_clean();
+  echo str_replace('<!--TITLE-->', $pageTitle, $pageContents);
+  
+  //Cache this page
+  if ($cachePages == '1')
+  file_put_contents($CacheTopPage, str_replace("<!--TITLE-->",$pageTitle,$pageContents));
   ?>
-  
-  
-  
-  

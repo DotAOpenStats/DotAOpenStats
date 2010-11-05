@@ -58,7 +58,9 @@ $ShowHeroMostUsedItems = '1';
 //Show most used heroes for every item. (Note: this can take up much more resources. Care with huge database)
 $ShowItemsMostUsedByHero = '1';
 //Show Items button on Menu buttons
+
 $enableItemsPage = '1';
+$enableSafeListPage = '1'; //Only for GhostOne
 
 //All slots are shown on Game page (Although they play 2v2, 3v3...)
 //If this option is disabled then you can not see the exact slot of player. It will hide empty slots.
@@ -171,6 +173,16 @@ $TowersMedal = '50'; //Destroy 50 towers!
 $CouriersMedal = '30'; //Kill 30 enemy couriers!
 $NeutralsMedal = '500'; //Kill 500 neutrals!
 $PlayDurationMedal = '30'; //Play at least 30 hours!
+
+//CACHING//
+//Enable page caching
+$cachePages = '0';
+//Caching directory (you MUST create this directory)
+$cacheDir = 'cache';
+//Cache time in minutes (default 30 min)
+$cachetime = 60 * 30;
+//Show Last cached time and Next update time in footer
+$showUpdate = '1';
 
 $pageGen = '1'; //Enable/disable info about page generation and total queries on every page
 $_debug = '0'; //Enable error reportings

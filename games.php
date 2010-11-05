@@ -37,9 +37,6 @@
   include('header.php');
   
   $pageTitle = "$lang[site_name] | $lang[dota_games]";
-  $pageContents = ob_get_contents();
-  ob_end_clean();
-  echo str_replace('<!--TITLE-->', $pageTitle, $pageContents);
   
   if ($FiltersOnGamePage == 1) {
   if (isset($_POST["years"])) {$sql_year = "AND YEAR(datetime) = '".safeEscape($_POST["years"])."'";} 
@@ -146,4 +143,12 @@
   include('pagination.php');
   echo "<br>";
   include('footer.php');
+  
+  $pageContents = ob_get_contents();
+  ob_end_clean();
+  echo str_replace('<!--TITLE-->', $pageTitle, $pageContents);
+  
+  //Cache this page
+  if ($cachePages == '1')
+  file_put_contents($CacheTopPage, str_replace("<!--TITLE-->",$pageTitle,$pageContents));
   ?>

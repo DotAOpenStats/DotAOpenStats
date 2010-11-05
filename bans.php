@@ -37,11 +37,7 @@
   include('header.php');
   
   $pageTitle = "$lang[site_name] | $lang[bans]";
-  $pageContents = ob_get_contents();
-  ob_end_clean();
-  echo str_replace('<!--TITLE-->', $pageTitle, $pageContents);
-  
-  
+
    $sql = "SELECT COUNT(*) FROM bans LIMIT 1";
    
    $result = $db->query($sql);
@@ -87,7 +83,7 @@
 
   $get_date = date($date_format,strtotime($list['date']) );
   $name = trim("$list[name]");
-  $reason = trim("$list[reason]"); 
+  $reason = convEnt2(trim($list["reason"])); 
   $myFlag = "";
   $IPaddress = $list["ip"];
   //COUNTRY FLAGS
@@ -133,4 +129,10 @@
   include('pagination.php');
   echo "<br/>";
   include('footer.php');
+    $pageContents = ob_get_contents();
+  ob_end_clean();
+  echo str_replace('<!--TITLE-->', $pageTitle, $pageContents);
+  //Cache this page
+  if ($cachePages == '1')
+  file_put_contents($CacheTopPage, str_replace("<!--TITLE-->",$pageTitle,$pageContents));
   ?>

@@ -38,10 +38,7 @@
   require_once('includes/get_user_stats.php');
 
   $pageTitle = "DotA OpenStats | $realname";
-  $pageContents = ob_get_contents();
-  ob_end_clean();
-  echo str_replace('<!--TITLE-->', $pageTitle, $pageContents);
-	
+
 	//User row
 	   $tags = array(
    '{ALL_TIME_STATS}', 
@@ -375,5 +372,10 @@
 	echo "<br/>";
 	
 	include('footer.php');
+  $pageContents = ob_get_contents();
+  ob_end_clean();
+  echo str_replace('<!--TITLE-->', $pageTitle, $pageContents);
+  //Cache this page
+  if ($cachePages == '1')
+  file_put_contents($CacheTopPage, str_replace("<!--TITLE-->",$pageTitle,$pageContents));
   ?>
- 
